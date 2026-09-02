@@ -5,6 +5,12 @@
   An AI-assisted RE toolkit whose findings are checked against the binary — not hallucinated.
 </p>
 
+<p align="center">
+  <a href="https://app.ona.com/#https://github.com/2akouwu/reverify">
+    <img src="https://ona.com/build-with-ona.svg" alt="Build with Ona" />
+  </a>
+</p>
+
 ## The problem
 
 Language models are great at reading code and unreliable at reverse engineering. Ask a
