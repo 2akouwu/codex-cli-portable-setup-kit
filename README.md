@@ -21,9 +21,13 @@ algorithm is only reported once it has been **checked against the actual bytes**
 pattern-matched, or executed in the emulator — so the output is grounded in the binary instead
 of the model's imagination.
 
-- **Deterministic core** — PE32/PE32+ parsing, x86/x64 disassembly, AOB pattern scanning,
-  CPU micro-emulation, Protobuf/TLV dissection, Frida hook generation. Pure Python, no Ghidra,
-  no heavy install.
+- **Deterministic core** — PE/ELF/Mach-O parsing, x86/x64/ARM/ARM64 disassembly, AOB pattern
+  scanning, CPU emulation, Protobuf/TLV dissection, Frida hook generation. Pure Python out of
+  the box; installs clean with no Ghidra.
+- **Mature engines, optional** — with `pip install "reverify[full]"` the toolkit upgrades
+  itself in place to **capstone** (disassembly), **unicorn** (real CPU emulation) and **lief**
+  (PE/ELF/Mach-O). Not installed? It falls back to the pure-Python core. `reverify backends`
+  shows what's active.
 - **Grounded, not guessed** — structural claims are verified against the binary by the tools.
 - **Agent-native** — ships as an MCP server, so Claude Code, Cursor, and other agents can call
   the tools directly; also a plain CLI.
@@ -35,7 +39,7 @@ of the model's imagination.
 
 ```bash
 # Install the CLI + MCP server from PyPI:
-pip install reverify        # optional: pip install "reverify[capstone]" for full disassembly
+pip install reverify        # pure-Python core; or "reverify[full]" for capstone+unicorn+lief
 reverify auto sample.bin --json
 
 # Or run straight from a checkout — pure standard library, nothing to install:
@@ -77,7 +81,9 @@ reconstruction. Supported claim kinds: `bytes_at`, `pattern_present`,
 | `reconstruct` | **Closed loop: a model proposes claims, the tools verify, iterate until grounded** |
 | `verify` | **Check a claim about the binary against the tools — VERIFIED / REFUTED / INCONCLUSIVE** |
 | `auto` | Auto-triage: detect format, architecture, sections, top strings |
+| `parse` | PE / ELF / Mach-O: arch, entry, sections, imports, exports (lief when installed) |
 | `parse-pe` | PE32/PE32+ headers, imports, exports |
+| `backends` | Show which engines are active (capstone / unicorn / lief) |
 | `disasm` | x86/x64 disassembly of hex or a section |
 | `pattern-scan` | AOB scan with `??` wildcards |
 | `strings` | ASCII + UTF-16LE extraction with offsets |
@@ -103,14 +109,14 @@ before it reports them.
 
 ## Status
 
-**v0.2.0 — the loop is closed**, and on [PyPI](https://pypi.org/project/reverify/)
-(`pip install reverify`). The deterministic toolkit, CLI, and MCP server are here and tested
-(75 unit tests). The tool-grounded judge — a claim about the binary is checked against the
-actual bytes and returned as `VERIFIED` / `REFUTED` / `INCONCLUSIVE` with observed evidence —
-ships as `reverify verify` and the `re_verify_claim` MCP tool. And `reverify reconstruct`
-now closes the loop: a model proposes claims, the tools judge them, refutations are fed back,
-and it iterates until the reconstruction is grounded. Next: broader format and architecture
-coverage, and richer claim kinds.
+**v0.3.0 — mature engines, closed loop**, on [PyPI](https://pypi.org/project/reverify/)
+(`pip install reverify`). The tool-grounded judge — a claim about the binary is checked
+against the actual bytes and returned as `VERIFIED` / `REFUTED` / `INCONCLUSIVE` with observed
+evidence — ships as `reverify verify` and the `re_verify_claim` MCP tool, and `reverify
+reconstruct` closes the loop (a model proposes, the tools judge, it iterates until grounded).
+v0.3.0 swaps the hand-rolled internals for battle-tested engines when installed — capstone,
+unicorn and lief — bringing full x86/x64/ARM/ARM64 disassembly and emulation and PE/ELF/Mach-O
+parsing, with the pure-Python core as fallback. Tested with 96 unit tests.
 
 ## License
 

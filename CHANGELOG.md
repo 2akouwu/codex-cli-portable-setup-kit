@@ -2,6 +2,31 @@
 
 All notable changes to this project are documented here.
 
+## [0.3.0] - 2026-09-03
+
+Mature engines replace the hand-rolled internals — when installed.
+
+### Added
+
+- **Optional mature backends** (`reverify/backends.py`): the toolkit auto-detects and uses
+  **capstone** (disassembly), **unicorn** (real CPU emulation) and **lief** (PE/ELF/Mach-O
+  parsing) when present, and falls back to the pure-Python core otherwise. `reverify backends`
+  and the `re_backends` MCP tool report what is active. Install with `pip install "reverify[full]"`.
+- **Unified binary parsing** (`reverify/binary.py`): one `parse_binary()` / `BinaryInfo` covering
+  PE, ELF and Mach-O with sections, imports, exports and linked libraries. New `reverify parse`
+  command and `re_parse` MCP tool.
+- **`UnicornEmulator`**: real emulation across x86, x86_64, ARM and ARM64 (every instruction,
+  not a handful). `make_emulator()` picks Unicorn when available; `emulate` gains `--backend`.
+- **New verifier claim kinds**: `import_present` (PE/ELF/Mach-O; `pe_import` kept as an alias),
+  `export_present`, and `section_present`.
+- 21 new unit tests (96 total), gated so the suite passes with or without the engines installed.
+
+### Changed
+
+- Auto-triage, the verifier, the reconstruction agent and the MCP server now go through the
+  unified parser and emulator, so they gain ELF/Mach-O and multi-arch support automatically.
+- `pyproject.toml` extras: `capstone`, `unicorn`, `lief`, and `full`.
+
 ## [0.2.0] - 2026-09-02
 
 The verification loop is now closed: the model drives the tools automatically.

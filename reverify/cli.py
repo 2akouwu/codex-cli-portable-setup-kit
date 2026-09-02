@@ -17,7 +17,9 @@ if str(toolkit_root) not in sys.path:
 try:  # installed package (e.g. the ``reverify`` console script)
     from .pe_parser import PEParser, BinaryParseError
     from .disasm import Disassembler, pattern_scan, create_patch
-    from .emulator import MicroEmulator
+    from .emulator import MicroEmulator, make_emulator
+    from .binary import parse_binary
+    from .backends import backend_report
     from .protocol_parser import ProtobufDissector, TLVDissector, format_hexdump
     from .frida_bridge import FridaScriptGenerator
     from .boundary_auditor import run_full_security_audit, PathBoundaryAuditor, NetworkBoundaryAuditor
@@ -26,7 +28,9 @@ try:  # installed package (e.g. the ``reverify`` console script)
 except ImportError:  # run directly as a script: ``python reverify/cli.py ...``
     from pe_parser import PEParser, BinaryParseError
     from disasm import Disassembler, pattern_scan, create_patch
-    from emulator import MicroEmulator
+    from emulator import MicroEmulator, make_emulator
+    from binary import parse_binary
+    from backends import backend_report
     from protocol_parser import ProtobufDissector, TLVDissector, format_hexdump
     from frida_bridge import FridaScriptGenerator
     from boundary_auditor import run_full_security_audit, PathBoundaryAuditor, NetworkBoundaryAuditor
@@ -78,18 +82,18 @@ def extract_strings(data: bytes, min_len: int = 4) -> List[Dict[str, Any]]:
 def auto_triage(data: bytes, filename: str = "") -> Dict[str, Any]:
     """Auto-detect binary format and extract top-level metadata."""
     report: Dict[str, Any] = {"filename": filename, "size": len(data), "magic": data[:4].hex()}
-    if data.startswith(b"MZ"):
-        report["type"] = "Windows PE Binary (EXE/DLL/SYS)"
-        try:
-            parser = PEParser(data)
-            report["pe_summary"] = parser.summary()
-            report["sections"] = [s["Name"] for s in parser.sections]
-            report["imports"] = parser.imports
-            report["exports"] = [e["name"] for e in parser.exports[:25]]
-        except Exception as e:
-            report["pe_error"] = str(e)
-    elif data.startswith(b"\x7fELF"):
-        report["type"] = "Linux ELF Binary"
+    info = parse_binary(data)
+    if info.format in ("PE", "ELF", "MachO"):
+        labels = {"PE": "Windows PE Binary (EXE/DLL/SYS)", "ELF": "Linux ELF Binary", "MachO": "Mach-O Binary"}
+        report["type"] = labels[info.format]
+        report["binary"] = info.summary()
+        report["sections"] = [s.name for s in info.sections]
+        report["imports"] = info.imports
+        report["exports"] = info.exports[:25]
+        if info.format == "PE":
+            report["pe_summary"] = info.summary()  # backward-compatible key
+        if info.error:
+            report["parse_error"] = info.error
     elif data.startswith(b"PK\x03\x04"):
         report["type"] = "ZIP Archive / Package"
     else:
@@ -181,11 +185,11 @@ def cmd_auto(args: argparse.Namespace) -> None:
     else:
         print(f"=== Auto-Triage: {report.get('filename')} ({report.get('size')} bytes) ===")
         print(f"Detected Type: {report.get('type')}")
-        if "pe_summary" in report:
-            ps = report["pe_summary"]
-            print(f"PE Architecture: {ps['machine']} (64-bit: {ps['is_64bit']})")
+        if "binary" in report:
+            b = report["binary"]
+            print(f"Architecture: {b['arch']} ({b['bits']}-bit)  [parser: {b['backend']}]")
             print(f"Sections: {', '.join(report.get('sections', []))}")
-            print(f"Imported DLLs: {', '.join(ps.get('imported_dlls', []))}")
+            print(f"Imported libs: {', '.join(b.get('imported_libs', []))}")
         if "top_strings" in report and report["top_strings"]:
             print(f"Strings Preview: {', '.join(report['top_strings'][:8])}")
 
@@ -204,10 +208,44 @@ def cmd_decode_tlv(args: argparse.Namespace) -> None:
 
 def cmd_emulate(args: argparse.Namespace) -> None:
     data = load_input_bytes(args.code)
-    emu = MicroEmulator(arch=args.arch)
+    emu = make_emulator(arch=args.arch, prefer=args.backend)
     emu.load_code(data, base_address=args.base)
     state = emu.run(max_steps=args.max_steps)
     print(json.dumps(state, indent=2, ensure_ascii=False))
+
+
+def cmd_parse(args: argparse.Namespace) -> None:
+    data = load_input_bytes(args.file)
+    info = parse_binary(data, prefer=args.backend)
+    if args.json:
+        print(json.dumps(info.to_dict(), indent=2, ensure_ascii=False, default=str))
+    else:
+        s = info.summary()
+        print(f"=== {s['format']} ({s['arch']}, {s['bits']}-bit)  [parser: {s['backend']}] ===")
+        print(f"EntryPoint:   {s['entrypoint']}")
+        print(f"ImageBase:    {s['image_base']}")
+        print(f"Sections:     {', '.join(s['sections'])}")
+        print(f"Imports:      {s['import_count']} functions from {len(s['imported_libs'])} libs")
+        for lib, funcs in list(info.imports.items())[:12]:
+            print(f"  {lib}: {', '.join(funcs[:8])}{' ...' if len(funcs) > 8 else ''}")
+        print(f"Exports:      {s['export_count']}")
+        if s.get("error"):
+            print(f"Note:         {s['error']}")
+
+
+def cmd_backends(args: argparse.Namespace) -> None:
+    rep = backend_report()
+    if args.json:
+        print(json.dumps(rep, indent=2))
+    else:
+        print("=== Reverify backends ===")
+        for k in ("disassembly", "emulation", "binary_parsing"):
+            v = rep[k]
+            ver = f" {v['version']}" if v["version"] else ""
+            print(f"{k:<16} {v['engine']}{ver}")
+        print(f"full fidelity:   {rep['full_fidelity']}")
+        if rep["install_hint"]:
+            print(f"upgrade:         {rep['install_hint']}")
 
 
 def cmd_gen_hook(args: argparse.Namespace) -> None:
@@ -388,7 +426,20 @@ def main() -> None:
     p_emu.add_argument("--base", type=lambda x: int(x, 0), default=0x1000, help="Base address")
     p_emu.add_argument("--arch", default="x86_64", help="Architecture (x86, x86_64)")
     p_emu.add_argument("--max-steps", type=int, default=100, help="Maximum execution steps")
+    p_emu.add_argument("--backend", default="auto", choices=["auto", "unicorn", "pure"], help="Emulation engine")
     p_emu.set_defaults(func=cmd_emulate)
+
+    # parse (generic: PE / ELF / Mach-O)
+    p_parse = subparsers.add_parser("parse", help="Parse PE, ELF or Mach-O: arch, entry, sections, imports, exports")
+    p_parse.add_argument("file", help="Path to the binary")
+    p_parse.add_argument("--backend", default="auto", choices=["auto", "lief", "pure"], help="Parsing engine")
+    p_parse.add_argument("--json", action="store_true", help="Output full JSON structure")
+    p_parse.set_defaults(func=cmd_parse)
+
+    # backends
+    p_be = subparsers.add_parser("backends", help="Show which engines are active (capstone / unicorn / lief)")
+    p_be.add_argument("--json", action="store_true")
+    p_be.set_defaults(func=cmd_backends)
 
     # gen-hook
     p_hook = subparsers.add_parser("gen-hook", help="Generate Frida hook script")

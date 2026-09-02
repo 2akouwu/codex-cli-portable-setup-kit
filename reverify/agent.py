@@ -28,10 +28,10 @@ from typing import Any, Callable, Dict, List, Optional
 
 try:  # package import
     from .verifier import Verifier, Claim
-    from .pe_parser import PEParser, BinaryParseError
+    from .binary import parse_binary
 except ImportError:  # flat import (CLI / tests)
     from verifier import Verifier, Claim
-    from pe_parser import PEParser, BinaryParseError
+    from binary import parse_binary
 
 Proposer = Callable[[str], str]
 
@@ -43,7 +43,9 @@ Supported kinds and their params:
 - instructions:    {"offset": <int>, "length"?: <int>, "mnemonics": ["push","mov",...], "arch"?: "x86_64", "mode"?: "exact|contains"}
 - emulate_result:  {"code": "<hex>" | "offset": <int>, "arch"?: "x86", "expect_registers": {"eax": <int>}}
 - protobuf_field:  {"field": <int>, "type"?: "varint|string|...", "value"?: <any>, "data"?: "<hex>"}
-- pe_import:       {"dll"?: "<name>", "function": "<symbol>"}"""
+- import_present:  {"function": "<symbol>", "lib"?: "<library>"}   (PE, ELF, Mach-O; pe_import is an alias)
+- export_present:  {"name": "<symbol>"}
+- section_present: {"name": "<.text|.data|...>", "virtual_address"?: <int>}"""
 
 
 def _extract_ascii_strings(data: bytes, min_len: int = 5, limit: int = 20) -> List[str]:
@@ -63,11 +65,11 @@ def binary_facts(data: bytes) -> Dict[str, Any]:
         "first_32_bytes_hex": data[:32].hex(),
         "top_strings": _extract_ascii_strings(data[:65536]),
     }
-    if data[:2] == b"MZ":
-        try:
-            facts["pe"] = PEParser(data).summary()
-        except BinaryParseError as exc:
-            facts["pe_error"] = str(exc)
+    info = parse_binary(data)
+    if info.format != "raw":
+        facts["binary"] = info.summary()
+        facts["imports"] = {k: v[:40] for k, v in info.imports.items()}
+        facts["exports"] = info.exports[:40]
     return facts
 
 

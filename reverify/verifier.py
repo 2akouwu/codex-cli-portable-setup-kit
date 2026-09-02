@@ -30,14 +30,14 @@ from typing import Any, Dict, List, Optional
 
 try:  # package import (e.g. ``from reverify import Verifier``)
     from .disasm import Disassembler, pattern_scan
-    from .emulator import MicroEmulator
+    from .emulator import make_emulator
     from .protocol_parser import ProtobufDissector
-    from .pe_parser import PEParser, BinaryParseError
+    from .binary import parse_binary
 except ImportError:  # flat import (CLI, MCP server, and the test suite)
     from disasm import Disassembler, pattern_scan
-    from emulator import MicroEmulator
+    from emulator import make_emulator
     from protocol_parser import ProtobufDissector
-    from pe_parser import PEParser, BinaryParseError
+    from binary import parse_binary
 
 VERIFIED = "VERIFIED"
 REFUTED = "REFUTED"
@@ -95,11 +95,21 @@ class Verifier:
         "instructions",
         "emulate_result",
         "protobuf_field",
-        "pe_import",
+        "import_present",
+        "export_present",
+        "section_present",
+        "pe_import",  # alias of import_present
     )
 
     def __init__(self, data: bytes):
         self.data = data
+        self._bin_cache = None
+
+    def _binary(self):
+        """Parsed view of the binary (lief when available), cached per verifier."""
+        if self._bin_cache is None:
+            self._bin_cache = parse_binary(self.data)
+        return self._bin_cache
 
     # -- dispatch -----------------------------------------------------------
 
@@ -253,9 +263,9 @@ class Verifier:
         else:
             raise ClaimError("emulate_result requires 'code' or 'offset'")
 
-        emu = MicroEmulator(arch=arch)
+        emu = make_emulator(arch=arch, prefer=str(p.get("backend", "auto")))
         emu.load_code(code, base_address=base)
-        emu.run(max_steps=max_steps)
+        state = emu.run(max_steps=max_steps)
 
         expect = {str(k).lower(): _as_int(v) for k, v in dict(p["expect_registers"]).items()}
         observed = {name: emu.reg_read(name) for name in expect}
@@ -269,6 +279,7 @@ class Verifier:
             "observed_registers": {k: hex(v) for k, v in observed.items()},
             "steps_executed": emu.steps_executed,
             "mismatches": mismatches,
+            "backend": state.get("backend", "pure-python"),
         }
         if not mismatches:
             return VERIFIED, evidence, "register state matches"
@@ -298,28 +309,77 @@ class Verifier:
                 return REFUTED, evidence, "no entry matches claimed value"
         return VERIFIED, evidence, "field matches"
 
-    def _check_pe_import(self, p: Dict[str, Any]):
-        """Claim: the PE imports ``function`` (optionally from ``dll``)."""
-        if "function" not in p and "dll" not in p:
-            raise ClaimError("pe_import requires 'function' and/or 'dll'")
-        try:
-            parser = PEParser(self.data)
-        except BinaryParseError as exc:
-            return INCONCLUSIVE, {}, f"not a PE binary: {exc}"
-        imports = parser.imports
-        dll = str(p["dll"]).lower() if "dll" in p else None
+    def _not_parseable(self, info):
+        if info.format == "raw" or info.error:
+            return INCONCLUSIVE, {"format": info.format, "error": info.error}, "not a parseable binary"
+        return None
+
+    def _check_import_present(self, p: Dict[str, Any]):
+        """Claim: the binary imports ``function`` (optionally from ``lib``/``dll``). PE, ELF, Mach-O."""
+        lib = p.get("lib", p.get("dll"))
+        if "function" not in p and lib is None:
+            raise ClaimError("import_present requires 'function' and/or 'lib'")
+        info = self._binary()
+        bad = self._not_parseable(info)
+        if bad:
+            return bad
+        evidence = {
+            "format": info.format,
+            "backend": info.backend,
+            "imported_libs": list(info.imports.keys()),
+            "libraries": info.libraries,
+        }
         func = str(p["function"]) if "function" in p else None
-        evidence = {"imported_dlls": list(imports.keys())}
+        lib_s = str(lib).lower() if lib is not None else None
+        lib_known = lib_s is not None and (
+            any(l.lower() == lib_s for l in info.imports) or any(l.lower() == lib_s for l in info.libraries)
+        )
         if func is None:
-            ok = any(d.lower() == dll for d in imports)
-            return (VERIFIED if ok else REFUTED), evidence, "dll import check"
-        for d, funcs in imports.items():
-            if dll is not None and d.lower() != dll:
-                continue
-            if func in funcs:
-                evidence["matched_dll"] = d
-                return VERIFIED, evidence, "import present"
-        return REFUTED, evidence, "import absent"
+            return (VERIFIED if lib_known else REFUTED), evidence, "library import check"
+        if lib_s is not None and info.format == "PE":
+            ok = info.has_import(func, lib=lib_s)
+        else:
+            # ELF/Mach-O group imports under "*"; honour the lib only as a linked-library check.
+            ok = info.has_import(func) and (lib_s is None or lib_known)
+        return (VERIFIED if ok else REFUTED), evidence, ("import present" if ok else "import absent")
+
+    def _check_pe_import(self, p: Dict[str, Any]):
+        """Backward-compatible alias of ``import_present``."""
+        return self._check_import_present(p)
+
+    def _check_export_present(self, p: Dict[str, Any]):
+        """Claim: the binary exports symbol ``name``."""
+        if "name" not in p:
+            raise ClaimError("export_present requires 'name'")
+        info = self._binary()
+        bad = self._not_parseable(info)
+        if bad:
+            return bad
+        ok = info.has_export(str(p["name"]))
+        evidence = {"format": info.format, "backend": info.backend, "export_count": len(info.exports), "exports_sample": info.exports[:32]}
+        return (VERIFIED if ok else REFUTED), evidence, ("export present" if ok else "export absent")
+
+    def _check_section_present(self, p: Dict[str, Any]):
+        """Claim: a section named ``name`` exists (optionally with ``virtual_address``)."""
+        if "name" not in p:
+            raise ClaimError("section_present requires 'name'")
+        info = self._binary()
+        bad = self._not_parseable(info)
+        if bad:
+            return bad
+        sec = info.section(str(p["name"]))
+        evidence = {"format": info.format, "backend": info.backend, "sections": [s.name for s in info.sections]}
+        if sec is None:
+            return REFUTED, evidence, "section absent"
+        evidence["section"] = {
+            "virtual_address": hex(sec.virtual_address),
+            "virtual_size": sec.virtual_size,
+            "raw_size": sec.raw_size,
+            "offset": sec.offset,
+        }
+        if "virtual_address" in p and _as_int(p["virtual_address"]) != sec.virtual_address:
+            return REFUTED, evidence, "section present but virtual address differs"
+        return VERIFIED, evidence, "section present"
 
     # -- helpers ------------------------------------------------------------
 

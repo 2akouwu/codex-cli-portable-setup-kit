@@ -14,15 +14,17 @@ import json
 from typing import Dict, Any, List
 
 try:  # installed package
-    from .pe_parser import PEParser
+    from .binary import parse_binary
     from .disasm import Disassembler, pattern_scan
     from .protocol_parser import ProtobufDissector, format_hexdump
     from .verifier import Verifier, Claim
+    from .backends import backend_report
 except ImportError:  # run directly: ``python reverify/mcp_server.py``
-    from pe_parser import PEParser
+    from binary import parse_binary
     from disasm import Disassembler, pattern_scan
     from protocol_parser import ProtobufDissector, format_hexdump
     from verifier import Verifier, Claim
+    from backends import backend_report
 
 
 TOOLS_MANIFEST = [
@@ -47,6 +49,22 @@ TOOLS_MANIFEST = [
             },
             "required": ["file_path"]
         }
+    },
+    {
+        "name": "re_parse",
+        "description": "Parses PE, ELF or Mach-O: format, arch, entry point, sections, imports, exports (lief when installed).",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "file_path": {"type": "string", "description": "Target binary path"}
+            },
+            "required": ["file_path"]
+        }
+    },
+    {
+        "name": "re_backends",
+        "description": "Reports which engines are active: capstone (disassembly), unicorn (emulation), lief (parsing).",
+        "inputSchema": {"type": "object", "properties": {}}
     },
     {
         "name": "re_pattern_scan",
@@ -79,7 +97,8 @@ TOOLS_MANIFEST = [
             "deterministic tools and return VERIFIED / REFUTED / INCONCLUSIVE with observed "
             "evidence. Use this before reporting any structural fact so it is grounded in the "
             "bytes, not guessed. Claim kinds: bytes_at, pattern_present, string_present, "
-            "instructions, emulate_result, protobuf_field, pe_import."
+            "instructions, emulate_result, protobuf_field, import_present, export_present, "
+            "section_present (pe_import is an alias)."
         ),
         "inputSchema": {
             "type": "object",
@@ -101,20 +120,19 @@ def handle_tool_call(name: str, arguments: Dict[str, Any]) -> str:
     """Dispatches tool call to underlying deterministic reverify engines."""
     try:
         if name == "re_auto_triage":
-            fpath = arguments["file_path"]
-            with open(fpath, "rb") as f:
-                data = f.read(4096)
-            if data.startswith(b"MZ"):
-                parser = PEParser(data)
-                return json.dumps(parser.parse_summary(), indent=2)
-            return json.dumps({"status": "non_pe_or_raw_binary", "sample_bytes": format_hexdump(data[:64])}, indent=2)
-
-        elif name == "re_parse_pe":
-            fpath = arguments["file_path"]
-            with open(fpath, "rb") as f:
+            with open(arguments["file_path"], "rb") as f:
                 data = f.read()
-            parser = PEParser(data)
-            return json.dumps(parser.parse_summary(), indent=2)
+            info = parse_binary(data)
+            out = {"size": len(data), "binary": info.summary(), "sample_bytes": format_hexdump(data[:64])}
+            return json.dumps(out, indent=2, default=str)
+
+        elif name in ("re_parse_pe", "re_parse"):
+            with open(arguments["file_path"], "rb") as f:
+                data = f.read()
+            return json.dumps(parse_binary(data).to_dict(), indent=2, default=str)
+
+        elif name == "re_backends":
+            return json.dumps(backend_report(), indent=2)
 
         elif name == "re_pattern_scan":
             fpath = arguments["file_path"]
