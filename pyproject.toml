@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "reverify"
+version = "0.1.0"
+description = "Verified reverse engineering: AI RE grounded on deterministic tools — claims checked against the binary, not hallucinated."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [{ name = "2akouwu" }]
+keywords = [
+    "reverse-engineering", "binary-analysis", "disassembler", "frida",
+    "protobuf", "mcp", "ai-agents", "malware-analysis", "ctf",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Security",
+    "Topic :: Software Development :: Disassemblers",
+]
+dependencies = []
+
+[project.optional-dependencies]
+# Capstone upgrades the pure-Python decoder to a full-fidelity disassembler.
+capstone = ["capstone>=5.0"]
+dev = ["pytest>=7.0"]
+
+[project.urls]
+Homepage = "https://github.com/2akouwu/reverify"
+Repository = "https://github.com/2akouwu/reverify"
+Issues = "https://github.com/2akouwu/reverify/issues"
+
+[project.scripts]
+reverify = "reverify.cli:main"
+reverify-mcp = "reverify.mcp_server:run_mcp_server"
+
+[tool.setuptools]
+packages = ["reverify", "reverify.pipeline"]
+
+[tool.setuptools.package-data]
+reverify = ["py.typed"]

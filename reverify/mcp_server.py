@@ -13,9 +13,16 @@ import sys
 import json
 from typing import Dict, Any, List
 
-from pe_parser import PEParser
-from disasm import Disassembler, pattern_scan
-from protocol_parser import ProtobufDissector, format_hexdump
+try:  # installed package
+    from .pe_parser import PEParser
+    from .disasm import Disassembler, pattern_scan
+    from .protocol_parser import ProtobufDissector, format_hexdump
+    from .verifier import Verifier, Claim
+except ImportError:  # run directly: ``python reverify/mcp_server.py``
+    from pe_parser import PEParser
+    from disasm import Disassembler, pattern_scan
+    from protocol_parser import ProtobufDissector, format_hexdump
+    from verifier import Verifier, Claim
 
 
 TOOLS_MANIFEST = [
@@ -64,6 +71,28 @@ TOOLS_MANIFEST = [
             },
             "required": ["hex_bytes"]
         }
+    },
+    {
+        "name": "re_verify_claim",
+        "description": (
+            "The core Reverify loop: check a claim/hypothesis about a binary against the "
+            "deterministic tools and return VERIFIED / REFUTED / INCONCLUSIVE with observed "
+            "evidence. Use this before reporting any structural fact so it is grounded in the "
+            "bytes, not guessed. Claim kinds: bytes_at, pattern_present, string_present, "
+            "instructions, emulate_result, protobuf_field, pe_import."
+        ),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "file_path": {"type": "string", "description": "Target binary file path"},
+                "claims": {
+                    "type": "array",
+                    "description": "One or more claim objects, each {kind, params, note?}",
+                    "items": {"type": "object"}
+                }
+            },
+            "required": ["file_path", "claims"]
+        }
     }
 ]
 
@@ -102,6 +131,17 @@ def handle_tool_call(name: str, arguments: Dict[str, Any]) -> str:
             dis = Disassembler(arch=arch)
             insns = dis.disassemble(raw, base_address=0x1000)
             return json.dumps([{"address": hex(i.address), "mnemonic": i.mnemonic, "op_str": i.op_str} for i in insns], indent=2)
+
+        elif name == "re_verify_claim":
+            fpath = arguments["file_path"]
+            claims = arguments["claims"]
+            if isinstance(claims, dict):
+                claims = [claims]
+            with open(fpath, "rb") as f:
+                data = f.read()
+            verifier = Verifier(data)
+            report = verifier.verify_all([Claim.from_dict(c) for c in claims])
+            return json.dumps(report, indent=2, ensure_ascii=False)
 
         else:
             return json.dumps({"error": f"Unknown tool: {name}"})

@@ -14,13 +14,24 @@ toolkit_root = Path(__file__).resolve().parent.parent
 if str(toolkit_root) not in sys.path:
     sys.path.insert(0, str(toolkit_root))
 
-from pe_parser import PEParser, BinaryParseError
-from disasm import Disassembler, pattern_scan, create_patch
-from emulator import MicroEmulator
-from protocol_parser import ProtobufDissector, TLVDissector, format_hexdump
-from frida_bridge import FridaScriptGenerator
-from pipeline import PipelineEngine
-from boundary_auditor import run_full_security_audit, PathBoundaryAuditor, NetworkBoundaryAuditor
+try:  # installed package (e.g. the ``reverify`` console script)
+    from .pe_parser import PEParser, BinaryParseError
+    from .disasm import Disassembler, pattern_scan, create_patch
+    from .emulator import MicroEmulator
+    from .protocol_parser import ProtobufDissector, TLVDissector, format_hexdump
+    from .frida_bridge import FridaScriptGenerator
+    from .pipeline import PipelineEngine
+    from .boundary_auditor import run_full_security_audit, PathBoundaryAuditor, NetworkBoundaryAuditor
+    from .verifier import Verifier, Claim
+except ImportError:  # run directly as a script: ``python reverify/cli.py ...``
+    from pe_parser import PEParser, BinaryParseError
+    from disasm import Disassembler, pattern_scan, create_patch
+    from emulator import MicroEmulator
+    from protocol_parser import ProtobufDissector, TLVDissector, format_hexdump
+    from frida_bridge import FridaScriptGenerator
+    from pipeline import PipelineEngine
+    from boundary_auditor import run_full_security_audit, PathBoundaryAuditor, NetworkBoundaryAuditor
+    from verifier import Verifier, Claim
 
 
 def load_input_bytes(input_val: str, offset: int = 0, length: int = 0) -> bytes:
@@ -234,6 +245,43 @@ def cmd_pipeline(args: argparse.Namespace) -> None:
         print(result["rendered_text"])
 
 
+def cmd_verify(args: argparse.Namespace) -> None:
+    data = load_input_bytes(args.target)
+
+    claims_data: List[Dict[str, Any]] = []
+    if args.claims_file:
+        with open(args.claims_file, "r", encoding="utf-8") as f:
+            loaded = json.load(f)
+        claims_data = loaded if isinstance(loaded, list) else [loaded]
+    elif args.claim:
+        loaded = json.loads(args.claim)
+        claims_data = loaded if isinstance(loaded, list) else [loaded]
+    else:
+        raise SystemExit("verify requires --claim '<json>' or --claims-file <path>")
+
+    verifier = Verifier(data)
+    report = verifier.verify_all([Claim.from_dict(c) for c in claims_data])
+
+    if args.json:
+        print(json.dumps(report, indent=2, ensure_ascii=False))
+    else:
+        print("=== Reverify: tool-grounded claim verification ===")
+        symbols = {"VERIFIED": "[VERIFIED]", "REFUTED": "[REFUTED ]", "INCONCLUSIVE": "[INCONCL.]"}
+        for r in report["results"]:
+            mark = symbols.get(r["verdict"], r["verdict"])
+            note = f" - {r['note']}" if r["note"] else ""
+            print(f"{mark} {r['kind']}{note}")
+            print(f"           {r['detail']}")
+        print(
+            f"\nGrounded {report['verified']}/{report['total_claims']} "
+            f"(refuted {report['refuted']}, inconclusive {report['inconclusive']}). "
+            f"Trustworthy reconstruction: {report['trustworthy']}"
+        )
+    # Non-zero exit if anything was refuted, so CI / agents can gate on it.
+    if report["refuted"] > 0:
+        sys.exit(2)
+
+
 def cmd_audit_boundary(args: argparse.Namespace) -> None:
     workspace = args.workspace or os.getcwd()
     urls = args.urls.split(",") if args.urls else None
@@ -353,6 +401,17 @@ def main() -> None:
     p_pipe.add_argument("--mock", action="store_true", help="Force offline mock execution")
     p_pipe.add_argument("--json", action="store_true", help="Output full JSON containing blueprint and text")
     p_pipe.set_defaults(func=cmd_pipeline)
+
+    # verify
+    p_verify = subparsers.add_parser(
+        "verify",
+        help="Verify claims about a binary against the deterministic tools (the core Reverify loop)",
+    )
+    p_verify.add_argument("target", help="File path or hex stream to check claims against")
+    p_verify.add_argument("--claim", help="A single claim as a JSON object, or a JSON array of claims")
+    p_verify.add_argument("--claims-file", help="Path to a JSON file with a claim object or array")
+    p_verify.add_argument("--json", action="store_true", help="Output the full JSON verdict report")
+    p_verify.set_defaults(func=cmd_verify)
 
     # audit-boundary
     p_audit = subparsers.add_parser("audit-boundary", help="Audit filesystem path and network SSRF boundaries")

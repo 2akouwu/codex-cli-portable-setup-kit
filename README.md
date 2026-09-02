@@ -34,15 +34,47 @@ of the model's imagination.
 ## Quick start
 
 ```bash
+# From a checkout — pure standard library, nothing to install:
 python reverify/cli.py auto sample.bin --json
 python reverify/cli.py parse-pe sample.exe --json
 python reverify/cli.py disasm 90505831C0C3 --arch x86_64
+
+# Or install the CLI + MCP server:
+pip install -e .            # optional: pip install -e ".[capstone]" for full disassembly
+reverify auto sample.bin --json
 ```
+
+## The verification loop
+
+This is what the name is about. A **claim** is any hypothesis about the binary; the
+deterministic tools are the judge and hand back `VERIFIED`, `REFUTED`, or
+`INCONCLUSIVE` together with the bytes they actually observed:
+
+```bash
+reverify verify sample.bin --claim '{
+  "kind": "instructions", "offset": 4096,
+  "mnemonics": ["push", "mov", "sub"], "note": "function prologue"
+}'
+```
+
+```bash
+# Check a reconstructed routine actually computes what the model claimed:
+reverify verify - --claim '{
+  "kind": "emulate_result", "code": "b805000000b90300000001c8c3",
+  "arch": "x86", "expect_registers": {"eax": 8}
+}'
+```
+
+Claims can be batched from a JSON file (`--claims-file claims.json`); the CLI exits
+non-zero if **anything** is refuted, so an agent or CI job can gate on a grounded
+reconstruction. Supported claim kinds: `bytes_at`, `pattern_present`,
+`string_present`, `instructions`, `emulate_result`, `protobuf_field`, `pe_import`.
 
 ## The toolkit
 
 | Command | What it does |
 |---|---|
+| `verify` | **Check a claim about the binary against the tools — VERIFIED / REFUTED / INCONCLUSIVE** |
 | `auto` | Auto-triage: detect format, architecture, sections, top strings |
 | `parse-pe` | PE32/PE32+ headers, imports, exports |
 | `disasm` | x86/x64 disassembly of hex or a section |
@@ -64,13 +96,18 @@ python reverify/mcp_server.py
 ```
 
 Point Claude Code or Cursor at it and the agent can parse, disassemble, and scan binaries
-directly — with the deterministic tools as ground truth.
+directly — with the deterministic tools as ground truth. The `re_verify_claim` tool exposes
+the verification loop, so an agent can have its own hypotheses judged against the bytes
+before it reports them.
 
 ## Status
 
-**v0.0.0 — groundwork.** The deterministic toolkit, CLI, and MCP server are here and tested
-(42 unit tests). The tool-grounded verification loop — model proposes, tools verify, iterate
-until the reconstruction matches the binary — is the next milestone.
+**v0.1.0 — the verification core is in.** The deterministic toolkit, CLI, and MCP server are
+here and tested (68 unit tests). The tool-grounded judge — a claim about the binary is
+checked against the actual bytes and returned as `VERIFIED` / `REFUTED` / `INCONCLUSIVE` with
+observed evidence — now ships as `reverify verify` and the `re_verify_claim` MCP tool. Next
+milestone: the closed agent loop that drives the judge automatically — model proposes, tools
+verify, iterate until the reconstruction is fully grounded.
 
 ## License
 

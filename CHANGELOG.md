@@ -2,6 +2,28 @@
 
 All notable changes to this project are documented here.
 
+## [0.1.0] - 2026-09-02
+
+The core idea of the project — verification — is now implemented.
+
+### Added
+
+- **Tool-grounded claim verifier (`reverify/verifier.py`)** — the heart of Reverify. A
+  hypothesis about a binary is checked against the actual bytes with the deterministic
+  toolkit and returned as `VERIFIED` / `REFUTED` / `INCONCLUSIVE`, always with the observed
+  evidence. Seven claim kinds: `bytes_at`, `pattern_present`, `string_present`,
+  `instructions`, `emulate_result`, `protobuf_field`, `pe_import`.
+- `reverify verify` CLI command (single claim, batched `--claims-file`, non-zero exit on any
+  refutation so agents and CI can gate on a grounded reconstruction).
+- `re_verify_claim` MCP tool, so agents can have their own hypotheses judged before reporting.
+- `pyproject.toml` packaging with `reverify` and `reverify-mcp` console scripts, and an
+  optional `[capstone]` extra.
+- 27 new unit tests covering the verifier (68 total).
+
+### Changed
+
+- CLI and MCP server now import cleanly both as installed package and as direct scripts.
+
 ## [0.0.0] - 2026-09-02
 
 Initial public groundwork.
