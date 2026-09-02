@@ -2,6 +2,23 @@
 
 All notable changes to this project are documented here.
 
+## [0.2.0] - 2026-09-02
+
+The verification loop is now closed: the model drives the tools automatically.
+
+### Added
+
+- **Closed reconstruction loop (`reverify/agent.py`)** — `ReconstructionAgent`
+  asks a language model to propose claims about a binary, verifies every claim
+  with the deterministic `Verifier`, feeds the refutations and their observed
+  evidence back, and iterates until the reconstruction is grounded or a round
+  cap is hit. The model proposes; the bytes decide.
+- `reverify reconstruct <target> --goal "..."` CLI command, with `--mock` for an
+  offline demo and `--rounds` to cap iterations. Exits non-zero if not grounded.
+- The language model is injected as a `propose` callable, so the loop is fully
+  testable offline; `openai_proposer()` builds a default from `OPENAI_*` env.
+- 11 new unit tests for the loop (75 total).
+
 ## [0.1.0] - 2026-09-02
 
 The core idea of the project — verification — is now implemented.

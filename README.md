@@ -74,6 +74,7 @@ reconstruction. Supported claim kinds: `bytes_at`, `pattern_present`,
 
 | Command | What it does |
 |---|---|
+| `reconstruct` | **Closed loop: a model proposes claims, the tools verify, iterate until grounded** |
 | `verify` | **Check a claim about the binary against the tools — VERIFIED / REFUTED / INCONCLUSIVE** |
 | `auto` | Auto-triage: detect format, architecture, sections, top strings |
 | `parse-pe` | PE32/PE32+ headers, imports, exports |
@@ -102,13 +103,14 @@ before it reports them.
 
 ## Status
 
-**v0.1.0 — the verification core is in**, and on [PyPI](https://pypi.org/project/reverify/)
+**v0.2.0 — the loop is closed**, and on [PyPI](https://pypi.org/project/reverify/)
 (`pip install reverify`). The deterministic toolkit, CLI, and MCP server are here and tested
-(64 unit tests). The tool-grounded judge — a claim about the binary is
-checked against the actual bytes and returned as `VERIFIED` / `REFUTED` / `INCONCLUSIVE` with
-observed evidence — now ships as `reverify verify` and the `re_verify_claim` MCP tool. Next
-milestone: the closed agent loop that drives the judge automatically — model proposes, tools
-verify, iterate until the reconstruction is fully grounded.
+(75 unit tests). The tool-grounded judge — a claim about the binary is checked against the
+actual bytes and returned as `VERIFIED` / `REFUTED` / `INCONCLUSIVE` with observed evidence —
+ships as `reverify verify` and the `re_verify_claim` MCP tool. And `reverify reconstruct`
+now closes the loop: a model proposes claims, the tools judge them, refutations are fed back,
+and it iterates until the reconstruction is grounded. Next: broader format and architecture
+coverage, and richer claim kinds.
 
 ## License
 

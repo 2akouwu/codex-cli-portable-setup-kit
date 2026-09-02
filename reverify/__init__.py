@@ -6,6 +6,7 @@ from .emulator import MicroEmulator, EmulatorError
 from .protocol_parser import ProtobufDissector, TLVDissector, format_hexdump, decode_varint, encode_varint
 from .frida_bridge import FridaScriptGenerator
 from .verifier import Verifier, Claim, verify_claims, VERIFIED, REFUTED, INCONCLUSIVE
+from .agent import ReconstructionAgent, openai_proposer, demo_proposer, binary_facts
 
 __all__ = [
     "PEParser",
@@ -28,4 +29,8 @@ __all__ = [
     "VERIFIED",
     "REFUTED",
     "INCONCLUSIVE",
+    "ReconstructionAgent",
+    "openai_proposer",
+    "demo_proposer",
+    "binary_facts",
 ]

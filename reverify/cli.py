@@ -22,6 +22,7 @@ try:  # installed package (e.g. the ``reverify`` console script)
     from .frida_bridge import FridaScriptGenerator
     from .boundary_auditor import run_full_security_audit, PathBoundaryAuditor, NetworkBoundaryAuditor
     from .verifier import Verifier, Claim
+    from .agent import ReconstructionAgent, openai_proposer, demo_proposer
 except ImportError:  # run directly as a script: ``python reverify/cli.py ...``
     from pe_parser import PEParser, BinaryParseError
     from disasm import Disassembler, pattern_scan, create_patch
@@ -30,6 +31,7 @@ except ImportError:  # run directly as a script: ``python reverify/cli.py ...``
     from frida_bridge import FridaScriptGenerator
     from boundary_auditor import run_full_security_audit, PathBoundaryAuditor, NetworkBoundaryAuditor
     from verifier import Verifier, Claim
+    from agent import ReconstructionAgent, openai_proposer, demo_proposer
 
 
 def load_input_bytes(input_val: str, offset: int = 0, length: int = 0) -> bytes:
@@ -229,6 +231,36 @@ def cmd_hexdump(args: argparse.Namespace) -> None:
     print(format_hexdump(data, base_address=args.base))
 
 
+def cmd_reconstruct(args: argparse.Namespace) -> None:
+    data = load_input_bytes(args.target)
+    if args.mock:
+        propose = demo_proposer(data)
+    else:
+        propose = openai_proposer(model=args.model, base_url=args.base_url, api_key=args.api_key)
+    agent = ReconstructionAgent(data, propose, max_rounds=args.rounds)
+    result = agent.run(args.goal)
+
+    if args.json:
+        print(json.dumps(result, indent=2, ensure_ascii=False))
+    else:
+        print("=== Reverify: closed reconstruction loop ===")
+        print(f"Goal: {result['goal']}")
+        for h in result["history"]:
+            rep = h["report"]
+            print(
+                f"  round {h['round']}: {rep['verified']} verified, "
+                f"{rep['refuted']} refuted, {rep['inconclusive']} inconclusive"
+            )
+        status = "GROUNDED" if result["grounded"] else "NOT grounded"
+        print(f"\n{status} after {result['rounds_used']} round(s).")
+        if result["grounded"]:
+            for r in result["verified_claims"]:
+                note = f" - {r['note']}" if r.get("note") else ""
+                print(f"  [VERIFIED] {r['kind']}{note}")
+    if not result["grounded"]:
+        sys.exit(2)
+
+
 def cmd_verify(args: argparse.Namespace) -> None:
     data = load_input_bytes(args.target)
 
@@ -375,6 +407,21 @@ def main() -> None:
     p_hex.add_argument("--length", type=lambda x: int(x, 0), default=128, help="Byte length")
     p_hex.add_argument("--base", type=lambda x: int(x, 0), default=0, help="Base address")
     p_hex.set_defaults(func=cmd_hexdump)
+
+    # reconstruct
+    p_recon = subparsers.add_parser(
+        "reconstruct",
+        help="Closed loop: model proposes claims, the tools verify, iterate until grounded",
+    )
+    p_recon.add_argument("target", help="File path or hex stream to reconstruct facts about")
+    p_recon.add_argument("--goal", required=True, help="What to reconstruct, in plain language")
+    p_recon.add_argument("--rounds", type=int, default=4, help="Maximum propose/verify rounds")
+    p_recon.add_argument("--model", help="Model name (defaults to OPENAI_MODEL or gpt-4o)")
+    p_recon.add_argument("--api-key", help="API key (defaults to OPENAI_API_KEY env)")
+    p_recon.add_argument("--base-url", help="API base URL (defaults to OPENAI_BASE_URL env)")
+    p_recon.add_argument("--mock", action="store_true", help="Offline demo proposer, no network")
+    p_recon.add_argument("--json", action="store_true", help="Output the full JSON run report")
+    p_recon.set_defaults(func=cmd_reconstruct)
 
     # verify
     p_verify = subparsers.add_parser(
