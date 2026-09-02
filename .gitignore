@@ -14,3 +14,10 @@ __pycache__/
 *.log
 .DS_Store
 Thumbs.db
+
+# Python build artifacts
+dist/
+build/
+*.egg-info/
+.venv/
+venv/
