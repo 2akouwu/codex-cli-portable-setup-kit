@@ -34,14 +34,14 @@ of the model's imagination.
 ## Quick start
 
 ```bash
-# From a checkout — pure standard library, nothing to install:
+# Install the CLI + MCP server from PyPI:
+pip install reverify        # optional: pip install "reverify[capstone]" for full disassembly
+reverify auto sample.bin --json
+
+# Or run straight from a checkout — pure standard library, nothing to install:
 python reverify/cli.py auto sample.bin --json
 python reverify/cli.py parse-pe sample.exe --json
 python reverify/cli.py disasm 90505831C0C3 --arch x86_64
-
-# Or install the CLI + MCP server:
-pip install -e .            # optional: pip install -e ".[capstone]" for full disassembly
-reverify auto sample.bin --json
 ```
 
 ## The verification loop
@@ -102,8 +102,9 @@ before it reports them.
 
 ## Status
 
-**v0.1.0 — the verification core is in.** The deterministic toolkit, CLI, and MCP server are
-here and tested (68 unit tests). The tool-grounded judge — a claim about the binary is
+**v0.1.0 — the verification core is in**, and on [PyPI](https://pypi.org/project/reverify/)
+(`pip install reverify`). The deterministic toolkit, CLI, and MCP server are here and tested
+(64 unit tests). The tool-grounded judge — a claim about the binary is
 checked against the actual bytes and returned as `VERIFIED` / `REFUTED` / `INCONCLUSIVE` with
 observed evidence — now ships as `reverify verify` and the `re_verify_claim` MCP tool. Next
 milestone: the closed agent loop that drives the judge automatically — model proposes, tools
