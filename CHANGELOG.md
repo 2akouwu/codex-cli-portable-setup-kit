@@ -18,11 +18,17 @@ The core idea of the project — verification — is now implemented.
 - `re_verify_claim` MCP tool, so agents can have their own hypotheses judged before reporting.
 - `pyproject.toml` packaging with `reverify` and `reverify-mcp` console scripts, and an
   optional `[capstone]` extra.
-- 27 new unit tests covering the verifier (68 total).
+- 27 new unit tests covering the verifier (64 total after the removal below).
 
 ### Changed
 
 - CLI and MCP server now import cleanly both as installed package and as direct scripts.
+
+### Removed
+
+- The `reverify/pipeline/` narrative-generation scaffold and its `pipeline` CLI command.
+  It was unrelated to reverse engineering and is not part of the toolkit's purpose; the
+  RE tools, verifier, and MCP server never depended on it.
 
 ## [0.0.0] - 2026-09-02
 

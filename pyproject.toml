@@ -39,7 +39,7 @@ reverify = "reverify.cli:main"
 reverify-mcp = "reverify.mcp_server:run_mcp_server"
 
 [tool.setuptools]
-packages = ["reverify", "reverify.pipeline"]
+packages = ["reverify"]
 
 [tool.setuptools.package-data]
 reverify = ["py.typed"]

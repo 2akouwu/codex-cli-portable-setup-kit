@@ -20,7 +20,6 @@ try:  # installed package (e.g. the ``reverify`` console script)
     from .emulator import MicroEmulator
     from .protocol_parser import ProtobufDissector, TLVDissector, format_hexdump
     from .frida_bridge import FridaScriptGenerator
-    from .pipeline import PipelineEngine
     from .boundary_auditor import run_full_security_audit, PathBoundaryAuditor, NetworkBoundaryAuditor
     from .verifier import Verifier, Claim
 except ImportError:  # run directly as a script: ``python reverify/cli.py ...``
@@ -29,7 +28,6 @@ except ImportError:  # run directly as a script: ``python reverify/cli.py ...``
     from emulator import MicroEmulator
     from protocol_parser import ProtobufDissector, TLVDissector, format_hexdump
     from frida_bridge import FridaScriptGenerator
-    from pipeline import PipelineEngine
     from boundary_auditor import run_full_security_audit, PathBoundaryAuditor, NetworkBoundaryAuditor
     from verifier import Verifier, Claim
 
@@ -231,20 +229,6 @@ def cmd_hexdump(args: argparse.Namespace) -> None:
     print(format_hexdump(data, base_address=args.base))
 
 
-def cmd_pipeline(args: argparse.Namespace) -> None:
-    engine = PipelineEngine(
-        api_key=args.api_key,
-        base_url=args.base_url,
-        model=args.model,
-        mock_mode=args.mock,
-    )
-    result = engine.execute(args.prompt)
-    if args.json:
-        print(json.dumps(result, indent=2, ensure_ascii=False))
-    else:
-        print(result["rendered_text"])
-
-
 def cmd_verify(args: argparse.Namespace) -> None:
     data = load_input_bytes(args.target)
 
@@ -391,16 +375,6 @@ def main() -> None:
     p_hex.add_argument("--length", type=lambda x: int(x, 0), default=128, help="Byte length")
     p_hex.add_argument("--base", type=lambda x: int(x, 0), default=0, help="Base address")
     p_hex.set_defaults(func=cmd_hexdump)
-
-    # pipeline
-    p_pipe = subparsers.add_parser("pipeline", help="Run dual-stage decoupled generation pipeline")
-    p_pipe.add_argument("prompt", help="Scenario or prompt to render")
-    p_pipe.add_argument("--model", default="gpt-4o", help="Model name")
-    p_pipe.add_argument("--api-key", help="API key (defaults to OPENAI_API_KEY env)")
-    p_pipe.add_argument("--base-url", help="API base URL (defaults to OPENAI_BASE_URL env)")
-    p_pipe.add_argument("--mock", action="store_true", help="Force offline mock execution")
-    p_pipe.add_argument("--json", action="store_true", help="Output full JSON containing blueprint and text")
-    p_pipe.set_defaults(func=cmd_pipeline)
 
     # verify
     p_verify = subparsers.add_parser(
