@@ -72,11 +72,14 @@ class Disassembler:
             b0 = code[offset]
             rex_w = False
 
-            # Check REX prefix in 64-bit mode (0x40 - 0x4F)
-            if ("64" in self.arch or "amd64" in self.arch) and (0x40 <= b0 <= 0x4F) and offset + 1 < length:
-                rex_w = bool(b0 & 0x08)
+            # REX prefix in 64-bit mode (0x40 - 0x4F): this pure fallback does not
+            # combine it with the following opcode; emit it as its own byte so the
+            # decode always accounts for every byte (capstone does the real work).
+            if ("64" in self.arch or "amd64" in self.arch) and (0x40 <= b0 <= 0x4F):
+                instructions.append(Instruction(addr, 1, "rex", "", bytes([b0])))
                 offset += 1
-                b0 = code[offset]
+                addr += 1
+                continue
 
             regs = reg64 if rex_w else reg32
 
@@ -135,7 +138,8 @@ class Disassembler:
                     instructions.append(Instruction(addr, len(raw), "mov", f"{reg}, {hex(imm)}", raw))
                     offset += len(raw)
                     addr += len(raw)
-                else:
+                else:  # truncated immediate: emit the opcode byte, do not drop it
+                    instructions.append(Instruction(addr, 1, "db", hex(b0), bytes([b0])))
                     offset += 1
                     addr += 1
             # XOR reg, reg (0x31 / 0x33)

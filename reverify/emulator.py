@@ -158,7 +158,14 @@ class MicroEmulator:
     def run(self, max_steps: int = 1000) -> Dict[str, Any]:
         self.max_steps = max_steps
         while not self.halted and self.steps_executed < self.max_steps:
-            if not self.step():
+            try:
+                if not self.step():
+                    break
+            except EmulatorError as exc:
+                # Wild memory access from hostile/garbage code: fault and halt,
+                # never propagate. (Unicorn does the same with UcError.)
+                self.trace_log.append(f"fault: {exc}")
+                self.halted = True
                 break
         return self.dump_state()
 

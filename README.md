@@ -147,7 +147,10 @@ tools judge, it iterates until grounded). v0.3.0 brought the mature engines (cap
 unicorn, lief; pure-Python fallback). v0.4.0 hardens the loop against the ways a model games
 a verifier: information-weighted scoring, address spaces and typed reads, observe-then-assert,
 dependencies, echo and attrition detection, and distribution-shift signals in the fact sheet.
-Tested with 133 unit tests.
+Tested with 151 unit tests, including a testbed that cross-checks the readers themselves —
+the pure parser against lief over real system binaries, the disassembler and emulator against
+capstone, Unicorn and hand-verified known-answer vectors, plus malformed-input fuzzing — so
+the verifier is not just trusted, it is checked.
 
 ## License
 

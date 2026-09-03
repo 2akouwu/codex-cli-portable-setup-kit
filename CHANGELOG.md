@@ -2,6 +2,38 @@
 
 All notable changes to this project are documented here.
 
+## [0.4.2] - 2026-09-03
+
+Who verifies the verifier. A verification tool whose own reading of a binary is only
+checked by hand-written tests shares the author's blind spots — the pure PE parser and its
+synthetic fixture were wrong the same way, so the fixture passed. This release cross-checks
+the readers the way mature tools do (Csmith, cryptofuzz, RISU, NIST/Wycheproof vectors), and
+ships the bugs that found.
+
+### Added
+
+- **Differential + fuzz testbed** (`tests/test_differential.py`): the pure-Python parser vs
+  lief over real x64 (System32) and x86 (SysWOW64) binaries — headers, arch, image base,
+  entry, section RVAs must agree, and the pure parser must never invent a named import lief
+  lacks; file<->rva<->va and observe->assert round-trips; malformed input never raises, never
+  warns, never yields a false VERIFIED; soundness — `bytes_at` verifies iff the bytes match.
+- **Cross-engine oracle + KAT** (`tests/test_oracle.py`): hand-verified instruction
+  known-answer vectors (ground truth external to both engines); the pure decoder vs capstone
+  on the opcode subset it implements; the pure `MicroEmulator` vs Unicorn (run the same code
+  in two engines, compare registers — RISU-style); random bytes into the disassembler and
+  emulator never raise or loop. 151 tests total.
+
+### Fixed
+
+- **MicroEmulator crashed on hostile code**: a wild `esp` followed by a `push` raised
+  `EmulatorError` instead of faulting; `run()` now catches out-of-bounds memory and halts,
+  as Unicorn does. Found by the fuzzer.
+- **Pure disassembler dropped bytes**: a REX prefix was consumed without being counted, and a
+  truncated `mov r, imm` advanced without emitting, so `sum(instruction sizes) != len`. The
+  decoder now accounts for every byte. Found by the engine fuzz.
+- **lief warning leak**: malformed ELF-magic input made lief's binding emit `RuntimeWarning`s;
+  suppressed around the lief parse so hostile files degrade quietly.
+
 ## [0.4.1] - 2026-09-03
 
 Weights are now measured, not tabled. A fixed weight per claim kind invited the next
