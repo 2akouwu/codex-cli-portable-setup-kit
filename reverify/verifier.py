@@ -47,13 +47,13 @@ try:  # package import (e.g. ``from reverify import Verifier``)
     from .emulator import make_emulator
     from .protocol_parser import ProtobufDissector
     from .binary import parse_binary, shannon_entropy
-    from .behavior import behavioral_equiv
+    from .behavior import behavioral_equiv, prove_expr_equiv
 except ImportError:  # flat import (CLI, MCP server, and the test suite)
     from disasm import Disassembler, pattern_scan
     from emulator import make_emulator
     from protocol_parser import ProtobufDissector
     from binary import parse_binary, shannon_entropy
-    from behavior import behavioral_equiv
+    from behavior import behavioral_equiv, prove_expr_equiv
 
 VERIFIED = "VERIFIED"
 REFUTED = "REFUTED"
@@ -161,6 +161,7 @@ class Verifier:
         "instructions",
         "emulate_result",
         "behavior_equiv",
+        "prove_equiv",
         "protobuf_field",
         "import_present",
         "export_present",
@@ -560,6 +561,30 @@ class Verifier:
             return REFUTED, evidence, res["detail"]
         return INCONCLUSIVE, evidence, res["detail"]
 
+    def _check_prove_equiv(self, p: Dict[str, Any]):
+        """Claim: two integer expressions are equal for ALL inputs (proof-grade, via Z3).
+
+        Params: ``a``/``expr`` and ``b``/``candidate`` (expressions over x0, x1, ...),
+        optional ``bits`` (default 64), ``args``. Used to verify an obfuscated
+        expression simplifies correctly (MBA deobfuscation). Proven means no
+        distinguishing input exists — stronger than sampling.
+        """
+        a = p.get("a", p.get("expr"))
+        b = p.get("b", p.get("candidate"))
+        if a is None or b is None:
+            raise ClaimError("prove_equiv requires two expressions ('a'/'expr' and 'b'/'candidate')")
+        bits = _as_int(p["bits"]) if "bits" in p else 64
+        nvars = _as_int(p["args"]) if "args" in p else None
+        res = prove_expr_equiv(str(a), str(b), nvars=nvars, bits=bits)
+        evidence: Dict[str, Any] = {"a": str(a), "b": str(b), "bits": bits, "proof": "z3"}
+        status = res["status"]
+        if status == "proven":
+            return VERIFIED, evidence, res["detail"]
+        if status == "refuted":
+            evidence["counterexample"] = res.get("counterexample")
+            return REFUTED, evidence, res["detail"]
+        return INCONCLUSIVE, evidence, res["detail"]
+
     def _check_protobuf_field(self, p: Dict[str, Any]):
         """Claim: Protobuf ``field`` has wire ``type`` and optionally ``value``."""
         if "field" not in p:
@@ -799,6 +824,11 @@ def base_weight(result: Dict[str, Any]) -> float:
         base = 1.0 if "offset" in p else 0.5
         tested = int(basis.get("inputs_tested", 0) or 0)
         return base * min(1.0, tested / 8.0) * ent
+    if kind == "prove_equiv":
+        # proof-grade (for all inputs); zero if the two sides are the same expression
+        a = str(p.get("a", p.get("expr", "")))
+        b = str(p.get("b", p.get("candidate", "")))
+        return 0.0 if _norm_ops(a) == _norm_ops(b) else 1.0
     if kind == "pattern_present":
         return (0.7 if ("offset" in p or "count" in p) else 0.4) * rarity
     if kind == "string_present":

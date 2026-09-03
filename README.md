@@ -164,7 +164,7 @@ before it reports them.
 
 ## Status
 
-**v0.6.0 — against context hallucination**, on [PyPI](https://pypi.org/project/reverify/)
+**v0.7.0 — a proof tier**, on [PyPI](https://pypi.org/project/reverify/)
 (`pip install reverify`). The tool-grounded judge — a claim about the binary is checked
 against the actual bytes and returned as `VERIFIED` / `REFUTED` / `INCONCLUSIVE` /
 `OBSERVED` / `INVALIDATED` with evidence — ships as `reverify verify` and the
@@ -179,8 +179,10 @@ inputs and compares outputs, returning a concrete counterexample on a mismatch (
 LLM4Decompile re-executability methodology). **v0.6.0** makes the reconstruction loop two-stage
 (observe, then hypothesize) with an established-facts ledger: only what the tools verified or
 read is carried between rounds, so the model can't build on its own earlier guesses — the
-defense against context hallucination. Tested with 168 unit tests, so the verifier is not just
-trusted, it is checked.
+defense against context hallucination. **v0.7.0** adds a proof tier: the `prove_equiv` claim uses
+Z3 to prove two expressions equal for *all* inputs (verifying MBA deobfuscation), giving an honest
+strength ladder — proven > tested > observed. Tested with 176 unit tests, so the verifier is not
+just trusted, it is checked.
 
 ## License
 

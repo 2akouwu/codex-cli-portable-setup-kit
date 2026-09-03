@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "reverify"
-version = "0.6.0"
+version = "0.7.0"
 description = "Verified reverse engineering: AI RE grounded on deterministic tools — claims checked against the binary, not hallucinated."
 readme = "README.md"
 requires-python = ">=3.8"
@@ -29,7 +29,8 @@ dependencies = []
 capstone = ["capstone>=5.0"]   # full-fidelity disassembly (x86/x64/ARM/ARM64)
 unicorn = ["unicorn>=2.0"]     # real CPU emulation
 lief = ["lief>=0.14"]          # PE / ELF / Mach-O parsing
-full = ["capstone>=5.0", "unicorn>=2.0", "lief>=0.14"]
+z3 = ["z3-solver>=4.12"]       # proof-grade expression equivalence (MBA deobfuscation)
+full = ["capstone>=5.0", "unicorn>=2.0", "lief>=0.14", "z3-solver>=4.12"]
 dev = ["pytest>=7.0"]
 
 [project.urls]

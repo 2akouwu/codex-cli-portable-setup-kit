@@ -12,7 +12,7 @@ from .verifier import (
     VERIFIED, REFUTED, INCONCLUSIVE, OBSERVED, INVALIDATED,
 )
 from .agent import ReconstructionAgent, openai_proposer, demo_proposer, binary_facts
-from .behavior import behavioral_equiv, run_function, eval_expr
+from .behavior import behavioral_equiv, run_function, eval_expr, prove_expr_equiv
 
 __all__ = [
     "PEParser",
@@ -55,4 +55,5 @@ __all__ = [
     "behavioral_equiv",
     "run_function",
     "eval_expr",
+    "prove_expr_equiv",
 ]

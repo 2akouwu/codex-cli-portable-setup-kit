@@ -375,7 +375,10 @@ def _print_results(results: List[Dict[str, Any]]) -> None:
             print(f"           expected bytes actually at: {ev['nearest_offset_of_expected']}")
         elif r["verdict"] == "REFUTED" and ev.get("counterexample"):
             ce = ev["counterexample"]
-            print(f"           counterexample: input={ce.get('input')} original={ce.get('original')} candidate={ce.get('candidate')}")
+            if isinstance(ce, dict) and "input" in ce:
+                print(f"           counterexample: input={ce.get('input')} original={ce.get('original')} candidate={ce.get('candidate')}")
+            else:
+                print(f"           counterexample: {ce}")
         basis = ev.get("weight_basis")
         if basis and r["verdict"] in ("VERIFIED", "REFUTED"):
             parts = [f"{k}={v}" for k, v in basis.items() if k in ("occurrences", "entropy_norm", "steps", "length")]

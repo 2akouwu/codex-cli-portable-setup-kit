@@ -42,6 +42,14 @@ except Exception:  # pragma: no cover
     HAS_LIEF = False
     LIEF_VERSION = None
 
+try:
+    import z3  # noqa: F401
+    HAS_Z3 = True
+    Z3_VERSION = z3.get_version_string()
+except Exception:  # pragma: no cover
+    HAS_Z3 = False
+    Z3_VERSION = None
+
 
 def backend_report() -> Dict[str, Any]:
     """Which engine each subsystem is using right now."""
@@ -49,6 +57,7 @@ def backend_report() -> Dict[str, Any]:
         "disassembly": {"engine": "capstone" if HAS_CAPSTONE else "pure-python", "version": CAPSTONE_VERSION},
         "emulation": {"engine": "unicorn" if HAS_UNICORN else "pure-python", "version": UNICORN_VERSION},
         "binary_parsing": {"engine": "lief" if HAS_LIEF else "pure-python", "version": LIEF_VERSION},
+        "proof": {"engine": "z3" if HAS_Z3 else "none", "version": Z3_VERSION},
         "full_fidelity": HAS_CAPSTONE and HAS_UNICORN and HAS_LIEF,
         "install_hint": None if (HAS_CAPSTONE and HAS_UNICORN and HAS_LIEF) else 'pip install "reverify[full]"',
     }

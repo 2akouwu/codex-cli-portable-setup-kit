@@ -2,6 +2,27 @@
 
 All notable changes to this project are documented here.
 
+## [0.7.0] - 2026-09-04
+
+A proof tier. Behavioral equivalence by sampling says "no counterexample found over N
+inputs"; a solver says "no counterexample exists". This adds the second.
+
+### Added
+
+- **`prove_equiv` claim kind** (Z3): proves two integer expressions equal for **all**
+  inputs over bit-vector logic, or refutes with a distinguishing input. Verifies that an
+  obfuscated expression simplifies correctly — Mixed Boolean-Arithmetic (MBA)
+  deobfuscation — e.g. `(x^y) + 2*(x&y)` is proven equal to `x + y` for every 64-bit
+  input, and `x^y == x+y` is refuted with a concrete counterexample. Proof-grade weight;
+  a trivial identity (`a` == `b`) scores zero.
+- `reverify.prove_expr_equiv()` and a safe expression-to-Z3 compiler (whitelisted AST).
+- **Z3 as an optional backend**: `pip install "reverify[z3]"` (or `[full]`). Without it the
+  claim returns INCONCLUSIVE. `reverify backends` / `re_backends` report the proof engine.
+- 8 new tests (176 total), gated so the suite passes with or without Z3.
+
+This puts a genuine PROVEN tier above the sampled `behavior_equiv` — the honest strength
+ladder: proven > tested > observed.
+
 ## [0.6.0] - 2026-09-04
 
 Fights context hallucination — the model building on its own earlier guesses, or

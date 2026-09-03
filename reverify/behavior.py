@@ -27,9 +27,9 @@ import operator
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 try:
-    from .backends import HAS_UNICORN
+    from .backends import HAS_UNICORN, HAS_Z3
 except ImportError:
-    from backends import HAS_UNICORN
+    from backends import HAS_UNICORN, HAS_Z3
 
 # --- safe arithmetic expression evaluator (candidate as an expression) --------
 
@@ -226,3 +226,93 @@ def behavioral_equiv(
         "tested": tested,
         "detail": f"behaviorally equivalent over {tested} inputs (tested, not proven)",
     }
+
+
+# --- Z3 proof of expression equivalence (proof-grade, not sampled) ------------
+
+_Z3_BINOPS = {
+    ast.Add: lambda a, b: a + b, ast.Sub: lambda a, b: a - b, ast.Mult: lambda a, b: a * b,
+    ast.BitXor: lambda a, b: a ^ b, ast.BitAnd: lambda a, b: a & b, ast.BitOr: lambda a, b: a | b,
+    ast.LShift: lambda a, b: a << b,
+}
+
+
+def _expr_to_z3(expr: str, variables: Dict[str, Any]):
+    """Compile a restricted integer expression into a Z3 bit-vector formula."""
+    import z3
+    try:
+        tree = ast.parse(expr, mode="eval")
+    except SyntaxError as exc:
+        raise ExprError(f"bad expression: {exc}")
+
+    def ev(node):
+        if isinstance(node, ast.Expression):
+            return ev(node.body)
+        if isinstance(node, ast.BinOp):
+            t = type(node.op)
+            if t in _Z3_BINOPS:
+                return _Z3_BINOPS[t](ev(node.left), ev(node.right))
+            if t is ast.RShift:
+                return z3.LShR(ev(node.left), ev(node.right))  # logical (unsigned) shift
+            raise ExprError(f"operator not supported in proofs: {t.__name__}")
+        if isinstance(node, ast.UnaryOp):
+            if isinstance(node.op, ast.Invert):
+                return ~ev(node.operand)
+            if isinstance(node.op, ast.USub):
+                return -ev(node.operand)
+            if isinstance(node.op, ast.UAdd):
+                return ev(node.operand)
+        if isinstance(node, ast.Constant) and isinstance(node.value, int):
+            bits = variables["__bits__"]
+            return z3.BitVecVal(node.value, bits)
+        if isinstance(node, ast.Name):
+            if node.id in variables:
+                return variables[node.id]
+            raise ExprError(f"unknown variable '{node.id}'")
+        raise ExprError(f"disallowed expression element: {type(node).__name__}")
+
+    return ev(tree)
+
+
+def _count_vars(*exprs: str) -> int:
+    import re
+    n = -1
+    for e in exprs:
+        for m in re.findall(r"\bx(\d+)\b", e):
+            n = max(n, int(m))
+        if re.search(r"\bx\b", e):
+            n = max(n, 0)
+    return n + 1
+
+
+def prove_expr_equiv(expr_a: str, expr_b: str, nvars: Optional[int] = None, bits: int = 64) -> Dict[str, Any]:
+    """Prove two integer expressions equal for ALL inputs using Z3 (bit-vector logic).
+
+    Returns {status: 'proven' | 'refuted' | 'inconclusive', counterexample?}. Unlike
+    sampling, 'proven' means no input exists that distinguishes them.
+    """
+    if not HAS_Z3:
+        return {"status": "inconclusive", "detail": "z3 not installed (pip install z3-solver)"}
+    import z3
+    if nvars is None:
+        nvars = max(1, _count_vars(expr_a, expr_b))
+    variables: Dict[str, Any] = {"__bits__": bits}
+    for i in range(nvars):
+        variables[f"x{i}"] = z3.BitVec(f"x{i}", bits)
+    variables["x"] = variables["x0"]
+    try:
+        fa = _expr_to_z3(expr_a, variables)
+        fb = _expr_to_z3(expr_b, variables)
+    except ExprError as exc:
+        return {"status": "inconclusive", "detail": str(exc)}
+
+    solver = z3.Solver()
+    solver.add(fa != fb)
+    res = solver.check()
+    if res == z3.unsat:
+        return {"status": "proven", "detail": f"proven equivalent for all inputs (Z3, {bits}-bit)"}
+    if res == z3.sat:
+        m = solver.model()
+        ce = {f"x{i}": hex(m[variables[f'x{i}']].as_long()) for i in range(nvars) if m[variables[f"x{i}"]] is not None}
+        return {"status": "refuted", "counterexample": ce, "detail": "not equivalent (Z3 found a distinguishing input)"}
+    return {"status": "inconclusive", "detail": "z3 returned unknown"}
