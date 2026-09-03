@@ -19,6 +19,10 @@ On 19 real Windows system files, the AI's textbook answer was wrong **100% of th
 reverify caught every one, with **zero false alarms**
 ([EXAMPLE.md](EXAMPLE.md), [BENCHMARK.md](BENCHMARK.md); `python benchmarks/prologue_prior.py`).
 
+<p align="center">
+  <img src="docs/demo.svg" alt="Reverify catches the model's hallucinated prologue on kernel32.dll, then verifies the corrected claim" width="760">
+</p>
+
 ## The problem
 
 Language models are great at reading code and unreliable at reverse engineering. Ask a

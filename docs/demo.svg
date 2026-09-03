@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="392" viewBox="0 0 780 392" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
+  <rect x="0" y="0" width="780" height="392" rx="10" fill="#0d1117" stroke="#30363d"/>
+  <rect x="0" y="0" width="780" height="34" rx="10" fill="#161b22"/>
+  <rect x="0" y="24" width="780" height="10" fill="#161b22"/>
+  <circle cx="22" cy="17" r="6" fill="#f85149"/>
+  <circle cx="44" cy="17" r="6" fill="#d29922"/>
+  <circle cx="66" cy="17" r="6" fill="#3fb950"/>
+  <text x="390" y="22" text-anchor="middle" fill="#8b949e" font-size="13">reverify — the AI proposes, the bytes decide</text>
+
+  <text x="24" y="70" fill="#8b949e">$ <tspan fill="#c9d1d9">reverify verify kernel32.dll --claim </tspan><tspan fill="#a5d6ff">'entry prologue: push, mov, sub'</tspan></text>
+  <text x="24" y="92" fill="#6e7681" font-size="13">  # the model's textbook guess, straight from prior — it never looked at the bytes</text>
+
+  <text x="24" y="128"><tspan fill="#f85149" font-weight="bold">[ REFUTED ]</tspan><tspan fill="#c9d1d9"> instructions @ entry</tspan></text>
+  <text x="24" y="150" fill="#8b949e">             the bytes disagree. what is actually there:</text>
+  <text x="24" y="172" fill="#e3b341">             mov [rsp+8], rbx ; push rdi ; sub rsp, 0x20</text>
+
+  <text x="24" y="212" fill="#8b949e">$ <tspan fill="#c9d1d9">reverify verify kernel32.dll --claim </tspan><tspan fill="#a5d6ff">'&lt;corrected from the tool feedback&gt;'</tspan></text>
+
+  <text x="24" y="248"><tspan fill="#3fb950" font-weight="bold">[ VERIFIED ]</tspan><tspan fill="#c9d1d9"> instructions @ entry     Grounded </tspan><tspan fill="#3fb950">✓</tspan></text>
+
+  <line x1="24" y1="286" x2="756" y2="286" stroke="#21262d"/>
+  <text x="24" y="318" fill="#c9d1d9">Across 19 real Windows DLLs the textbook guess was wrong <tspan fill="#f85149" font-weight="bold">100%</tspan> of the time —</text>
+  <text x="24" y="340" fill="#c9d1d9">reverify caught every one, with <tspan fill="#3fb950" font-weight="bold">zero false alarms.</tspan></text>
+  <text x="24" y="372" fill="#6e7681" font-size="13">no API key · model-agnostic · pip install reverify</text>
+</svg>
