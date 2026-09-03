@@ -5,14 +5,15 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "reverify"
 version = "0.8.0"
-description = "Verified reverse engineering: AI RE grounded on deterministic tools — claims checked against the binary, not hallucinated."
+description = "Anti-hallucination for AI agents that read binaries: the model proposes, deterministic tools decide. Claims verified or refuted against the real bytes, with evidence; grounded facts survive context resets. MCP server + CLI."
 readme = "README.md"
 requires-python = ">=3.8"
 license = { text = "MIT" }
 authors = [{ name = "2akouwu" }]
 keywords = [
-    "reverse-engineering", "binary-analysis", "disassembler", "frida",
-    "protobuf", "mcp", "ai-agents", "malware-analysis", "ctf",
+    "anti-hallucination", "hallucination", "grounding", "verification", "llm", "ai-agents",
+    "context-engineering", "mcp", "reverse-engineering", "binary-analysis", "disassembler",
+    "frida", "protobuf", "malware-analysis", "ctf",
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",

@@ -2,13 +2,13 @@
 
 <p align="center">
   <strong>The AI proposes. The bytes decide.</strong><br>
-  A lie detector for AI reverse engineering.
+  Anti-hallucination for AI agents that read binaries: every claim is checked against the real bytes.
 </p>
 
 <p align="center">
   <a href="https://pypi.org/project/reverify/"><img src="https://img.shields.io/pypi/v/reverify?color=3fb950" alt="PyPI"></a>
   <img src="https://img.shields.io/pypi/pyversions/reverify" alt="Python">
-  <img src="https://img.shields.io/badge/tests-163%20passing-3fb950" alt="Tests">
+  <img src="https://img.shields.io/badge/tests-196%20passing-3fb950" alt="Tests">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/2akouwu/reverify" alt="MIT"></a>
   <img src="https://img.shields.io/github/stars/2akouwu/reverify?style=social" alt="Stars">
 </p>
