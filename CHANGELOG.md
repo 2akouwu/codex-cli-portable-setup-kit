@@ -2,6 +2,29 @@
 
 All notable changes to this project are documented here.
 
+## [0.6.0] - 2026-09-04
+
+Fights context hallucination — the model building on its own earlier guesses, or
+misremembering a value from a long context. The reconstruction loop is now two-stage
+(observe, then hypothesize) with a memory that only holds grounded facts.
+
+### Added
+
+- **Established-facts ledger** in `ReconstructionAgent`: after each round, only results
+  the tools actually grounded — claims that VERIFIED with weight, and values the tools
+  OBSERVED — enter the ledger. The model's own unverified claims are **never carried
+  forward**. Each round the model is shown BINARY FACTS + ESTABLISHED and told to build
+  only on those; anything it proposed earlier that isn't established "did not happen".
+  This is the direct defense against a model citing its own prior hallucination, and
+  against long-context misremembering (it observes fresh instead of recalling).
+- **Two-stage prompt (plan then ground)**: each round the model first OBSERVEs what it
+  needs but doesn't know (the tools read it, and it becomes established), then
+  HYPOTHESIZEs new checkable claims — separating "what to investigate" (the model's
+  strength) from "what is true" (the tools' job).
+- `run()` returns the `established` ledger; the ledger is de-duplicated and order-stable.
+- 5 new tests (168 total), including that a refuted hallucination and its editorial note
+  are never carried into the next round's prompt.
+
 ## [0.5.0] - 2026-09-03
 
 Execution as judge. The strongest form of grounding: verify a reconstruction of a function

@@ -164,7 +164,7 @@ before it reports them.
 
 ## Status
 
-**v0.5.0 — execution as judge**, on [PyPI](https://pypi.org/project/reverify/)
+**v0.6.0 — against context hallucination**, on [PyPI](https://pypi.org/project/reverify/)
 (`pip install reverify`). The tool-grounded judge — a claim about the binary is checked
 against the actual bytes and returned as `VERIFIED` / `REFUTED` / `INCONCLUSIVE` /
 `OBSERVED` / `INVALIDATED` with evidence — ships as `reverify verify` and the
@@ -176,8 +176,11 @@ themselves (pure parser vs lief on real binaries, disassembler/emulator vs capst
 and known-answer vectors, plus fuzzing). **v0.5.0** adds the strongest grounding — the
 `behavior_equiv` claim runs the original function and a candidate reconstruction over shared
 inputs and compares outputs, returning a concrete counterexample on a mismatch (the ExeBench /
-LLM4Decompile re-executability methodology). Tested with 163 unit tests, so the verifier is
-not just trusted, it is checked.
+LLM4Decompile re-executability methodology). **v0.6.0** makes the reconstruction loop two-stage
+(observe, then hypothesize) with an established-facts ledger: only what the tools verified or
+read is carried between rounds, so the model can't build on its own earlier guesses — the
+defense against context hallucination. Tested with 168 unit tests, so the verifier is not just
+trusted, it is checked.
 
 ## License
 

@@ -134,24 +134,40 @@ def binary_facts(data: bytes) -> Dict[str, Any]:
     return facts
 
 
-def build_prompt(goal: str, facts: Dict[str, Any], feedback: str) -> str:
+def build_prompt(goal: str, facts: Dict[str, Any], established: Optional[List[str]] = None, feedback: str = "") -> str:
     parts = [
-        "You are reconstructing facts about a binary. Propose claims that the "
-        "deterministic tools can verify against the actual bytes.",
+        "Reconstruct facts about a binary by proposing claims the deterministic tools "
+        "verify against the actual bytes. Each round, work in two steps: "
+        "(1) OBSERVE — for anything you need but do not know, add a claim with "
+        "\"observe\": true and the tools will read it for you; "
+        "(2) HYPOTHESIZE — propose new claims that go beyond what is already known "
+        "and can be checked.",
         "",
         f"GOAL: {goal}",
         "",
-        "BINARY FACTS (ground truth; already known — restating them scores zero):",
+        "BINARY FACTS (ground truth, already known — restating them scores zero):",
         json.dumps(facts, indent=1, ensure_ascii=False),
+    ]
+    if established:
+        parts += [
+            "",
+            "ESTABLISHED (verified or read by the tools this session — the ONLY earlier "
+            "results you may build on):",
+            "\n".join(f"- {e}" for e in established),
+        ]
+    parts += [
         "",
         RULES,
         "",
         CLAIM_KINDS_HELP,
         "",
+        "Build ONLY on BINARY FACTS and ESTABLISHED. Anything you proposed earlier that is "
+        "not in ESTABLISHED did not happen — do not treat it as true or refer back to it.",
+        "",
         "Output ONLY a JSON array of claim objects. No prose, no code fences.",
     ]
     if feedback:
-        parts += ["", "PREVIOUS ROUND RESULTS — fix or replace what did not hold; propose new informative claims:", feedback]
+        parts += ["", "LAST ROUND — fix or replace what did not hold; propose new informative claims:", feedback]
     return "\n".join(parts)
 
 
@@ -272,6 +288,14 @@ def _is_echo(kind: str, expected, actual) -> bool:
     return expected == actual
 
 
+def _describe_established(r: Dict[str, Any]) -> str:
+    """A short line for the established-facts ledger — only grounded results go here."""
+    ev = r.get("evidence", {}) or {}
+    addr = (ev.get("address") or {}).get("file_offset")
+    loc = f" @ {addr}" if addr else ""
+    return f"{r['kind']}{loc}: {r.get('detail', '')}"[:160]
+
+
 def _loc_key(obj: Claim) -> str:
     """Identity by kind + location, so a *revised* claim is not counted as dropped."""
     p = obj.params
@@ -309,9 +333,10 @@ class ReconstructionAgent:
         grounded = False
         prev_keys: set = set()
         prev_actual: Dict[str, Any] = {}
+        established: List[str] = []  # verified/observed facts — the only memory carried forward
 
         for rnd in range(1, self.max_rounds + 1):
-            prompt = build_prompt(goal, facts, feedback)
+            prompt = build_prompt(goal, facts, established, feedback)
             raw_claims: List[Dict[str, Any]] = []
             for _ in range(self.samples):
                 raw_claims.extend(parse_claims(self.propose(prompt)))
@@ -350,6 +375,19 @@ class ReconstructionAgent:
                 if k and act is not None and r["verdict"] in (REFUTED, OBSERVED):
                     new_actual[k] = act
 
+            # Update the established-facts ledger: ONLY grounded results (verified with
+            # weight, or observed by the tools) become memory. The model's own unverified
+            # claims are never carried forward — that is the context-hallucination defense.
+            for r in report["results"]:
+                if r["verdict"] == VERIFIED and r.get("weight", 0) > 0:
+                    established.append(_describe_established(r))
+                elif r["verdict"] == OBSERVED:
+                    k = _echo_key(r)
+                    act = _actual_repr(r)
+                    if k and act is not None:
+                        established.append(f"observed {k} = {act if not isinstance(act, tuple) else list(act)}")
+            established = list(dict.fromkeys(established))  # dedup, keep order
+
             keys_now = {_loc_key(o) for o in claim_objs}
             attrition = len(prev_keys - keys_now) if prev_keys else 0
             history.append({
@@ -375,6 +413,7 @@ class ReconstructionAgent:
                 r for r in (final["results"] if final else []) if r["verdict"] == VERIFIED and r.get("weight", 0) > 0
             ] if grounded else [],
             "observed": dict(facts["observed"]),
+            "established": list(established),
             "history": history,
             "final_report": final,
         }

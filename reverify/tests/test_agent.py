@@ -90,6 +90,68 @@ class TestReconstructionLoop(unittest.TestCase):
         self.assertNotIn("VERIFIED", fb)
 
 
+class RecordingProposer:
+    """Captures every prompt it is shown; returns scripted responses."""
+
+    def __init__(self, responses):
+        self.responses = responses
+        self.prompts = []
+        self.calls = 0
+
+    def __call__(self, prompt):
+        self.prompts.append(prompt)
+        r = self.responses[min(self.calls, len(self.responses) - 1)]
+        self.calls += 1
+        return r
+
+
+class TestEstablishedLedger(unittest.TestCase):
+    """The context-hallucination defense: only grounded facts are carried forward."""
+
+    def test_verified_and_observed_become_established(self):
+        data = bytes(range(64))
+        proposer = SeqProposer([json.dumps([
+            {"kind": "bytes_at", "params": {"offset": 40, "expected": data[40:48].hex()}},   # verified, weighty
+            {"kind": "u32_at", "params": {"offset": 50}, "observe": True},                   # observed
+        ])])
+        result = ReconstructionAgent(data, proposer, max_rounds=1).run("x")
+        est = result["established"]
+        self.assertTrue(any("bytes_at" in e for e in est), est)
+        self.assertTrue(any(e.startswith("observed") for e in est), est)
+
+    def test_refuted_hallucination_establishes_nothing(self):
+        data = bytes(range(64))
+        proposer = SeqProposer([json.dumps([
+            {"kind": "bytes_at", "params": {"offset": 40, "expected": "ffffffffffffffff"},
+             "note": "the license check is here"},
+        ])])
+        result = ReconstructionAgent(data, proposer, max_rounds=1).run("x")
+        self.assertEqual(result["established"], [])
+
+    def test_unverified_note_not_carried_into_next_prompt(self):
+        data = bytes(range(64))
+        rp = RecordingProposer([
+            json.dumps([{"kind": "bytes_at", "params": {"offset": 40, "expected": "ffffffffffffffff"},
+                         "note": "the license check is at 0x28"}]),   # refuted; editorial note
+            json.dumps([{"kind": "bytes_at", "params": {"offset": 50, "expected": data[50:58].hex()}}]),
+        ])
+        ReconstructionAgent(data, rp, max_rounds=2).run("find the license check")
+        round2 = rp.prompts[1]
+        self.assertNotIn("license check is at 0x28", round2)   # the model's unverified prose is gone
+        self.assertIn("Build ONLY on BINARY FACTS and ESTABLISHED", round2)
+
+    def test_verified_fact_is_shown_as_established_next_round(self):
+        data = bytes(range(64))
+        rp = RecordingProposer([
+            json.dumps([{"kind": "bytes_at", "params": {"offset": 40, "expected": data[40:48].hex()}}]),  # verified
+            json.dumps([{"kind": "bytes_at", "params": {"offset": 50, "expected": data[50:58].hex()}}]),
+        ])
+        # min_information=2.0 so one verified claim isn't enough to ground -> a round 2 happens
+        ReconstructionAgent(data, rp, max_rounds=2, min_information=2.0).run("x")
+        self.assertGreaterEqual(len(rp.prompts), 2)
+        self.assertIn("ESTABLISHED", rp.prompts[1])
+
+
 class TestHelpers(unittest.TestCase):
     def test_parse_claims_plain_array(self):
         claims = parse_claims('[{"kind":"bytes_at","params":{"offset":0,"expected":"de"}}]')
@@ -115,9 +177,14 @@ class TestHelpers(unittest.TestCase):
         self.assertIn("size", facts)
 
     def test_build_prompt_includes_goal_and_feedback(self):
-        p = build_prompt("find the entry", {"size": 4}, "prev feedback here")
+        p = build_prompt("find the entry", {"size": 4}, feedback="prev feedback here")
         self.assertIn("find the entry", p)
         self.assertIn("prev feedback here", p)
+
+    def test_build_prompt_shows_established(self):
+        p = build_prompt("goal", {"size": 4}, established=["bytes_at @ 0x28: bytes match"])
+        self.assertIn("ESTABLISHED", p)
+        self.assertIn("bytes_at @ 0x28", p)
 
 
 if __name__ == "__main__":
