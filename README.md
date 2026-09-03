@@ -103,6 +103,10 @@ the CORE refinement of FActScore: credit only claims that are factual, informati
 non-repetitive. `reverify reconstruct --samples N` draws several proposals per round and
 lets the verifier — not the model's confidence — select among them.
 
+See [EXAMPLE.md](EXAMPLE.md) for a worked run where the verifier catches a real
+model's hallucinated function prologue on `kernel32.dll` and guides it to the
+correct bytes — model-agnostic, no API key.
+
 ## The toolkit
 
 | Command | What it does |
