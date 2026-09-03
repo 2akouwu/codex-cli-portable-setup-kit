@@ -6,6 +6,14 @@
 </p>
 
 <p align="center">
+  <a href="https://pypi.org/project/reverify/"><img src="https://img.shields.io/pypi/v/reverify?color=3fb950" alt="PyPI"></a>
+  <img src="https://img.shields.io/pypi/pyversions/reverify" alt="Python">
+  <img src="https://img.shields.io/badge/tests-163%20passing-3fb950" alt="Tests">
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/2akouwu/reverify" alt="MIT"></a>
+  <img src="https://img.shields.io/github/stars/2akouwu/reverify?style=social" alt="Stars">
+</p>
+
+<p align="center">
   <a href="https://app.ona.com/#https://github.com/2akouwu/reverify">
     <img src="https://ona.com/build-with-ona.svg" alt="Build with Ona" />
   </a>
