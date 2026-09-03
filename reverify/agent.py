@@ -34,10 +34,10 @@ from typing import Any, Callable, Dict, List, Optional
 
 try:  # package import
     from .verifier import Verifier, Claim, summarize, claim_key, OBSERVED, REFUTED, VERIFIED, _as_int, _clean_hex
-    from .binary import parse_binary
+    from .binary import parse_binary, shannon_entropy
 except ImportError:  # flat import (CLI / tests)
     from verifier import Verifier, Claim, summarize, claim_key, OBSERVED, REFUTED, VERIFIED, _as_int, _clean_hex
-    from binary import parse_binary
+    from binary import parse_binary, shannon_entropy
 
 Proposer = Callable[[str], str]
 
@@ -59,7 +59,8 @@ RULES = """RULES (how claims are scored):
 - A claim that only restates BINARY FACTS scores ZERO. Say something the facts do not already say.
 - Prefer specific, falsifiable claims: bytes_at with 4+ bytes beyond the shown header, typed u32_at/u64_at reads, instructions with mode=exact (add operands), emulate_result with an offset into the binary.
 - Never do offset arithmetic or endianness conversion yourself: use typed reads and "space": "rva"/"va".
-- Unsure of a value? Ask the tools: set "observe": true (or omit expected). The value is reported and added to the facts; assert it as a claim only if it supports the goal.
+- Unsure of a value? Ask the tools: set "observe": true (or omit expected). The value is added to the facts. Use it to build NEW claims (structure, dependents, what it points to); restating an observed value scores zero.
+- Weight is measured from the binary: content that occurs many times (zero padding, a common prologue, a pattern matching everywhere) weighs almost nothing even if it verifies. Aim for content that is specific to this binary.
 - Give claims an "id" and use "depends_on" when one rests on another (a struct layout on an image base), so a refuted root invalidates its dependents.
 - Do not copy the tools' previously observed value back as an "expected" value; that is an echo and scores zero.
 - The "note" field is never verified and is shown as unverified text."""
@@ -97,8 +98,8 @@ def _shift_signals(data: bytes, info) -> Dict[str, Any]:
         "entry_section": entry_section,
         "overlay_bytes": overlay,
         "packed_or_encrypted_likely": packed_likely,
-        "caution": ("Priors about 'typical' code are unreliable here: high-entropy sections and few imports "
-                    "suggest packing/encryption. Observe before asserting." if packed_likely else None),
+        "heuristic_note": ("High-entropy sections with few imports often mean packing or encryption; "
+                           "typical-code priors may not apply. Prefer observe before asserting." if packed_likely else None),
     }
 
 
@@ -427,9 +428,11 @@ def demo_proposer(data: bytes) -> Proposer:
     """
     claims: List[Dict[str, Any]] = []
     if len(data) >= 40:
-        off = len(data) - 8
-        claims.append({"kind": "bytes_at", "params": {"offset": off, "expected": data[off:].hex()},
-                       "note": "tail bytes (offline demo claim)", "id": "tail"})
+        # Pick the most informative 8-byte window among a few candidates (avoid padding).
+        cands = [o for o in (len(data) - 8, len(data) // 2, len(data) // 3, 64, 32) if 32 <= o <= len(data) - 8]
+        off = max(cands, key=lambda o: shannon_entropy(data[o : o + 8]))
+        claims.append({"kind": "bytes_at", "params": {"offset": off, "expected": data[off : off + 8].hex()},
+                       "note": "an 8-byte window specific to this file (offline demo claim)", "id": "window"})
         claims.append({"kind": "u32_at", "params": {"offset": 32}, "observe": True, "note": "read a value the facts do not show"})
     else:
         claims.append({"kind": "bytes_at", "params": {"offset": 0, "expected": data[:4].hex()},

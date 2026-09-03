@@ -126,7 +126,7 @@ def shannon_entropy(buf: bytes) -> float:
     for b in buf:
         counts[b] += 1
     n = len(buf)
-    return -sum((c / n) * math.log2(c / n) for c in counts if c)
+    return max(0.0, -sum((c / n) * math.log2(c / n) for c in counts if c))
 
 
 # -- arch mapping ---------------------------------------------------------

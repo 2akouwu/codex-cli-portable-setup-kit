@@ -373,6 +373,10 @@ def _print_results(results: List[Dict[str, Any]]) -> None:
             print(f"           observed: {val}")
         elif r["verdict"] == "REFUTED" and ev.get("nearest_offset_of_expected"):
             print(f"           expected bytes actually at: {ev['nearest_offset_of_expected']}")
+        basis = ev.get("weight_basis")
+        if basis and r["verdict"] in ("VERIFIED", "REFUTED"):
+            parts = [f"{k}={v}" for k, v in basis.items() if k in ("occurrences", "entropy_norm", "steps", "length")]
+            print(f"           weight basis: {' '.join(parts)}")
         if r.get("note"):
             print(f"           note (unverified): {r['note']}")
 

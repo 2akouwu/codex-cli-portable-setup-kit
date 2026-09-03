@@ -38,6 +38,7 @@ factual, informative and non-repetitive.
 from __future__ import annotations
 
 import json
+import math
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -45,12 +46,12 @@ try:  # package import (e.g. ``from reverify import Verifier``)
     from .disasm import Disassembler, pattern_scan
     from .emulator import make_emulator
     from .protocol_parser import ProtobufDissector
-    from .binary import parse_binary
+    from .binary import parse_binary, shannon_entropy
 except ImportError:  # flat import (CLI, MCP server, and the test suite)
     from disasm import Disassembler, pattern_scan
     from emulator import make_emulator
     from protocol_parser import ProtobufDissector
-    from binary import parse_binary
+    from binary import parse_binary, shannon_entropy
 
 VERIFIED = "VERIFIED"
 REFUTED = "REFUTED"
@@ -122,6 +123,27 @@ def _as_int(value: Any) -> int:
 
 def _norm_ops(s: str) -> str:
     return "".join(str(s).lower().split())
+
+
+def _entropy_norm(buf: bytes) -> float:
+    """Entropy of ``buf`` relative to the maximum possible for its length (0..1)."""
+    n = len(buf)
+    if n <= 1:
+        return 1.0
+    max_h = min(8.0, math.log2(n))
+    return shannon_entropy(buf) / max_h if max_h > 0 else 1.0
+
+
+def _occurrences(data: bytes, needle: bytes) -> int:
+    if not needle:
+        return 0
+    count, start = 0, 0
+    while True:
+        idx = data.find(needle, start)
+        if idx == -1:
+            return count
+        count += 1
+        start = idx + 1
 
 
 class Verifier:
@@ -245,6 +267,7 @@ class Verifier:
         if observe:
             return OBSERVED, evidence, "bytes read"
         evidence["expected"] = expected.hex()
+        evidence["weight_basis"] = self._bytes_basis(expected)
         if actual == expected:
             return VERIFIED, evidence, "bytes match"
         evidence["nearest_offset_of_expected"] = self._nearest(expected, off)
@@ -269,9 +292,11 @@ class Verifier:
             return OBSERVED, evidence, "value read"
         want = _as_int(p["expected"])
         evidence["expected"] = hex(want)
+        want_bytes = want.to_bytes(size, "little" if endian == "le" else "big", signed=False) if 0 <= want < (1 << (8 * size)) else None
+        if want_bytes:
+            evidence["weight_basis"] = self._bytes_basis(want_bytes)
         if actual == want:
             return VERIFIED, evidence, "value matches"
-        want_bytes = want.to_bytes(size, "little" if endian == "le" else "big", signed=False) if 0 <= want < (1 << (8 * size)) else None
         evidence["nearest_offset_of_expected"] = self._nearest(want_bytes, off) if want_bytes else None
         return REFUTED, evidence, "value differs"
 
@@ -283,6 +308,14 @@ class Verifier:
 
     def _check_u64_at(self, p):
         return self._check_int_at(p, 8, "u64_at")
+
+    def _bytes_basis(self, needle: bytes) -> Dict[str, Any]:
+        """What the weight is measured from: how often the content occurs here, and its entropy."""
+        return {
+            "occurrences": _occurrences(self.data, needle),
+            "length": len(needle),
+            "entropy_norm": round(_entropy_norm(needle), 3),
+        }
 
     def _nearest(self, needle: Optional[bytes], around: int, window: int = 256) -> Optional[str]:
         """Where the expected bytes actually sit, if anywhere within ±window."""
@@ -297,7 +330,12 @@ class Verifier:
         if "pattern" not in p:
             raise ClaimError("pattern_present requires 'pattern'")
         matches = pattern_scan(self.data, str(p["pattern"]))
-        evidence: Dict[str, Any] = {"match_offsets": [hex(m) for m in matches[:64]], "match_count": len(matches)}
+        fixed = [t for t in str(p["pattern"]).split() if t not in ("?", "??")]
+        evidence: Dict[str, Any] = {
+            "match_offsets": [hex(m) for m in matches[:64]],
+            "match_count": len(matches),
+            "weight_basis": {"occurrences": len(matches), "length": len(fixed), "entropy_norm": 1.0},
+        }
         if "offset" in p:
             want, addr = self._resolve_offset(p)
             evidence["address"] = addr
@@ -332,7 +370,11 @@ class Verifier:
                 break
             all_offsets.append(idx)
             start = idx + 1
-        evidence: Dict[str, Any] = {"found_offsets": [hex(o) for o in all_offsets[:64]], "occurrences": len(all_offsets)}
+        evidence: Dict[str, Any] = {
+            "found_offsets": [hex(o) for o in all_offsets[:64]],
+            "occurrences": len(all_offsets),
+            "weight_basis": self._bytes_basis(needle),
+        }
         if "offset" in p:
             want, addr = self._resolve_offset(p)
             evidence["address"] = addr
@@ -369,11 +411,13 @@ class Verifier:
         insns = Disassembler(arch=arch).disassemble(code, base_address=base)
         actual = [i.mnemonic.lower() for i in insns]
         actual_ops = [i.op_str for i in insns]
+        matched = b"".join(bytes(i.bytes) for i in insns[: len(expected)])
         evidence: Dict[str, Any] = {
             "address": addr,
             "actual_mnemonics": actual[: max(len(expected) + 4, 8)],
             "actual_operands": actual_ops[: max(len(expected) + 4, 8)],
             "expected_mnemonics": expected,
+            "weight_basis": self._bytes_basis(matched) if matched else None,
         }
         if mode == "contains":
             ok = _is_subsequence(expected, actual)
@@ -423,6 +467,11 @@ class Verifier:
         state = emu.run(max_steps=max_steps)
         evidence["steps_executed"] = emu.steps_executed
         evidence["backend"] = state.get("backend", "pure-python")
+        evidence["weight_basis"] = {
+            "steps": emu.steps_executed,
+            "entropy_norm": round(_entropy_norm(code), 3),
+            "inline": "code" in p,
+        }
         if observe:
             evidence["registers"] = state.get("registers", {})
             return OBSERVED, evidence, "emulated; register state reported"
@@ -643,33 +692,47 @@ def derivable_from_facts(result: Dict[str, Any], facts: Optional[Dict[str, Any]]
 
 
 def base_weight(result: Dict[str, Any]) -> float:
-    """Surprisal tier by kind and specificity (0..1). Higher = says more."""
+    """How much a claim says (0..1), measured from the binary itself where possible.
+
+    For content claims the weight is driven by ``evidence.weight_basis``: how
+    often the expected content occurs in this binary (rarity) and how much
+    entropy it has. Zero padding, ubiquitous prologues and patterns that match
+    hundreds of places therefore weigh almost nothing even though they verify.
+    For emulation the claim must actually execute (steps) over non-degenerate
+    code (entropy). Structural kinds (imports/exports/sections/protobuf) keep a
+    fixed tier until corpus base rates exist.
+    """
     kind, p, ev = result["kind"], result.get("params", {}), result.get("evidence", {}) or {}
     if ev.get("self_referential"):
         return 0.0
-    if kind == "bytes_at":
-        try:
-            n = len(_clean_hex(p["expected"])) if p.get("expected") else 0
-        except ValueError:
-            n = 0
-        return min(1.0, 0.3 + 0.1 * n)
-    if kind == "u16_at":
-        return 0.5
-    if kind == "u32_at":
-        return 0.7
-    if kind == "u64_at":
-        return 0.8
+    basis = ev.get("weight_basis") or {}
+    occ = max(1, int(basis.get("occurrences", 1) or 1))
+    rarity = (1.0 / occ) ** 0.5
+    ent = max(0.0, float(basis.get("entropy_norm", 1.0))) ** 0.5
+
+    if kind in ("bytes_at", "u16_at", "u32_at", "u64_at"):
+        n = int(basis.get("length") or 0)
+        if n == 0:
+            try:
+                n = len(_clean_hex(p["expected"])) if p.get("expected") else {"u16_at": 2, "u32_at": 4, "u64_at": 8}.get(kind, 0)
+            except ValueError:
+                n = 0
+        return min(1.0, 0.3 + 0.1 * n) * rarity * ent
     if kind == "instructions":
         w = 0.8 if str(p.get("mode", "exact")) == "exact" else 0.4
-        return min(1.0, w + (0.1 if p.get("operands") else 0.0))
+        w = min(1.0, w + (0.1 if p.get("operands") else 0.0))
+        return w * rarity
     if kind == "emulate_result":
-        return 1.0 if "offset" in p else 0.5
+        base = 1.0 if "offset" in p else 0.5
+        steps = int(basis.get("steps", 0) or 0)
+        return base * min(1.0, steps / 2.0) * ent
+    if kind == "pattern_present":
+        return (0.7 if ("offset" in p or "count" in p) else 0.4) * rarity
+    if kind == "string_present":
+        return (0.6 if "offset" in p else 0.4) * rarity
+    # structural kinds: fixed tier until corpus base rates exist
     if kind == "protobuf_field":
         return 0.6 if "value" in p else 0.3
-    if kind == "pattern_present":
-        return 0.7 if ("offset" in p or "count" in p) else 0.4
-    if kind == "string_present":
-        return 0.6 if "offset" in p else 0.4
     if kind in ("import_present", "pe_import", "export_present"):
         return 0.3
     if kind == "section_present":

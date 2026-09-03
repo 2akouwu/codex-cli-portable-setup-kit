@@ -2,6 +2,26 @@
 
 All notable changes to this project are documented here.
 
+## [0.4.1] - 2026-09-03
+
+Weights are now measured, not tabled. A fixed weight per claim kind invited the next
+gaming move (an 8-byte `bytes_at` on zero padding verified at full weight).
+
+### Changed
+
+- **Measured surprisal**: for content claims (`bytes_at`, typed reads, `instructions`,
+  `pattern_present`, `string_present`) the weight is driven by `evidence.weight_basis` —
+  how often the expected content occurs in *this* binary and its normalized entropy — so
+  zero padding, a ubiquitous prologue, or a pattern that matches hundreds of places weigh
+  almost nothing even though they verify. `emulate_result` must actually execute (steps)
+  over non-degenerate code (entropy); emulating padding weighs zero. Structural kinds keep
+  a fixed tier until corpus base rates exist.
+- The prompt no longer tells the model to re-assert observed values (which the echo rule
+  correctly scores zero); it says to build *new* claims from them. Shift-signal caution is
+  labelled as a heuristic.
+- `reconstruct --mock` picks its demo window by entropy instead of taking the file tail.
+- CLI prints the weight basis next to each verdict. 5 new tests (133 total).
+
 ## [0.4.0] - 2026-09-03
 
 The loop is now hard to game. A verifier that only checks what the model asserts can be

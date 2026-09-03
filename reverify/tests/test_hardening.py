@@ -177,12 +177,60 @@ class TestSelfReferentialAndOperands(unittest.TestCase):
         self.assertFalse(r["evidence"]["self_referential"])
         self.assertGreater(r["weight"], 0)
 
-    def test_emulate_from_offset_has_full_weight(self):
+    def test_emulate_from_offset_keeps_weight(self):
         code = bytes.fromhex("b807000000c3")
         rep = verify_claims(b"\x00\x00" + code, [{
             "kind": "emulate_result", "offset": 2, "length": 6, "arch": "x86", "expect_registers": {"eax": 7},
         }])
-        self.assertEqual(rep["results"][0]["weight"], 1.0)
+        self.assertGreaterEqual(rep["results"][0]["weight"], 0.7)
+
+
+class TestMeasuredSurprisal(unittest.TestCase):
+    """Weights come from the binary, not from a table by claim kind."""
+
+    def test_zero_padding_claim_is_worthless(self):
+        data = b"\x00" * 4096 + bytes(range(200, 208))
+        rep = verify_claims(data, [
+            {"kind": "bytes_at", "offset": 1000, "expected": "00" * 8},            # verifies, says nothing
+            {"kind": "bytes_at", "offset": 4096, "expected": data[4096:].hex()},   # unique tail
+        ])
+        self.assertEqual(rep["results"][0]["verdict"], VERIFIED)
+        self.assertLess(rep["results"][0]["weight"], 0.05)
+        self.assertGreaterEqual(rep["results"][1]["weight"], 0.9)
+        self.assertIn("occurrences", rep["results"][0]["evidence"]["weight_basis"])
+        self.assertFalse(rep["grounded"] and rep["information"] < 0.9)
+
+    def test_ubiquitous_sequence_weighs_little(self):
+        unit = bytes.fromhex("5590")  # push ; nop — decodable by both disassemblers
+        data = unit * 50 + bytes.fromhex("deadbeef")
+        rep = verify_claims(data, [{"kind": "instructions", "offset": 0, "mnemonics": ["push", "nop"]}])
+        self.assertEqual(rep["results"][0]["verdict"], VERIFIED)
+        self.assertLess(rep["results"][0]["weight"], 0.2)
+
+    def test_pattern_weight_scales_with_match_count(self):
+        data = b"\x90" * 100 + b"\xde\xad"
+        rep = verify_claims(data, [
+            {"kind": "pattern_present", "pattern": "90"},
+            {"kind": "pattern_present", "pattern": "de ad"},
+        ])
+        self.assertLess(rep["results"][0]["weight"], rep["results"][1]["weight"])
+
+    def test_emulating_padding_is_worthless(self):
+        rep = verify_claims(b"\x00" * 256, [{
+            "kind": "emulate_result", "offset": 0, "length": 64, "arch": "x86_64", "expect_registers": {"rax": 0},
+        }])
+        self.assertEqual(rep["results"][0]["weight"], 0.0)
+
+    def test_u32_weight_reflects_rarity(self):
+        common = (0x00000000).to_bytes(4, "little")
+        rare = (0x12345678).to_bytes(4, "little")
+        data = common * 64 + rare
+        rep = verify_claims(data, [
+            {"kind": "u32_at", "offset": 0, "expected": 0},
+            {"kind": "u32_at", "offset": 256, "expected": 0x12345678},
+        ])
+        self.assertLess(rep["results"][0]["weight"], 0.05)
+        self.assertGreater(rep["results"][1]["weight"], 0.6)
 
     def test_instructions_operands_mismatch_refuted(self):
         data = bytes.fromhex("554889e5")  # push rbp ; mov rbp, rsp
