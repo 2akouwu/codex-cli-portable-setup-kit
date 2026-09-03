@@ -1,8 +1,8 @@
 <h1 align="center">Reverify</h1>
 
 <p align="center">
-  <strong>Reverse engineering you can trust.</strong><br>
-  An AI-assisted RE toolkit whose findings are checked against the binary — not hallucinated.
+  <strong>The AI proposes. The bytes decide.</strong><br>
+  A lie detector for AI reverse engineering.
 </p>
 
 <p align="center">
@@ -10,6 +10,14 @@
     <img src="https://ona.com/build-with-ona.svg" alt="Build with Ona" />
   </a>
 </p>
+
+Ask an AI to reverse-engineer a file and it will make things up — offsets, structs, what the
+code does — and say it like it's fact. Reverify checks it against the one thing that can't lie,
+**the bytes**. Every claim is tested against the real binary; only what's true survives.
+
+On 19 real Windows system files, the AI's textbook answer was wrong **100% of the time** —
+reverify caught every one, with **zero false alarms**
+([EXAMPLE.md](EXAMPLE.md), [BENCHMARK.md](BENCHMARK.md); `python benchmarks/prologue_prior.py`).
 
 ## The problem
 
@@ -103,12 +111,10 @@ the CORE refinement of FActScore: credit only claims that are factual, informati
 non-repetitive. `reverify reconstruct --samples N` draws several proposals per round and
 lets the verifier — not the model's confidence — select among them.
 
-See [EXAMPLE.md](EXAMPLE.md) for a worked run where the verifier catches a real
-model's hallucinated function prologue on `kernel32.dll` and guides it to the
-correct bytes — model-agnostic, no API key. [BENCHMARK.md](BENCHMARK.md) quantifies
-it: across 19 real system DLLs the textbook-prologue prior was wrong 100% of the
-time and the verifier caught every one with **zero false accepts**
-(`python benchmarks/prologue_prior.py`).
+[EXAMPLE.md](EXAMPLE.md) walks through one run on `kernel32.dll` — the model
+proposes the textbook prologue from prior, the verifier refutes it with the real
+bytes, and the model corrects to grounded, with no API key and no specific model.
+[BENCHMARK.md](BENCHMARK.md) is the reproducible measurement behind the numbers above.
 
 ## The toolkit
 
