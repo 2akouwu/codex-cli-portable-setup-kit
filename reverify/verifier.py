@@ -860,8 +860,8 @@ def summarize(
         r["duplicate"] = key in seen
         seen.add(key)
         r["trivial"] = derivable_from_facts(r, facts)
-        if r["verdict"] in (OBSERVED, INVALIDATED) or r["duplicate"] or r["trivial"] or r.get("echoed"):
-            r["weight"] = 0.0
+        if r["verdict"] in (OBSERVED, INVALIDATED) or r["duplicate"] or r["trivial"] or r.get("echoed") or r.get("known"):
+            r["weight"] = 0.0  # known = already in the ledger: restating it says nothing new
         else:
             r["weight"] = round(base_weight(r), 3)
 
@@ -870,7 +870,7 @@ def summarize(
         counts[r["verdict"]] = counts.get(r["verdict"], 0) + 1
     scored = [r for r in results if r["verdict"] in (VERIFIED, REFUTED, INCONCLUSIVE)]
     information = round(sum(r["weight"] for r in results if r["verdict"] == VERIFIED), 3)
-    weighted_total = round(sum(base_weight(r) for r in scored if not (r["duplicate"] or r["trivial"] or r.get("echoed"))), 3)
+    weighted_total = round(sum(base_weight(r) for r in scored if not (r["duplicate"] or r["trivial"] or r.get("echoed") or r.get("known"))), 3)
     trivial_verified = sum(1 for r in results if r["verdict"] == VERIFIED and r["weight"] == 0.0)
     total = len(results)
     trustworthy = counts[REFUTED] == 0 and counts[INCONCLUSIVE] == 0 and counts[INVALIDATED] == 0 and counts[VERIFIED] > 0
@@ -888,6 +888,7 @@ def summarize(
         "trivial_verified": trivial_verified,
         "duplicates": sum(1 for r in results if r["duplicate"]),
         "echoed": sum(1 for r in results if r.get("echoed")),
+        "known": sum(1 for r in results if r.get("known")),
         "min_information": float(min_information),
         "trustworthy": trustworthy,
         "informative": informative,

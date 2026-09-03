@@ -1,5 +1,7 @@
 """Reverse Engineering, Protocol Dissection, and Dynamic Instrumentation Toolkit."""
 
+from ._version import __version__
+
 from .pe_parser import PEParser, BinaryParseError
 from .disasm import Disassembler, Instruction, pattern_scan, create_patch
 from .emulator import MicroEmulator, UnicornEmulator, make_emulator, EmulatorError
@@ -11,7 +13,8 @@ from .verifier import (
     Verifier, Claim, verify_claims, summarize, claim_key,
     VERIFIED, REFUTED, INCONCLUSIVE, OBSERVED, INVALIDATED,
 )
-from .agent import ReconstructionAgent, openai_proposer, demo_proposer, binary_facts
+from .agent import ReconstructionAgent, openai_proposer, demo_proposer, binary_facts, compact_facts
+from .ledger import Ledger, list_ledgers, context_for_directory, hook_config, LEDGER_INSTRUCTIONS
 from .behavior import behavioral_equiv, run_function, eval_expr, prove_expr_equiv
 
 __all__ = [
@@ -52,6 +55,13 @@ __all__ = [
     "openai_proposer",
     "demo_proposer",
     "binary_facts",
+    "compact_facts",
+    "Ledger",
+    "list_ledgers",
+    "context_for_directory",
+    "hook_config",
+    "LEDGER_INSTRUCTIONS",
+    "__version__",
     "behavioral_equiv",
     "run_function",
     "eval_expr",

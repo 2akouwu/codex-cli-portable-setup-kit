@@ -13,12 +13,21 @@ Hardened against the ways a model games a verifier:
 - The model never sees raw bytes beyond a small addressed header; it works from
   a keyed fact sheet and can *observe* values through the tools instead.
 - Claims that restate the fact sheet, duplicates, self-referential inline code,
-  and echoes of the tools' previous output all score zero, so "grounded" means
-  the verified set actually says something (``information`` >= a threshold).
+  echoes of the tools' previous output, and restatements of facts already in
+  the ledger all score zero, so "grounded" means the verified set actually
+  says something (``information`` >= a threshold).
 - Refuted claims come back with the address in every space and where the
   expected bytes really are, so the next proposal can fix the right parameter.
 - ``samples`` > 1 draws several proposals per round and lets the verifier —
   not the model's confidence — select among them.
+
+State lives outside the context. Every round rebuilds the prompt from the fact
+sheet plus a bounded view of the :class:`~reverify.ledger.Ledger` (what the
+tools verified, observed, proved — and refuted). The ledger is checkpointed to
+disk after every round, so a run can be resumed by a later process, and the
+prompt is kept under a character budget by trimming the *shown* fact sheet
+(scoring still uses the full sheet, so hiding a fact never makes restating it
+profitable). Clearing the context loses nothing that was ever trusted.
 
 The language model is injected as a ``propose`` callable (``str -> str``) so the
 loop is fully testable offline. :func:`openai_proposer` builds a default one.
@@ -26,20 +35,41 @@ loop is fully testable offline. :func:`openai_proposer` builds a default one.
 
 from __future__ import annotations
 
+import copy
 import json
 import os
 import re
 import urllib.request
-from typing import Any, Callable, Dict, List, Optional
+import uuid
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 try:  # package import
-    from .verifier import Verifier, Claim, summarize, claim_key, OBSERVED, REFUTED, VERIFIED, _as_int, _clean_hex
+    from .verifier import Verifier, Claim, summarize, claim_key, OBSERVED, REFUTED, VERIFIED, _as_int
     from .binary import parse_binary, shannon_entropy
+    from .ledger import (
+        Ledger,
+        echo_key as _echo_key,
+        actual_repr as _actual_repr,
+        expected_repr as _expected_repr,
+        compact_evidence as _compact_evidence,
+        describe_established as _describe_established,
+    )
 except ImportError:  # flat import (CLI / tests)
-    from verifier import Verifier, Claim, summarize, claim_key, OBSERVED, REFUTED, VERIFIED, _as_int, _clean_hex
+    from verifier import Verifier, Claim, summarize, claim_key, OBSERVED, REFUTED, VERIFIED, _as_int
     from binary import parse_binary, shannon_entropy
+    from ledger import (
+        Ledger,
+        echo_key as _echo_key,
+        actual_repr as _actual_repr,
+        expected_repr as _expected_repr,
+        compact_evidence as _compact_evidence,
+        describe_established as _describe_established,
+    )
 
 Proposer = Callable[[str], str]
+
+#: Whole-prompt budget in characters (~4 chars per token, so ~15k tokens).
+PROMPT_BUDGET_DEFAULT = 60_000
 
 CLAIM_KINDS_HELP = """Each claim is a JSON object: {"kind": <kind>, "params": {...}, "note": "<why>", "id"?: "<c1>", "depends_on"?: ["<c0>"], "observe"?: true}.
 Offsets are FILE offsets unless params carry "space": "rva" or "va" (the verifier translates via the section table).
@@ -58,7 +88,7 @@ Kinds and params:
 - section_present: {"name": "<.text|.data|...>", "virtual_address"?: <int>}"""
 
 RULES = """RULES (how claims are scored):
-- A claim that only restates BINARY FACTS scores ZERO. Say something the facts do not already say.
+- A claim that only restates BINARY FACTS or ESTABLISHED scores ZERO. Say something the facts do not already say.
 - Prefer specific, falsifiable claims: bytes_at with 4+ bytes beyond the shown header, typed u32_at/u64_at reads, instructions with mode=exact (add operands), emulate_result with an offset into the binary.
 - Never do offset arithmetic or endianness conversion yourself: use typed reads and "space": "rva"/"va".
 - Unsure of a value? Ask the tools: set "observe": true (or omit expected). The value is added to the facts. Use it to build NEW claims (structure, dependents, what it points to); restating an observed value scores zero.
@@ -135,7 +165,13 @@ def binary_facts(data: bytes) -> Dict[str, Any]:
     return facts
 
 
-def build_prompt(goal: str, facts: Dict[str, Any], established: Optional[List[str]] = None, feedback: str = "") -> str:
+def build_prompt(
+    goal: str,
+    facts: Dict[str, Any],
+    established: Optional[List[str]] = None,
+    feedback: str = "",
+    known_false: Optional[List[str]] = None,
+) -> str:
     parts = [
         "Reconstruct facts about a binary by proposing claims the deterministic tools "
         "verify against the actual bytes. Each round, work in two steps: "
@@ -155,6 +191,12 @@ def build_prompt(goal: str, facts: Dict[str, Any], established: Optional[List[st
             "ESTABLISHED (verified or read by the tools this session — the ONLY earlier "
             "results you may build on):",
             "\n".join(f"- {e}" for e in established),
+        ]
+    if known_false:
+        parts += [
+            "",
+            "KNOWN FALSE (refuted by the tools earlier; these are wrong, do not propose them again):",
+            "\n".join(f"- {e}" for e in known_false),
         ]
     parts += [
         "",
@@ -193,17 +235,6 @@ def parse_claims(raw: str) -> List[Dict[str, Any]]:
     return [c for c in data if isinstance(c, dict) and "kind" in c]
 
 
-def _compact_evidence(r: Dict[str, Any]) -> Dict[str, Any]:
-    ev = r.get("evidence", {}) or {}
-    keep = {}
-    for k in ("address", "actual", "expected", "nearest_offset_of_expected", "mismatches",
-              "observed_registers", "actual_mnemonics", "actual_operands", "present_fields",
-              "imported_libs", "sections", "error", "self_referential"):
-        if k in ev:
-            keep[k] = ev[k]
-    return keep
-
-
 def format_feedback(report: Dict[str, Any]) -> str:
     lines = []
     for r in report["results"]:
@@ -214,7 +245,14 @@ def format_feedback(report: Dict[str, Any]) -> str:
             continue
         label = f"{r['kind']}" + (f" id={r['id']}" if r.get("id") else "")
         if v == VERIFIED:
-            why = "echo of previous tool output" if r.get("echoed") else ("duplicate" if r.get("duplicate") else "restates the fact sheet")
+            if r.get("known"):
+                why = "already established in the ledger"
+            elif r.get("echoed"):
+                why = "echo of previous tool output"
+            elif r.get("duplicate"):
+                why = "duplicate"
+            else:
+                why = "restates the fact sheet"
             lines.append(f"- TRIVIAL {label}: passed but weight 0 ({why}). Propose something the facts do not say.")
             continue
         ev = json.dumps(_compact_evidence(r), ensure_ascii=False)
@@ -222,59 +260,13 @@ def format_feedback(report: Dict[str, Any]) -> str:
     need = report.get("min_information", 1.0)
     lines.append(
         f"- SCORE: information {report.get('information', 0)} of {need} needed; "
-        f"trivial={report.get('trivial_verified', 0)} echoed={report.get('echoed', 0)} duplicates={report.get('duplicates', 0)}."
+        f"trivial={report.get('trivial_verified', 0)} echoed={report.get('echoed', 0)} "
+        f"known={report.get('known', 0)} duplicates={report.get('duplicates', 0)}."
     )
     return "\n".join(lines)
 
 
-# -- echo detection helpers ---------------------------------------------------
-
-def _echo_key(r: Dict[str, Any]) -> Optional[str]:
-    kind = r["kind"]
-    ev = r.get("evidence", {}) or {}
-    addr = ev.get("address") or {}
-    off = addr.get("file_offset")
-    if off is None:
-        p = r.get("params", {})
-        if "offset" in p:
-            try:
-                off = hex(_as_int(p["offset"]))
-            except (ValueError, TypeError):
-                return None
-    if off is None:
-        return None
-    return f"{kind}@{off}"
-
-
-def _actual_repr(r: Dict[str, Any]):
-    kind, ev = r["kind"], r.get("evidence", {}) or {}
-    if kind == "bytes_at":
-        return str(ev.get("actual", "")).lower() or None
-    if kind in ("u16_at", "u32_at", "u64_at"):
-        return ev.get("actual")
-    if kind == "instructions":
-        return tuple(ev.get("actual_mnemonics") or ())
-    if kind == "emulate_result":
-        regs = ev.get("observed_registers") or ev.get("registers")
-        return tuple(sorted((k, str(v).lower()) for k, v in (regs or {}).items())) or None
-    return None
-
-
-def _expected_repr(r: Dict[str, Any]):
-    kind, p = r["kind"], r.get("params", {})
-    try:
-        if kind == "bytes_at" and p.get("expected"):
-            return _clean_hex(p["expected"]).hex()
-        if kind in ("u16_at", "u32_at", "u64_at") and "expected" in p:
-            return hex(_as_int(p["expected"]))
-        if kind == "instructions":
-            return tuple(str(m).lower() for m in p.get("mnemonics", []))
-        if kind == "emulate_result" and "expect_registers" in p:
-            return tuple(sorted((str(k).lower(), hex(_as_int(v))) for k, v in dict(p["expect_registers"]).items()))
-    except (ValueError, TypeError):
-        return None
-    return None
-
+# -- echo detection -----------------------------------------------------------
 
 def _is_echo(kind: str, expected, actual) -> bool:
     if expected is None or actual is None:
@@ -289,14 +281,6 @@ def _is_echo(kind: str, expected, actual) -> bool:
     return expected == actual
 
 
-def _describe_established(r: Dict[str, Any]) -> str:
-    """A short line for the established-facts ledger — only grounded results go here."""
-    ev = r.get("evidence", {}) or {}
-    addr = (ev.get("address") or {}).get("file_offset")
-    loc = f" @ {addr}" if addr else ""
-    return f"{r['kind']}{loc}: {r.get('detail', '')}"[:160]
-
-
 def _loc_key(obj: Claim) -> str:
     """Identity by kind + location, so a *revised* claim is not counted as dropped."""
     p = obj.params
@@ -308,8 +292,94 @@ def _loc_key(obj: Claim) -> str:
     return claim_key(obj.kind, p)
 
 
+# -- prompt budget: trim the shown fact sheet, never the state ----------------
+
+def _trim_imports(facts: Dict[str, Any], per_lib: int, libs: int) -> None:
+    imp = facts.get("imports")
+    if not isinstance(imp, dict) or not imp:
+        return
+    total_libs = len(imp)
+    total_funcs = sum(len(v) for v in imp.values())
+    kept = {}
+    for i, (lib, funcs) in enumerate(imp.items()):
+        if i >= libs:
+            break
+        kept[lib] = list(funcs)[:per_lib]
+    if kept == imp:
+        return
+    facts["imports"] = kept
+    facts["imports_note"] = (f"trimmed for context budget: {len(kept)} of {total_libs} libraries, up to {per_lib} "
+                             f"functions each of {total_funcs}; check any other with import_present")
+
+
+def _trim_list(facts: Dict[str, Any], key: str, n: int) -> None:
+    v = facts.get(key)
+    if isinstance(v, list) and len(v) > n:
+        facts[key] = v[:n]
+        facts[f"{key}_note"] = f"trimmed for context budget: first {n} of {len(v)}"
+
+
+def _trim_observed(facts: Dict[str, Any], n: int) -> None:
+    obs = facts.get("observed")
+    if isinstance(obs, dict) and len(obs) > n:
+        facts["observed"] = dict(list(obs.items())[-n:])
+        facts["observed_note"] = (f"trimmed for context budget: most recent {n} of {len(obs)} observed values "
+                                  f"(all remain in the ledger; observe again if needed)")
+
+
+COMPACTION_LADDER: List[Tuple[str, Callable[[Dict[str, Any]], None]]] = [
+    ("imports:16x60", lambda f: _trim_imports(f, 16, 60)),
+    ("strings:8", lambda f: _trim_list(f, "top_strings", 8)),
+    ("observed:24", lambda f: _trim_observed(f, 24)),
+    ("imports:6x24", lambda f: _trim_imports(f, 6, 24)),
+    ("exports:12", lambda f: _trim_list(f, "exports", 12)),
+    ("observed:10", lambda f: _trim_observed(f, 10)),
+    ("imports:2x12", lambda f: _trim_imports(f, 2, 12)),
+    ("strings:0", lambda f: _trim_list(f, "top_strings", 0)),
+    ("sections:16", lambda f: _trim_list(f, "sections", 16)),
+]
+
+
+def compact_facts(
+    facts: Dict[str, Any],
+    budget: int,
+    goal: str = "",
+    established: Optional[List[str]] = None,
+    feedback: str = "",
+    known_false: Optional[List[str]] = None,
+) -> Tuple[Dict[str, Any], List[str], int]:
+    """Shrink the fact sheet *shown* to the model until the whole prompt fits ``budget`` chars.
+
+    Deterministic ladder, most redundant material first (long import lists,
+    strings, old observed values). Only the view is trimmed: the caller keeps
+    scoring against the full sheet, so hiding a fact can never make restating it
+    profitable, and everything trimmed stays observable through the tools.
+    Returns ``(view, steps_applied, prompt_chars)``.
+    """
+    view = copy.deepcopy(facts)
+    steps: List[str] = []
+    size = len(build_prompt(goal, view, established, feedback, known_false))
+    for name, fn in COMPACTION_LADDER:
+        if size <= budget:
+            break
+        fn(view)
+        new_size = len(build_prompt(goal, view, established, feedback, known_false))
+        if new_size != size:
+            steps.append(name)
+        size = new_size
+    return view, steps, size
+
+
 class ReconstructionAgent:
-    """Runs the propose -> verify -> revise loop until grounded or capped."""
+    """Runs the propose -> verify -> revise loop until grounded or capped.
+
+    The ledger is the state; the prompt is rebuilt from it every round and it
+    is checkpointed to disk after every round (``ledger`` = a directory, a
+    :class:`~reverify.ledger.Ledger`, or ``None`` for in-memory). ``resume``
+    continues from whatever the ledger already holds for this binary;
+    ``prompt_budget`` bounds the prompt in characters; ``max_facts`` bounds
+    how much of the ledger is shown.
+    """
 
     def __init__(
         self,
@@ -319,6 +389,11 @@ class ReconstructionAgent:
         samples: int = 1,
         min_information: float = 1.0,
         max_facts: int = 40,
+        ledger: Any = None,
+        resume: bool = True,
+        prompt_budget: int = PROMPT_BUDGET_DEFAULT,
+        session: Optional[str] = None,
+        file_path: Optional[str] = None,
     ):
         self.data = data
         self.verifier = Verifier(data)
@@ -326,20 +401,47 @@ class ReconstructionAgent:
         self.max_rounds = max(1, int(max_rounds))
         self.samples = max(1, int(samples))
         self.min_information = float(min_information)
-        self.max_facts = max(1, int(max_facts))  # cap the ledger so long runs don't self-pollute
+        self.max_facts = max(1, int(max_facts))  # cap the shown ledger so long runs don't self-pollute
+        if isinstance(ledger, Ledger):
+            self.ledger = ledger
+        elif ledger:
+            self.ledger = Ledger.for_bytes(data, directory=ledger, file_path=file_path)
+        else:
+            self.ledger = Ledger.for_bytes(data, persist=False, file_path=file_path)
+        if file_path:
+            self.ledger.remember_path(file_path)
+        self.resume = bool(resume)
+        self.prompt_budget = max(2000, int(prompt_budget))
+        self.session = session or uuid.uuid4().hex[:8]
 
     def run(self, goal: str) -> Dict[str, Any]:
+        if not self.resume:
+            self.ledger.clear()  # explicit fresh start: discard what the ledger held for this binary
+        resumed_facts = len(self.ledger.facts)
         facts = binary_facts(self.data)
-        facts["observed"] = {}
+        facts["observed"] = dict(self.ledger.observed)  # values the tools read earlier come back verbatim
+        established = self.ledger.established(self.max_facts)
+        known_false = self.ledger.known_false()
+        self.ledger.start_run(goal, self.session)
+        self.ledger.save()
+
         history: List[Dict[str, Any]] = []
         feedback = ""
         grounded = False
         prev_keys: set = set()
         prev_actual: Dict[str, Any] = {}
-        established: List[str] = []  # verified/observed facts — the only memory carried forward
+        compactions = 0
+        over_budget = False
 
         for rnd in range(1, self.max_rounds + 1):
-            prompt = build_prompt(goal, facts, established, feedback)
+            view, steps, prompt_chars = compact_facts(
+                facts, self.prompt_budget, goal, established, feedback, known_false
+            )
+            prompt = build_prompt(goal, view, established, feedback, known_false)
+            if steps:
+                compactions += 1
+            if prompt_chars > self.prompt_budget:
+                over_budget = True
             raw_claims: List[Dict[str, Any]] = []
             for _ in range(self.samples):
                 raw_claims.extend(parse_claims(self.propose(prompt)))
@@ -356,16 +458,22 @@ class ReconstructionAgent:
                 seen.add(k)
                 claim_objs.append(obj)
 
+            # Score against the FULL fact sheet, whatever the model was shown.
             report = self.verifier.verify_all(claim_objs, facts=facts, min_information=self.min_information)
 
-            # Echo detection: a claim that just parrots last round's observed value scores zero.
-            echoed = 0
+            # Echo detection: a claim that parrots last round's observed value scores zero.
+            # Known detection: a claim already in the ledger says nothing new either.
+            echoed = known = 0
+            known_keys = self.ledger.fact_keys()
             for r in report["results"]:
                 k = _echo_key(r)
                 if k and k in prev_actual and _is_echo(r["kind"], _expected_repr(r), prev_actual[k]):
                     r["echoed"] = True
                     echoed += 1
-            if echoed:
+                if r["verdict"] == VERIFIED and claim_key(r["kind"], r.get("params", {})) in known_keys:
+                    r["known"] = True
+                    known += 1
+            if echoed or known:
                 report = summarize(report["results"], facts=facts, min_information=self.min_information)
 
             # Fold OBSERVED values into the facts; remember actuals for next round's echo check.
@@ -378,21 +486,13 @@ class ReconstructionAgent:
                 if k and act is not None and r["verdict"] in (REFUTED, OBSERVED):
                     new_actual[k] = act
 
-            # Update the established-facts ledger: ONLY grounded results (verified with
-            # weight, or observed by the tools) become memory. The model's own unverified
-            # claims are never carried forward — that is the context-hallucination defense.
-            for r in report["results"]:
-                if r["verdict"] == VERIFIED and r.get("weight", 0) > 0:
-                    established.append(_describe_established(r))
-                elif r["verdict"] == OBSERVED:
-                    k = _echo_key(r)
-                    act = _actual_repr(r)
-                    if k and act is not None:
-                        established.append(f"observed {k} = {act if not isinstance(act, tuple) else list(act)}")
-            # dedup, then cap to the most recent max_facts — a bounded ledger keeps a long
-            # run from turning its own accumulated context into a fresh source of drift.
-            # Everything dropped was verified true and can simply be observed again if needed.
-            established = list(dict.fromkeys(established))[-self.max_facts :]
+            # The ledger is the only memory carried forward: grounded results in,
+            # refutations as known-false, the model's own prose never. Checkpoint now,
+            # so a crash or a cleared context after this point loses nothing.
+            added = self.ledger.record(report["results"], rnd=rnd, goal=goal, session=self.session)
+            self.ledger.save()
+            established = self.ledger.established(self.max_facts)
+            known_false = self.ledger.known_false()
 
             keys_now = {_loc_key(o) for o in claim_objs}
             attrition = len(prev_keys - keys_now) if prev_keys else 0
@@ -402,6 +502,10 @@ class ReconstructionAgent:
                 "report": report,
                 "attrition": attrition,
                 "echoed": echoed,
+                "known": known,
+                "prompt_chars": prompt_chars,
+                "compaction": steps,
+                "ledger_added": added,
             })
             prev_keys, prev_actual = keys_now, new_actual
             if report["grounded"]:
@@ -410,16 +514,25 @@ class ReconstructionAgent:
             feedback = format_feedback(report)
 
         final = history[-1]["report"] if history else None
+        information = final["information"] if final else 0.0
+        self.ledger.finish_run(len(history), grounded, information)
+        self.ledger.save()
         return {
             "goal": goal,
             "grounded": grounded,
             "rounds_used": len(history),
-            "information": final["information"] if final else 0.0,
+            "information": information,
             "verified_claims": [
                 r for r in (final["results"] if final else []) if r["verdict"] == VERIFIED and r.get("weight", 0) > 0
             ] if grounded else [],
             "observed": dict(facts["observed"]),
             "established": list(established),
+            "resumed_facts": resumed_facts,
+            "compactions": compactions,
+            "over_budget": over_budget,
+            "session": self.session,
+            "ledger": self.ledger.summary(),
+            "ledger_path": str(self.ledger.path) if self.ledger.path else None,
             "history": history,
             "final_report": final,
         }

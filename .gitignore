@@ -21,3 +21,6 @@ build/
 *.egg-info/
 .venv/
 venv/
+
+# reverify durable ledgers (per-binary grounded facts)
+.reverify/

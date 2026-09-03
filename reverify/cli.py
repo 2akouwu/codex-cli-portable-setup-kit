@@ -25,6 +25,7 @@ try:  # installed package (e.g. the ``reverify`` console script)
     from .boundary_auditor import run_full_security_audit, PathBoundaryAuditor, NetworkBoundaryAuditor
     from .verifier import Verifier, Claim
     from .agent import ReconstructionAgent, openai_proposer, demo_proposer
+    from .ledger import Ledger, context_for_directory, hook_config, list_ledgers, ledger_dir
 except ImportError:  # run directly as a script: ``python reverify/cli.py ...``
     from pe_parser import PEParser, BinaryParseError
     from disasm import Disassembler, pattern_scan, create_patch
@@ -36,6 +37,7 @@ except ImportError:  # run directly as a script: ``python reverify/cli.py ...``
     from boundary_auditor import run_full_security_audit, PathBoundaryAuditor, NetworkBoundaryAuditor
     from verifier import Verifier, Claim
     from agent import ReconstructionAgent, openai_proposer, demo_proposer
+    from ledger import Ledger, context_for_directory, hook_config, list_ledgers, ledger_dir
 
 
 def load_input_bytes(input_val: str, offset: int = 0, length: int = 0) -> bytes:
@@ -277,8 +279,11 @@ def cmd_reconstruct(args: argparse.Namespace) -> None:
         propose = openai_proposer(
             model=args.model, base_url=args.base_url, api_key=args.api_key, temperature=args.temperature
         )
+    ledger = None if args.no_ledger else (args.ledger or os.environ.get("REVERIFY_LEDGER_DIR") or ".reverify")
     agent = ReconstructionAgent(
-        data, propose, max_rounds=args.rounds, samples=args.samples, min_information=args.min_information
+        data, propose, max_rounds=args.rounds, samples=args.samples, min_information=args.min_information,
+        max_facts=args.max_facts, ledger=ledger, resume=not args.fresh, prompt_budget=args.prompt_budget,
+        session=args.session, file_path=args.target if os.path.exists(args.target) else None,
     )
     result = agent.run(args.goal)
 
@@ -287,13 +292,17 @@ def cmd_reconstruct(args: argparse.Namespace) -> None:
     else:
         print("=== Reverify: closed reconstruction loop ===")
         print(f"Goal: {result['goal']}")
+        if result["resumed_facts"]:
+            print(f"Resumed {result['resumed_facts']} grounded facts from the ledger ({result['ledger_path']})")
         for h in result["history"]:
             rep = h["report"]
+            compacted = f" compacted[{','.join(h['compaction'])}]" if h.get("compaction") else ""
             print(
                 f"  round {h['round']}: {rep['verified']} verified ({rep['trivial_verified']} trivial), "
                 f"{rep['refuted']} refuted, {rep['inconclusive']} inconclusive, {rep['observed']} observed, "
                 f"{rep['invalidated']} invalidated | information {rep['information']}/{rep['min_information']} "
-                f"| echoed {h['echoed']} attrition {h['attrition']}"
+                f"| echoed {h['echoed']} known {h.get('known', 0)} attrition {h['attrition']} "
+                f"| prompt {h.get('prompt_chars', 0)} chars{compacted}"
             )
         final = result["final_report"]
         if result["grounded"]:
@@ -305,8 +314,53 @@ def cmd_reconstruct(args: argparse.Namespace) -> None:
         print(f"\n{status} after {result['rounds_used']} round(s).")
         if final:
             _print_results(final["results"])
+        led = result["ledger"]
+        if result["ledger_path"]:
+            print(
+                f"\nLedger: {result['ledger_path']} - {led['facts']} facts ({led['proven']} proven, "
+                f"{led['tested']} tested, {led['observed']} observed), {led['refuted']} refuted. "
+                f"Survives /clear, compaction and restarts; `reverify ledger {args.target}` shows it."
+            )
     if not result["grounded"]:
         sys.exit(2)
+
+
+def cmd_ledger(args: argparse.Namespace) -> None:
+    # Hook hosts read stdout as UTF-8; a legacy Windows code page must not garble or crash the hand-off.
+    reconfigure = getattr(sys.stdout, "reconfigure", None)
+    if callable(reconfigure):
+        try:
+            reconfigure(encoding="utf-8", errors="replace")
+        except (ValueError, OSError):
+            pass
+    if args.hook:
+        print(json.dumps(hook_config(), indent=2))
+        return
+    if args.context:
+        text = context_for_directory(args.dir, mode="facts" if args.full else "index", max_facts=args.max_facts)
+        if text:
+            print(text)
+        return
+    if not args.target:
+        leds = list_ledgers(args.dir)
+        if args.json:
+            print(json.dumps([l.summary() for l in leds], indent=2, ensure_ascii=False))
+        elif leds:
+            for l in leds:
+                print(l.index_line())
+        else:
+            print(f"No ledgers under {ledger_dir(args.dir)}")
+        return
+    led = Ledger.for_file(args.target, directory=args.dir)
+    if args.clear:
+        led.clear()
+        print(f"Cleared ledger for {args.target}")
+        return
+    if args.json:
+        print(json.dumps({**led.summary(), "established": led.established(args.max_facts),
+                          "known_false": led.known_false()}, indent=2, ensure_ascii=False))
+    else:
+        print(led.context_text(args.max_facts))
 
 
 def cmd_verify(args: argparse.Namespace) -> None:
@@ -526,7 +580,28 @@ def main() -> None:
     p_recon.add_argument("--temperature", type=float, default=0.7, help="Sampling temperature for the live proposer")
     p_recon.add_argument("--mock", action="store_true", help="Offline demo proposer, no network")
     p_recon.add_argument("--json", action="store_true", help="Output the full JSON run report")
+    p_recon.add_argument("--ledger", help="Ledger directory (default: $REVERIFY_LEDGER_DIR or .reverify); state is checkpointed here every round")
+    p_recon.add_argument("--no-ledger", action="store_true", help="Keep the ledger in memory only (write nothing)")
+    p_recon.add_argument("--fresh", action="store_true", help="Discard this binary's ledger and start over instead of resuming")
+    p_recon.add_argument("--max-facts", type=int, default=40, help="Ledger facts shown per round (proof-grade facts are always kept)")
+    p_recon.add_argument("--prompt-budget", type=int, default=60000, help="Whole-prompt budget in characters; the shown fact sheet is trimmed to fit")
+    p_recon.add_argument("--session", help="Session label recorded in the ledger")
     p_recon.set_defaults(func=cmd_reconstruct)
+
+    # ledger
+    p_led = subparsers.add_parser(
+        "ledger",
+        help="Durable ledger of grounded facts per binary - the state that survives /clear, compaction and restarts",
+    )
+    p_led.add_argument("target", nargs="?", help="Binary whose ledger to show (omit to list all)")
+    p_led.add_argument("--dir", help="Ledger base directory (default: $REVERIFY_LEDGER_DIR or .reverify)")
+    p_led.add_argument("--max-facts", type=int, default=30, help="Facts to show (proof-grade facts are always kept)")
+    p_led.add_argument("--context", action="store_true", help="Hand-off text for a fresh context: one index line per binary (see --full)")
+    p_led.add_argument("--full", action="store_true", help="With --context: inline the bounded fact view instead of index lines")
+    p_led.add_argument("--hook", action="store_true", help="Print a Claude Code SessionStart hook that re-injects the ledger index after compaction or /clear")
+    p_led.add_argument("--clear", action="store_true", help="Discard the ledger for target")
+    p_led.add_argument("--json", action="store_true", help="Output JSON")
+    p_led.set_defaults(func=cmd_ledger)
 
     # verify
     p_verify = subparsers.add_parser(

@@ -2,6 +2,58 @@
 
 All notable changes to this project are documented here.
 
+## [0.8.0] - 2026-09-04
+
+Lossless context rollover. Every agent harness compacts a full context window
+the same way — a model summarizes the transcript and the rest is dropped — and
+every one of them documents the loss. Reverify's loop can avoid it, because it
+already knows which part of the transcript is *state*: what the tools verified,
+observed, proved, and refuted. That is now written to disk as it happens, so a
+context can be cleared, compacted or restarted and the next round continues from
+the same grounded position. Nothing the model said on its own was ever trusted,
+so nothing is lost by dropping it.
+
+### Added
+
+- **`reverify/ledger.py` — durable per-binary ledger** (`.reverify/ledger/<sha256>.json`,
+  override with `REVERIFY_LEDGER_DIR`): grounded results only (VERIFIED with weight,
+  OBSERVED values, the `behavior_equiv` TESTED and `prove_equiv` PROVEN tiers) plus
+  refutations as **known-false**, keyed by claim, de-duplicated, atomic writes, corrupt
+  files quarantined instead of fatal. Claim notes (unverified text) are never stored.
+- **Bounded projection, unbounded store**: `established(max_facts)` shows the most recent
+  facts with proof/test-tier facts pinned so they never page out; the disk keeps everything.
+- **`ReconstructionAgent(ledger=..., resume=True, prompt_budget=60000, file_path=...)`**:
+  checkpoints the ledger after every round (a crash mid-run loses nothing), resumes from
+  whatever the ledger holds, and shows KNOWN FALSE so a fresh context does not re-propose
+  the same wrong prior. A claim already in the ledger scores zero (`known`) — resuming
+  cannot be farmed for information. `run()` now reports `resumed_facts`, `compactions`,
+  `over_budget`, `ledger`, `ledger_path`, per-round `prompt_chars` and `compaction`.
+- **Prompt budget (`compact_facts`)**: a deterministic ladder trims the fact sheet *shown*
+  to the model (long import lists, strings, old observed values) until the prompt fits;
+  scoring still uses the full sheet, so hiding a fact never makes restating it profitable.
+  kernel32.dll: 43k-char prompt fits a 20k budget with the section table, entry point and
+  header intact.
+- **MCP**: `re_verify_claim` records grounded results automatically (`record`, `goal`,
+  `session` params; replies carry `ledger` counts and `known=true` on repeats); new
+  **`re_ledger`** tool (`show` / `index` / `clear`, `max_facts`) restores the state after
+  the host's own compaction or `/clear`; server `instructions` tell any MCP host to do so;
+  `reverify://ledger/<sha>` **resources**; JSON-RPC notifications no longer get error replies;
+  `ping`; real version in `serverInfo`.
+- **CLI**: `reverify ledger [target] [--context [--full]] [--hook] [--clear] [--json]` and
+  `reconstruct --ledger/--no-ledger/--fresh/--max-facts/--prompt-budget/--session`.
+  `reverify ledger --hook` prints a Claude Code `SessionStart` hook (`compact|clear|resume`)
+  that re-injects a **one-line index per binary** — the hand-off costs a few dozen tokens
+  and the facts are pulled on demand.
+- 20 new tests (196 total): round-trip and atomicity, content-keyed ledgers, tiers and
+  pinning, corrupt-file quarantine, lossless resume with negative memory, crash-safe
+  per-round checkpoints, budget ladder trims the view only, full-sheet scoring on a real PE,
+  MCP record/restore/clear and stdio protocol, CLI hand-off and hook.
+
+### Changed
+
+- `summarize()` zeroes the weight of results flagged `known`; the report counts them.
+- `RULES` now say restating ESTABLISHED scores zero as well.
+
 ## [0.7.1] - 2026-09-04
 
 ### Added

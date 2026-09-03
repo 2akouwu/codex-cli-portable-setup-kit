@@ -128,6 +128,42 @@ proposes the textbook prologue from prior, the verifier refutes it with the real
 bytes, and the model corrects to grounded, with no API key and no specific model.
 [BENCHMARK.md](BENCHMARK.md) is the reproducible measurement behind the numbers above.
 
+## The ledger: state that survives a context reset
+
+Every agent harness handles a full context window the same way — a model summarizes the
+transcript, the rest is dropped, and the docs warn that repeated compactions degrade
+accuracy. That loss is unavoidable for free-form conversation, because nothing in a
+transcript says which parts were *state* and which were chatter.
+
+Reverify's loop can do better for itself, because it already draws that line: the only
+things that matter are what the tools **verified, observed, proved — and refuted**.
+Everything else (the model's prose, its unverified guesses) was never trusted, so dropping
+it loses nothing. Since v0.8.0 exactly that state is written to disk as it happens:
+
+- **`.reverify/ledger/<sha256>.json` per binary** (content-keyed, so a renamed copy shares
+  its ledger), checkpointed after **every** round — a crash, a `/clear`, an auto-compact or
+  a new process all resume from the same grounded position.
+- **Negative memory**: refutations come back as `KNOWN FALSE`, so a fresh context does not
+  re-propose the same wrong prior — the part a summary usually drops.
+- **Bounded in context, unbounded on disk**: the prompt shows the most recent `--max-facts`
+  (proof-grade facts pinned), and a deterministic ladder trims the *shown* fact sheet to
+  `--prompt-budget` characters (kernel32.dll: 43k chars fit a 20k budget with the section
+  table, entry point and header intact). Scoring uses the full sheet, so hiding a fact never
+  makes restating it profitable, and a claim already in the ledger scores zero (`known`).
+- **Lazy hand-off**: the hook injects one index line per binary; the facts are pulled on
+  demand, so recovering state costs a few dozen tokens, not a slice of the fresh window.
+
+```bash
+reverify reconstruct target.exe --goal "..."   # resumes from .reverify/ automatically
+reverify ledger target.exe                     # what is established, what is known false
+reverify ledger --hook                         # Claude Code SessionStart hook (compact|clear|resume)
+```
+
+Over MCP the same happens with no setup: `re_verify_claim` records every grounded result,
+and `re_ledger` hands them back after the host compacts or clears its context (the
+server's `instructions` tell the agent to do so). Nothing unverified is ever stored — claim
+notes are excluded on purpose.
+
 ## The toolkit
 
 | Command | What it does |
@@ -160,11 +196,14 @@ python reverify/mcp_server.py
 Point Claude Code or Cursor at it and the agent can parse, disassemble, and scan binaries
 directly — with the deterministic tools as ground truth. The `re_verify_claim` tool exposes
 the verification loop, so an agent can have its own hypotheses judged against the bytes
-before it reports them.
+before it reports them — and records every grounded result in the binary's ledger.
+`re_ledger` restores that state after the host's own compaction or `/clear` (see
+[The ledger](#the-ledger-state-that-survives-a-context-reset)); ledgers are also exposed as
+`reverify://ledger/<sha>` resources.
 
 ## Status
 
-**v0.7.0 — a proof tier**, on [PyPI](https://pypi.org/project/reverify/)
+**v0.8.0 — lossless context rollover**, on [PyPI](https://pypi.org/project/reverify/)
 (`pip install reverify`). The tool-grounded judge — a claim about the binary is checked
 against the actual bytes and returned as `VERIFIED` / `REFUTED` / `INCONCLUSIVE` /
 `OBSERVED` / `INVALIDATED` with evidence — ships as `reverify verify` and the
@@ -181,8 +220,11 @@ LLM4Decompile re-executability methodology). **v0.6.0** makes the reconstruction
 read is carried between rounds, so the model can't build on its own earlier guesses — the
 defense against context hallucination. **v0.7.0** adds a proof tier: the `prove_equiv` claim uses
 Z3 to prove two expressions equal for *all* inputs (verifying MBA deobfuscation), giving an honest
-strength ladder — proven > tested > observed. Tested with 176 unit tests, so the verifier is not
-just trusted, it is checked.
+strength ladder — proven > tested > observed. **v0.8.0** makes the loop's state durable: a
+per-binary ledger of what the tools verified, observed, proved and refuted, checkpointed every
+round and restored after `/clear`, compaction or a restart — lossless by construction, because
+nothing the model said on its own was ever kept. Tested with 196 unit tests, so the verifier is
+not just trusted, it is checked.
 
 ## License
 
