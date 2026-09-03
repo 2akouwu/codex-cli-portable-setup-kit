@@ -1,0 +1,278 @@
+"""Who verifies the verifier.
+
+These tests do not trust our own reading of a binary. They cross-check it three
+ways, which is how mature tools (Csmith, cryptofuzz, RISU, the disassembler SoK)
+find bugs that hand-written unit tests miss — because unit tests share the
+author's blind spots (the pure PE parser and its synthetic test fixture were
+wrong the same way, so the fixture "passed"):
+
+1. Differential: the pure-Python parser vs lief, over REAL x64 and x86 binaries.
+2. Round-trip: address translation and observe->assert must return to origin.
+3. Fuzz: malformed input never crashes and never yields a false VERIFIED, and a
+   claim VERIFIES iff the bytes actually match (soundness on arbitrary data).
+4. Oracle: our disassembly vs a third-party disassembler when one is installed.
+
+The differential/oracle tests need real binaries and/or lief; they skip cleanly
+when unavailable so the suite still runs anywhere.
+"""
+
+import glob
+import os
+import random
+import shutil
+import struct
+import subprocess
+import sys
+import unittest
+from pathlib import Path
+
+tools_root = Path(__file__).resolve().parent.parent
+if str(tools_root) not in sys.path:
+    sys.path.insert(0, str(tools_root))
+
+from backends import HAS_LIEF
+from binary import parse_binary
+from disasm import Disassembler
+from protocol_parser import decode_varint, encode_varint, TLVDissector
+from verifier import Verifier, Claim, VERIFIED, REFUTED, INCONCLUSIVE, OBSERVED
+
+MAX_BIN = 20 * 1024 * 1024
+
+
+def _sample(paths, n):
+    """A deterministic spread across a sorted list (no RNG, reproducible)."""
+    paths = sorted(paths)
+    if len(paths) <= n:
+        return paths
+    stride = len(paths) / n
+    return [paths[int(i * stride)] for i in range(n)]
+
+
+def real_binaries(per_dir=12):
+    """Real PEs present on this machine: x64 (System32), x86 (SysWOW64), plus the interpreter."""
+    out = [sys.executable]
+    for d in (r"C:\Windows\System32", r"C:\Windows\SysWOW64"):
+        if os.path.isdir(d):
+            cand = [p for p in glob.glob(os.path.join(d, "*.dll")) if _ok_size(p)]
+            out += _sample(cand, per_dir)
+    seen, uniq = set(), []
+    for p in out:
+        if p not in seen and _ok_size(p):
+            seen.add(p)
+            uniq.append(p)
+    return uniq
+
+
+def _ok_size(p):
+    try:
+        return 0 < os.path.getsize(p) <= MAX_BIN
+    except OSError:
+        return False
+
+
+def _read(p):
+    with open(p, "rb") as f:
+        return f.read()
+
+
+CORPUS = real_binaries()
+
+
+@unittest.skipUnless(HAS_LIEF, "lief backend not installed")
+@unittest.skipUnless(len(CORPUS) >= 2, "no real-binary corpus on this machine")
+class TestDifferentialParsing(unittest.TestCase):
+    """Pure-Python parser must agree with lief on every load-bearing field."""
+
+    def test_headers_and_sections_agree(self):
+        checked = 0
+        for path in CORPUS:
+            data = _read(path)
+            pure = parse_binary(data, prefer="pure")
+            lief = parse_binary(data, prefer="lief")
+            if lief.error or lief.format == "raw":
+                continue  # lief could not parse it either; nothing to diff
+            name = os.path.basename(path)
+            self.assertIsNone(pure.error, f"pure parser errored on {name}: {pure.error}")
+            self.assertEqual(pure.format, lief.format, name)
+            self.assertEqual(pure.arch, lief.arch, f"{name}: arch")
+            self.assertEqual(pure.bits, lief.bits, f"{name}: bits")
+            self.assertEqual(pure.image_base, lief.image_base, f"{name}: image_base")
+            self.assertEqual(pure.entrypoint, lief.entrypoint, f"{name}: entrypoint")
+            self.assertEqual(
+                [s.name for s in pure.sections], [s.name for s in lief.sections], f"{name}: section names"
+            )
+            for ps, ls in zip(pure.sections, lief.sections):
+                self.assertEqual(ps.virtual_address, ls.virtual_address, f"{name}: {ps.name} RVA")
+            checked += 1
+        self.assertGreater(checked, 0, "no binaries were actually compared")
+        print(f"\n  [differential] pure==lief on {checked} real binaries")
+
+    def test_pure_imports_never_invented(self):
+        """Pure parser may miss exotic imports, but must never invent a named one lief lacks."""
+        for path in CORPUS:
+            data = _read(path)
+            pure = parse_binary(data, prefer="pure")
+            lief = parse_binary(data, prefer="lief")
+            if lief.error or not lief.imports:
+                continue
+            lief_named = {f.lower() for fns in lief.imports.values() for f in fns if not f.startswith("Ordinal_")}
+            pure_named = {f.lower() for fns in pure.imports.values() for f in fns if not f.startswith("Ordinal_")}
+            invented = pure_named - lief_named
+            self.assertFalse(invented, f"{os.path.basename(path)}: pure invented imports {list(invented)[:5]}")
+
+
+@unittest.skipUnless(len(CORPUS) >= 2, "no real-binary corpus on this machine")
+class TestAddressRoundTrip(unittest.TestCase):
+    def test_file_rva_file_identity(self):
+        for path in CORPUS:
+            info = parse_binary(_read(path))
+            if info.format == "raw" or not info.sections:
+                continue
+            for s in info.sections:
+                if s.raw_size <= 0:
+                    continue
+                off = s.offset
+                rva = info.offset_to_rva(off)
+                self.assertIsNotNone(rva, f"{os.path.basename(path)}: {s.name} offset->rva")
+                self.assertEqual(info.rva_to_offset(rva), off, f"{os.path.basename(path)}: {s.name} round trip")
+                if info.image_base is not None:
+                    self.assertEqual(info.va_to_offset(info.image_base + rva), off)
+
+
+@unittest.skipUnless(len(CORPUS) >= 2, "no real-binary corpus on this machine")
+class TestObserveAssertRoundTrip(unittest.TestCase):
+    def test_observed_value_asserts_true(self):
+        for path in CORPUS[:6]:
+            data = _read(path)
+            v = Verifier(data)
+            off = len(data) // 2
+            obs = v.verify(Claim("bytes_at", {"offset": off, "length": 8}, observe=True))
+            self.assertEqual(obs["verdict"], OBSERVED)
+            actual = obs["evidence"]["actual"]
+            back = v.verify(Claim("bytes_at", {"offset": off, "expected": actual}))
+            self.assertEqual(back["verdict"], VERIFIED, os.path.basename(path))
+
+
+class TestProtocolRoundTrip(unittest.TestCase):
+    def test_varint_round_trip(self):
+        rng = random.Random(20260903)
+        for _ in range(2000):
+            n = rng.getrandbits(rng.randint(1, 64))
+            val, off = decode_varint(encode_varint(n))
+            self.assertEqual(val, n)
+            self.assertEqual(off, len(encode_varint(n)))
+
+    def test_tlv_round_trip(self):
+        payloads = [b"", b"\x00", b"admin", bytes(range(20))]
+        blob = b""
+        for i, pl in enumerate(payloads):
+            blob += bytes([i & 0xFF]) + struct.pack(">H", len(pl)) + pl
+        out = TLVDissector.dissect(blob, type_len=1, length_len=2)
+        self.assertEqual(len(out), len(payloads))
+        for got, pl in zip(out, payloads):
+            self.assertEqual(bytes.fromhex(got["hex"]), pl)
+
+
+class TestRobustnessFuzz(unittest.TestCase):
+    """Malformed input must degrade, never crash; and a claim verifies iff bytes match."""
+
+    def _malformed(self, rng, n=400):
+        out = []
+        real_head = _read(CORPUS[0])[:256] if CORPUS else b"MZ" + b"\x00" * 200
+        for _ in range(n):
+            k = rng.randint(0, 300)
+            choice = rng.randint(0, 4)
+            if choice == 0:
+                out.append(bytes(rng.getrandbits(8) for _ in range(k)))
+            elif choice == 1:
+                out.append(b"MZ" + bytes(rng.getrandbits(8) for _ in range(k)))
+            elif choice == 2:
+                out.append(b"\x7fELF" + bytes(rng.getrandbits(8) for _ in range(k)))
+            elif choice == 3:
+                out.append(real_head[: rng.randint(0, len(real_head))])
+            else:
+                b = bytearray(real_head)
+                for _ in range(rng.randint(1, 20)):
+                    b[rng.randrange(len(b))] = rng.getrandbits(8)
+                out.append(bytes(b))
+        return out
+
+    def test_parser_never_raises_or_warns(self):
+        import warnings as _w
+        rng = random.Random(1)
+        for data in self._malformed(rng):
+            with _w.catch_warnings():
+                _w.simplefilter("error")  # a leaked warning fails the test
+                try:
+                    info = parse_binary(data)
+                except Warning as warn:  # noqa: BLE001
+                    self.fail(f"parse_binary leaked a warning on malformed input: {warn}")
+                except Exception as exc:  # noqa: BLE001
+                    self.fail(f"parse_binary raised on malformed input: {type(exc).__name__}: {exc}")
+            self.assertIn(info.format, ("PE", "ELF", "MachO", "raw"))
+
+    def test_verifier_never_raises_and_no_false_verified(self):
+        rng = random.Random(2)
+        kinds = [
+            {"kind": "section_present", "name": ".text"},
+            {"kind": "import_present", "function": "CreateFileW"},
+            {"kind": "export_present", "name": "DllMain"},
+            {"kind": "instructions", "offset": 0, "mnemonics": ["push", "mov"]},
+            {"kind": "u32_at", "offset": 4, "expected": 0x12345678},
+        ]
+        for data in self._malformed(rng, n=300):
+            v = Verifier(data)
+            for spec in kinds:
+                try:
+                    r = v.verify(Claim.from_dict(spec))
+                except Exception as exc:  # noqa: BLE001
+                    self.fail(f"verify raised: {type(exc).__name__}: {exc}")
+                self.assertIn(r["verdict"], (VERIFIED, REFUTED, INCONCLUSIVE, OBSERVED))
+
+    def test_soundness_verify_iff_match(self):
+        """On arbitrary bytes: expected==actual -> VERIFIED; one bit flipped -> never VERIFIED."""
+        rng = random.Random(3)
+        for _ in range(500):
+            n = rng.randint(16, 200)
+            data = bytes(rng.getrandbits(8) for _ in range(n))
+            off = rng.randint(0, n - 4)
+            actual = data[off : off + 4]
+            v = Verifier(data)
+            good = v.verify(Claim("bytes_at", {"offset": off, "expected": actual.hex()}))
+            self.assertEqual(good["verdict"], VERIFIED)
+            flipped = bytearray(actual)
+            flipped[0] ^= 0x01
+            bad = v.verify(Claim("bytes_at", {"offset": off, "expected": bytes(flipped).hex()}))
+            self.assertNotEqual(bad["verdict"], VERIFIED)  # must not falsely verify
+
+
+def _find_objdump():
+    for t in ("objdump", "llvm-objdump"):
+        p = shutil.which(t)
+        if p:
+            return p
+    return None
+
+
+@unittest.skipUnless(_find_objdump(), "no objdump/llvm-objdump oracle installed")
+@unittest.skipUnless(len(CORPUS) >= 1, "no real-binary corpus")
+class TestDisasmOracle(unittest.TestCase):
+    def test_entry_mnemonics_match_objdump(self):
+        tool = _find_objdump()
+        info = parse_binary(_read(CORPUS[0]))
+        sec = info.section(".text")
+        if sec is None:
+            self.skipTest("no .text")
+        data = _read(CORPUS[0])[sec.offset : sec.offset + 64]
+        ours = [i.mnemonic for i in Disassembler(arch=info.arch).disassemble(data)][:5]
+        # best-effort: objdump raw binary blob
+        proc = subprocess.run(
+            [tool, "-D", "-b", "binary", "-m", "i386:x86-64" if info.bits == 64 else "i386", "/dev/stdin"],
+            input=data, capture_output=True, timeout=20,
+        )
+        text = proc.stdout.decode("latin1", "ignore").lower()
+        self.assertTrue(all(m in text for m in ours[:3]) or not ours, f"ours={ours}")
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import math
 import struct
+import warnings
 from dataclasses import dataclass, field, asdict
 from typing import Any, Dict, List, Optional
 
@@ -261,7 +262,11 @@ def parse_binary(data: bytes, prefer: str = "auto") -> BinaryInfo:
 
     if prefer in ("auto", "lief") and HAS_LIEF:
         try:
-            info = _parse_with_lief(data)
+            # Malformed input makes lief's binding emit RuntimeWarnings from invalid
+            # enum conversions; hostile/garbage files are expected here, so keep quiet.
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                info = _parse_with_lief(data)
             if info is not None:
                 return info
         except Exception as exc:  # fall through to pure parsers
