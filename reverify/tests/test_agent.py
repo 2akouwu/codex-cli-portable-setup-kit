@@ -140,6 +140,18 @@ class TestEstablishedLedger(unittest.TestCase):
         self.assertNotIn("license check is at 0x28", round2)   # the model's unverified prose is gone
         self.assertIn("Build ONLY on BINARY FACTS and ESTABLISHED", round2)
 
+    def test_ledger_is_bounded_over_many_rounds(self):
+        data = bytes(range(256))
+        # each round verifies a fresh 8-byte window; over many rounds the ledger must stay capped
+        class ManyProposer:
+            def __init__(s): s.i = 0
+            def __call__(s, prompt):
+                off = 8 * (s.i % 20) + 8
+                s.i += 1
+                return json.dumps([{"kind": "bytes_at", "params": {"offset": off, "expected": data[off:off + 8].hex()}}])
+        result = ReconstructionAgent(data, ManyProposer(), max_rounds=15, min_information=99.0, max_facts=5).run("x")
+        self.assertLessEqual(len(result["established"]), 5)
+
     def test_verified_fact_is_shown_as_established_next_round(self):
         data = bytes(range(64))
         rp = RecordingProposer([

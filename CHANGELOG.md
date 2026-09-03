@@ -2,6 +2,15 @@
 
 All notable changes to this project are documented here.
 
+## [0.7.1] - 2026-09-04
+
+### Added
+
+- **Bounded reconstruction ledger** (`ReconstructionAgent(max_facts=...)`, default 40): the
+  established-facts ledger is capped, so a long run does not turn its own accumulated context
+  into a fresh source of drift. Dropped facts were verified true and can be observed again if
+  needed — long-session hygiene for the loop itself. 177 tests.
+
 ## [0.7.0] - 2026-09-04
 
 A proof tier. Behavioral equivalence by sampling says "no counterexample found over N

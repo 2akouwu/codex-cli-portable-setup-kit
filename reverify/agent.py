@@ -318,6 +318,7 @@ class ReconstructionAgent:
         max_rounds: int = 4,
         samples: int = 1,
         min_information: float = 1.0,
+        max_facts: int = 40,
     ):
         self.data = data
         self.verifier = Verifier(data)
@@ -325,6 +326,7 @@ class ReconstructionAgent:
         self.max_rounds = max(1, int(max_rounds))
         self.samples = max(1, int(samples))
         self.min_information = float(min_information)
+        self.max_facts = max(1, int(max_facts))  # cap the ledger so long runs don't self-pollute
 
     def run(self, goal: str) -> Dict[str, Any]:
         facts = binary_facts(self.data)
@@ -387,7 +389,10 @@ class ReconstructionAgent:
                     act = _actual_repr(r)
                     if k and act is not None:
                         established.append(f"observed {k} = {act if not isinstance(act, tuple) else list(act)}")
-            established = list(dict.fromkeys(established))  # dedup, keep order
+            # dedup, then cap to the most recent max_facts — a bounded ledger keeps a long
+            # run from turning its own accumulated context into a fresh source of drift.
+            # Everything dropped was verified true and can simply be observed again if needed.
+            established = list(dict.fromkeys(established))[-self.max_facts :]
 
             keys_now = {_loc_key(o) for o in claim_objs}
             attrition = len(prev_keys - keys_now) if prev_keys else 0
