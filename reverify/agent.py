@@ -50,6 +50,7 @@ Kinds and params:
 - string_present:  {"value": "<text>", "offset"?: <int>, "encoding"?: "utf-8|utf-16le|..."}
 - instructions:    {"offset": <int>, "length"?: <int>, "mnemonics": ["push","mov",...], "operands"?: ["rbp","rbp, rsp",...], "arch"?: "x86_64", "mode"?: "exact|contains"}
 - emulate_result:  {"offset": <int>, "length"?: <int>, "arch"?: "x86_64", "expect_registers": {"rax": <int>}}   (offset into the binary; inline "code" not found in the binary scores zero)
+- behavior_equiv:  {"offset": <int>, "length"?: <int>, "expr": "x0 + x1"}  (STRONGEST: reconstruct a function's behavior; the tools run the original at offset and your candidate over shared inputs and compare. Candidate is `expr` over x0,x1,... or `candidate_code` hex. A mismatch returns a concrete counterexample input.)
 - protobuf_field:  {"field": <int>, "type"?: "varint|string|...", "value"?: <any>, "offset"?: <int>}
 - import_present:  {"function": "<symbol>", "lib"?: "<library>"}
 - export_present:  {"name": "<symbol>"}

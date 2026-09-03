@@ -47,11 +47,13 @@ try:  # package import (e.g. ``from reverify import Verifier``)
     from .emulator import make_emulator
     from .protocol_parser import ProtobufDissector
     from .binary import parse_binary, shannon_entropy
+    from .behavior import behavioral_equiv
 except ImportError:  # flat import (CLI, MCP server, and the test suite)
     from disasm import Disassembler, pattern_scan
     from emulator import make_emulator
     from protocol_parser import ProtobufDissector
     from binary import parse_binary, shannon_entropy
+    from behavior import behavioral_equiv
 
 VERIFIED = "VERIFIED"
 REFUTED = "REFUTED"
@@ -158,6 +160,7 @@ class Verifier:
         "string_present",
         "instructions",
         "emulate_result",
+        "behavior_equiv",
         "protobuf_field",
         "import_present",
         "export_present",
@@ -492,6 +495,71 @@ class Verifier:
             return VERIFIED, evidence, "register state matches"
         return REFUTED, evidence, f"{len(mismatches)} register(s) mismatched"
 
+    def _check_behavior_equiv(self, p: Dict[str, Any]):
+        """Claim: a candidate reconstruction behaves like the original function.
+
+        Original code from ``offset``/``length`` into the binary (earns weight) or
+        inline ``code`` (self-referential, weight 0). Candidate via ``candidate_code``
+        (hex) or ``expr`` (a restricted integer expression over x0, x1, ...). The two
+        are run over shared inputs and their outputs compared. A mismatch returns a
+        concrete counterexample; agreement is reported as tested-not-proven.
+        """
+        arch = str(p.get("arch", "x86_64"))
+        bits = _as_int(p["bits"]) if "bits" in p else (64 if "64" in arch or "amd" in arch else 32)
+        arg_regs = list(p["arg_regs"]) if "arg_regs" in p else None
+        ret_reg = str(p["ret_reg"]) if "ret_reg" in p else None
+        evidence: Dict[str, Any] = {}
+
+        if "offset" in p:
+            off, addr = self._resolve_offset(p)
+            evidence["address"] = addr
+            if off is None:
+                return INCONCLUSIVE, evidence, addr.get("error", "bad address")
+            length = _as_int(p["length"]) if "length" in p else 256
+            if off < 0 or off >= len(self.data):
+                return INCONCLUSIVE, {**evidence, "file_size": len(self.data)}, "offset out of range"
+            original = self.data[off : off + length]
+        elif "code" in p:
+            original = _clean_hex(p["code"])
+            evidence["self_referential"] = self.data.find(original) == -1 if original else True
+        else:
+            raise ClaimError("behavior_equiv requires 'offset' or 'code' for the original")
+
+        candidate_code = _clean_hex(p["candidate_code"]) if "candidate_code" in p else None
+        expr = str(p["expr"]) if "expr" in p else None
+        if candidate_code is None and expr is None:
+            raise ClaimError("behavior_equiv requires 'candidate_code' or 'expr'")
+
+        if expr is not None and "args" not in p and "inputs" not in p:
+            import re as _re
+            nargs = (max((int(m) for m in _re.findall(r"\bx(\d+)\b", expr)), default=-1) + 1) or 1
+            if _re.search(r"\bx\b", expr):
+                nargs = max(nargs, 1)
+        else:
+            nargs = _as_int(p["args"]) if "args" in p else (len(p["inputs"][0]) if p.get("inputs") else 2)
+
+        res = behavioral_equiv(
+            original,
+            candidate_code=candidate_code,
+            expr=expr,
+            nargs=nargs,
+            inputs=p.get("inputs"),
+            arch=arch,
+            bits=bits,
+            arg_regs=arg_regs,
+            ret_reg=ret_reg,
+        )
+        evidence["tested_inputs"] = res.get("tested", 0)
+        evidence["candidate"] = ("code" if candidate_code is not None else f"expr:{expr}")
+        evidence["weight_basis"] = {"inputs_tested": res.get("tested", 0), "entropy_norm": round(_entropy_norm(original), 3)}
+        status = res["status"]
+        if status == "equivalent":
+            return VERIFIED, evidence, res["detail"]
+        if status == "refuted":
+            evidence["counterexample"] = res["counterexample"]
+            return REFUTED, evidence, res["detail"]
+        return INCONCLUSIVE, evidence, res["detail"]
+
     def _check_protobuf_field(self, p: Dict[str, Any]):
         """Claim: Protobuf ``field`` has wire ``type`` and optionally ``value``."""
         if "field" not in p:
@@ -726,6 +794,11 @@ def base_weight(result: Dict[str, Any]) -> float:
         base = 1.0 if "offset" in p else 0.5
         steps = int(basis.get("steps", 0) or 0)
         return base * min(1.0, steps / 2.0) * ent
+    if kind == "behavior_equiv":
+        # behavioral equivalence is the strongest claim; scale by inputs tested and non-degenerate code
+        base = 1.0 if "offset" in p else 0.5
+        tested = int(basis.get("inputs_tested", 0) or 0)
+        return base * min(1.0, tested / 8.0) * ent
     if kind == "pattern_present":
         return (0.7 if ("offset" in p or "count" in p) else 0.4) * rarity
     if kind == "string_present":

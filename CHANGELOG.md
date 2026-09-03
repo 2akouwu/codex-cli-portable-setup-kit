@@ -2,6 +2,34 @@
 
 All notable changes to this project are documented here.
 
+## [0.5.0] - 2026-09-03
+
+Execution as judge. The strongest form of grounding: verify a reconstruction of a function
+by *running it*, not by reading it — the methodology behind executable decompilation
+benchmarks (ExeBench I/O pairs, LLM4Decompile's re-executability).
+
+### Added
+
+- **Behavioral-equivalence verifier** (`reverify/behavior.py`) and the `behavior_equiv`
+  claim kind. The original function (from an `offset` into the binary, or inline `code`) and
+  a candidate (a restricted integer `expr` over `x0, x1, ...`, or `candidate_code` hex) are
+  run over shared boundary + pseudo-random inputs and their outputs compared. A mismatch
+  returns a **concrete counterexample input** ("differs at x = ..."); agreement is reported
+  honestly as "equivalent over N inputs (tested, not proven)". Self-contained computational
+  functions only; anything that faults or calls out returns INCONCLUSIVE.
+- Runs on Unicorn with a configurable register calling convention (x86-64 System V by
+  default). No compiler or model needed to verify. Inline `code` originals are flagged
+  self-referential (weight 0); offset-based originals earn weight scaled by inputs tested and
+  code entropy — behavioral equivalence is the highest-weighted claim.
+- Safe integer expression evaluator (`eval_expr`): whitelisted AST, no calls/attributes.
+- CLI renders the counterexample on a refuted behavioral claim. 163 tests.
+
+### Notes
+
+- This is the reverify-side of the standard executable-decompilation metric; an ExeBench /
+  LLM4Decompile adapter (compile candidate C, re-run against I/O pairs) is the next step and
+  is gated on a C compiler being present.
+
 ## [0.4.2] - 2026-09-03
 
 Who verifies the verifier. A verification tool whose own reading of a binary is only

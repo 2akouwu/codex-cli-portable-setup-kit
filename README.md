@@ -109,6 +109,7 @@ lets the verifier — not the model's confidence — select among them.
 |---|---|
 | `reconstruct` | **Closed loop: a model proposes claims, the tools verify, iterate until grounded** |
 | `verify` | **Check a claim about the binary against the tools — VERIFIED / REFUTED / INCONCLUSIVE** |
+| `verify` (behavior_equiv) | **Run the original function and a candidate over shared inputs; a mismatch returns a counterexample** |
 | `auto` | Auto-triage: detect format, architecture, sections, top strings |
 | `parse` | PE / ELF / Mach-O: arch, entry, sections, imports, exports (lief when installed) |
 | `parse-pe` | PE32/PE32+ headers, imports, exports |
@@ -138,19 +139,20 @@ before it reports them.
 
 ## Status
 
-**v0.4.0 — a loop that is hard to game**, on [PyPI](https://pypi.org/project/reverify/)
+**v0.5.0 — execution as judge**, on [PyPI](https://pypi.org/project/reverify/)
 (`pip install reverify`). The tool-grounded judge — a claim about the binary is checked
 against the actual bytes and returned as `VERIFIED` / `REFUTED` / `INCONCLUSIVE` /
 `OBSERVED` / `INVALIDATED` with evidence — ships as `reverify verify` and the
-`re_verify_claim` MCP tool, and `reverify reconstruct` closes the loop (a model proposes, the
-tools judge, it iterates until grounded). v0.3.0 brought the mature engines (capstone,
-unicorn, lief; pure-Python fallback). v0.4.0 hardens the loop against the ways a model games
-a verifier: information-weighted scoring, address spaces and typed reads, observe-then-assert,
-dependencies, echo and attrition detection, and distribution-shift signals in the fact sheet.
-Tested with 151 unit tests, including a testbed that cross-checks the readers themselves —
-the pure parser against lief over real system binaries, the disassembler and emulator against
-capstone, Unicorn and hand-verified known-answer vectors, plus malformed-input fuzzing — so
-the verifier is not just trusted, it is checked.
+`re_verify_claim` MCP tool, and `reverify reconstruct` closes the loop. v0.3.0 brought the
+mature engines (capstone, unicorn, lief); v0.4.x hardened the loop against gaming
+(information-weighted scoring measured from the binary, address spaces, typed reads,
+observe-then-assert, dependencies) and added a testbed that cross-checks the readers
+themselves (pure parser vs lief on real binaries, disassembler/emulator vs capstone, Unicorn
+and known-answer vectors, plus fuzzing). **v0.5.0** adds the strongest grounding — the
+`behavior_equiv` claim runs the original function and a candidate reconstruction over shared
+inputs and compares outputs, returning a concrete counterexample on a mismatch (the ExeBench /
+LLM4Decompile re-executability methodology). Tested with 163 unit tests, so the verifier is
+not just trusted, it is checked.
 
 ## License
 
