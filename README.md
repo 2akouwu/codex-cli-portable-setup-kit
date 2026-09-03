@@ -77,8 +77,28 @@ reverify verify - --claim '{
 
 Claims can be batched from a JSON file (`--claims-file claims.json`); the CLI exits
 non-zero if **anything** is refuted, so an agent or CI job can gate on a grounded
-reconstruction. Supported claim kinds: `bytes_at`, `pattern_present`,
-`string_present`, `instructions`, `emulate_result`, `protobuf_field`, `pe_import`.
+reconstruction. Claim kinds: `bytes_at`, `u16_at` / `u32_at` / `u64_at` (typed reads, no
+endianness math), `pattern_present`, `string_present`, `instructions` (mnemonics and
+optionally operands), `emulate_result`, `protobuf_field`, `import_present`,
+`export_present`, `section_present`. Offsets are file offsets unless a claim says
+`"space": "rva"` or `"va"`; the verifier translates through the section table and echoes
+all three addresses in the evidence, and a refuted `bytes_at` reports where the expected
+bytes actually are. Set `"observe": true` (or omit `expected`) to have the tools *read* a
+value instead of asserting one, and `"depends_on": [...]` so a refuted root invalidates
+the claims built on it.
+
+### Grounded means *informative*, not just "nothing refuted"
+
+"Every claim verified" is trivially reachable: assert that the file starts with `MZ` and
+that `.text` exists. So Reverify also weighs how much a verified set actually says. Each
+result carries a `weight` — zero for claims that merely restate the fact sheet the model was
+shown, for duplicates, for inline code/data that does not occur in the binary
+(self-referential), and for echoes of the tools' own previous output; otherwise a
+surprisal tier by kind and specificity. A reconstruction is **grounded** only when nothing
+is refuted *and* the verified weight reaches `--min-information` (default 1.0). This follows
+the CORE refinement of FActScore: credit only claims that are factual, informative and
+non-repetitive. `reverify reconstruct --samples N` draws several proposals per round and
+lets the verifier — not the model's confidence — select among them.
 
 ## The toolkit
 
@@ -115,14 +135,16 @@ before it reports them.
 
 ## Status
 
-**v0.3.0 — mature engines, closed loop**, on [PyPI](https://pypi.org/project/reverify/)
+**v0.4.0 — a loop that is hard to game**, on [PyPI](https://pypi.org/project/reverify/)
 (`pip install reverify`). The tool-grounded judge — a claim about the binary is checked
-against the actual bytes and returned as `VERIFIED` / `REFUTED` / `INCONCLUSIVE` with observed
-evidence — ships as `reverify verify` and the `re_verify_claim` MCP tool, and `reverify
-reconstruct` closes the loop (a model proposes, the tools judge, it iterates until grounded).
-v0.3.0 swaps the hand-rolled internals for battle-tested engines when installed — capstone,
-unicorn and lief — bringing full x86/x64/ARM/ARM64 disassembly and emulation and PE/ELF/Mach-O
-parsing, with the pure-Python core as fallback. Tested with 96 unit tests.
+against the actual bytes and returned as `VERIFIED` / `REFUTED` / `INCONCLUSIVE` /
+`OBSERVED` / `INVALIDATED` with evidence — ships as `reverify verify` and the
+`re_verify_claim` MCP tool, and `reverify reconstruct` closes the loop (a model proposes, the
+tools judge, it iterates until grounded). v0.3.0 brought the mature engines (capstone,
+unicorn, lief; pure-Python fallback). v0.4.0 hardens the loop against the ways a model games
+a verifier: information-weighted scoring, address spaces and typed reads, observe-then-assert,
+dependencies, echo and attrition detection, and distribution-shift signals in the fact sheet.
+Tested with 128 unit tests.
 
 ## License
 

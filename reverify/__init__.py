@@ -7,7 +7,10 @@ from .binary import parse_binary, BinaryInfo, Section
 from .backends import backend_report, HAS_CAPSTONE, HAS_UNICORN, HAS_LIEF
 from .protocol_parser import ProtobufDissector, TLVDissector, format_hexdump, decode_varint, encode_varint
 from .frida_bridge import FridaScriptGenerator
-from .verifier import Verifier, Claim, verify_claims, VERIFIED, REFUTED, INCONCLUSIVE
+from .verifier import (
+    Verifier, Claim, verify_claims, summarize, claim_key,
+    VERIFIED, REFUTED, INCONCLUSIVE, OBSERVED, INVALIDATED,
+)
 from .agent import ReconstructionAgent, openai_proposer, demo_proposer, binary_facts
 
 __all__ = [
@@ -40,6 +43,10 @@ __all__ = [
     "VERIFIED",
     "REFUTED",
     "INCONCLUSIVE",
+    "OBSERVED",
+    "INVALIDATED",
+    "summarize",
+    "claim_key",
     "ReconstructionAgent",
     "openai_proposer",
     "demo_proposer",

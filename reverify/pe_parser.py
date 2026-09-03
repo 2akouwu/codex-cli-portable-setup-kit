@@ -132,7 +132,7 @@ class PEParser:
             size_heap_commit,
             loader_flags,
             num_rva_sizes,
-        ) = struct.unpack_from("<HBBIIIIIIIIHHHHHHIIIIHHIIIIII", self.data, offset)
+        ) = struct.unpack_from("<HBBIIIIIIIIIHHHHHHIIIIHHIIIIII", self.data, offset)  # PE32: 9 dwords through FileAlignment
 
         self.optional_header = {
             "Magic": "PE32",
@@ -180,7 +180,7 @@ class PEParser:
             size_heap_commit,
             loader_flags,
             num_rva_sizes,
-        ) = struct.unpack_from("<HBBIIIIQQIIHHHHHHIIIIHHQQQQII", self.data, offset)
+        ) = struct.unpack_from("<HBBIIIIIQIIHHHHHHIIIIHHQQQQII", self.data, offset)  # PE32+: BaseOfCode is 4 bytes, ImageBase 8
 
         self.optional_header = {
             "Magic": "PE32+",

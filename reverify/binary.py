@@ -7,6 +7,7 @@ reader otherwise, so the toolkit degrades gracefully instead of failing.
 
 from __future__ import annotations
 
+import math
 import struct
 from dataclasses import dataclass, field, asdict
 from typing import Any, Dict, List, Optional
@@ -61,6 +62,40 @@ class BinaryInfo:
                 return s
         return None
 
+    # -- address translation (file offset <-> RVA <-> VA) ----------------------
+
+    def rva_to_offset(self, rva: int) -> Optional[int]:
+        for s in self.sections:
+            span = max(s.virtual_size, s.raw_size)
+            if s.virtual_address <= rva < s.virtual_address + span:
+                return s.offset + (rva - s.virtual_address)
+        return None
+
+    def offset_to_rva(self, off: int) -> Optional[int]:
+        for s in self.sections:
+            if s.offset <= off < s.offset + s.raw_size:
+                return s.virtual_address + (off - s.offset)
+        return None
+
+    def va_to_offset(self, va: int) -> Optional[int]:
+        if self.image_base is None:
+            return None
+        return self.rva_to_offset(va - self.image_base)
+
+    def section_containing_rva(self, rva: int) -> Optional[Section]:
+        for s in self.sections:
+            if s.virtual_address <= rva < s.virtual_address + max(s.virtual_size, s.raw_size):
+                return s
+        return None
+
+    def section_entropies(self, data: bytes) -> Dict[str, float]:
+        """Shannon entropy (bits/byte) of each section's raw bytes."""
+        out: Dict[str, float] = {}
+        for s in self.sections:
+            if s.raw_size > 0 and s.offset < len(data):
+                out[s.name] = round(shannon_entropy(data[s.offset : s.offset + s.raw_size]), 3)
+        return out
+
     def summary(self) -> Dict[str, Any]:
         return {
             "format": self.format,
@@ -81,6 +116,17 @@ class BinaryInfo:
         d = asdict(self)
         d["sections"] = [asdict(s) for s in self.sections]
         return d
+
+
+def shannon_entropy(buf: bytes) -> float:
+    """Shannon entropy in bits per byte (0..8). ~7+ suggests packed/encrypted data."""
+    if not buf:
+        return 0.0
+    counts = [0] * 256
+    for b in buf:
+        counts[b] += 1
+    n = len(buf)
+    return -sum((c / n) * math.log2(c / n) for c in counts if c)
 
 
 # -- arch mapping ---------------------------------------------------------
@@ -225,8 +271,8 @@ def parse_binary(data: bytes, prefer: str = "auto") -> BinaryInfo:
     if data[:2] == b"MZ":
         try:
             return _parse_pe_pure(data)
-        except BinaryParseError as exc:
-            return BinaryInfo(format="PE", backend="pure-python", error=str(exc))
+        except Exception as exc:  # malformed headers must degrade, never crash
+            return BinaryInfo(format="PE", backend="pure-python", error=f"{type(exc).__name__}: {exc}")
     if data[:4] == b"\x7fELF":
         return _parse_elf_pure(data)
     if data[:4] in (b"\xfe\xed\xfa\xce", b"\xfe\xed\xfa\xcf", b"\xcf\xfa\xed\xfe", b"\xce\xfa\xed\xfe", b"\xca\xfe\xba\xbe"):

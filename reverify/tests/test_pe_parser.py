@@ -25,7 +25,7 @@ def create_synthetic_pe32_plus() -> bytes:
 
     # Optional Header (Magic=0x20B (PE32+), EntryPoint=0x1000, ImageBase=0x140000000)
     opt_offset = pe_offset + 24
-    struct.pack_into("<HBBIIIIQQII", buf, opt_offset, 0x20B, 14, 0, 0x1000, 0x2000, 0, 0x1000, 0x1000, 0x140000000, 0x1000, 0x200)
+    struct.pack_into("<HBBIIIIIQII", buf, opt_offset, 0x20B, 14, 0, 0x1000, 0x2000, 0, 0x1000, 0x1000, 0x140000000, 0x1000, 0x200)
 
     # Section Headers
     sec1_offset = opt_offset + 240

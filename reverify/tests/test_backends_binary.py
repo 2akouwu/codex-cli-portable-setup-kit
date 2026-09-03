@@ -21,7 +21,7 @@ def synthetic_pe() -> bytes:
     buf[po:po + 4] = b"PE\x00\x00"
     struct.pack_into("<HHIIIHH", buf, po + 4, 0x8664, 2, 0, 0, 0, 240, 0x0022)
     oo = po + 24
-    struct.pack_into("<HBBIIIIQQII", buf, oo, 0x20B, 14, 0, 0x1000, 0x2000, 0, 0x1000, 0x1000, 0x140000000, 0x1000, 0x200)
+    struct.pack_into("<HBBIIIIIQII", buf, oo, 0x20B, 14, 0, 0x1000, 0x2000, 0, 0x1000, 0x1000, 0x140000000, 0x1000, 0x200)
     s1 = oo + 240
     buf[s1:s1 + 8] = b".text\x00\x00\x00"
     struct.pack_into("<IIIIIIHHI", buf, s1 + 8, 0x500, 0x1000, 0x600, 0x400, 0, 0, 0, 0, 0x60000020)

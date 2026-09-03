@@ -2,6 +2,49 @@
 
 All notable changes to this project are documented here.
 
+## [0.4.0] - 2026-09-03
+
+The loop is now hard to game. A verifier that only checks what the model asserts can be
+satisfied with trivia; this release scores what the verified set actually *says* and closes
+the channels a model uses to look grounded without being informative.
+
+### Added
+
+- **Information-weighted scoring** (`verifier.summarize`): every result carries a `weight`;
+  zero for claims that restate the fact sheet, duplicates, self-referential inline code/data,
+  and echoes of the tools' previous output; otherwise a surprisal tier by kind/specificity.
+  Reports expose `information`, `grounded_score`, `trivial_verified`, and `grounded` =
+  trustworthy **and** informative (`--min-information`). Follows CORE (Jiang et al., 2024).
+- **Address spaces**: claims accept `"space": "file" | "rva" | "va"`; the verifier translates
+  via the section table (`BinaryInfo.rva_to_offset/va_to_offset/offset_to_rva`) and echoes all
+  three in `evidence.address`. Refuted `bytes_at`/typed reads report
+  `nearest_offset_of_expected`.
+- **Typed reads** `u16_at` / `u32_at` / `u64_at` (`endian: le|be`) so the model never does
+  endianness or width arithmetic.
+- **OBSERVED verdict**: `"observe": true` (or a missing `expected`) makes the tools report a
+  value instead of judging one; the agent folds observed values into the next round's facts.
+- **Dependencies**: claims carry `id` / `depends_on`; a refuted root marks its dependents
+  `INVALIDATED`.
+- **`instructions` operands** are compared when supplied; **`emulate_result`/`protobuf_field`**
+  prefer `offset` into the binary, and inline `code`/`data` not found in the binary is flagged
+  `self_referential` (weight 0).
+- **Agent hardening**: keyed/addressed fact sheet with section address table and
+  distribution-shift signals (per-section entropy, import count, entry section, overlay,
+  packed-likely); echo detection; attrition per round; `samples` per round with the verifier
+  as selector; proposer temperature 0.7 by default; the ineffective "only propose what you
+  believe" instruction replaced by scoring rules the model can act on.
+- CLI: `verify --min-information`; `reconstruct --samples/--min-information/--temperature`;
+  notes are rendered as `note (unverified)` and never inline with a verdict.
+- 32 new tests (128 total).
+
+### Fixed
+
+- **Pure-Python PE parser layout bugs**: PE32+ `BaseOfCode` was read as 8 bytes (shifting
+  `ImageBase` and every field after it), and the PE32 format string was one dword short, so
+  pure mode crashed on every 32-bit Windows binary. Both layouts now match the spec and are
+  pinned by tests on both backends; `parse_binary` degrades to an error field instead of
+  raising on malformed headers.
+
 ## [0.3.0] - 2026-09-03
 
 Mature engines replace the hand-rolled internals — when installed.

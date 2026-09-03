@@ -32,10 +32,10 @@ class SeqProposer:
 
 class TestReconstructionLoop(unittest.TestCase):
     def test_converges_after_revision(self):
-        data = bytes.fromhex("deadbeef")
+        data = bytes(range(64))
         proposer = SeqProposer([
-            json.dumps([{"kind": "bytes_at", "params": {"offset": 0, "expected": "0000"}}]),  # refuted
-            json.dumps([{"kind": "bytes_at", "params": {"offset": 0, "expected": "dead"}}]),  # verified
+            json.dumps([{"kind": "bytes_at", "params": {"offset": 40, "expected": "ffff"}}]),            # refuted
+            json.dumps([{"kind": "bytes_at", "params": {"offset": 44, "expected": data[44:52].hex()}}]),  # new, informative
         ])
         result = ReconstructionAgent(data, proposer, max_rounds=4).run("identify the header")
         self.assertTrue(result["grounded"])
@@ -48,23 +48,33 @@ class TestReconstructionLoop(unittest.TestCase):
         proposer = SeqProposer([
             json.dumps([{"kind": "bytes_at", "params": {"offset": 0, "expected": "0000"}}])
         ])
-        result = ReconstructionAgent(data, proposer, max_rounds=3).run("x")
+        result = ReconstructionAgent(data, proposer, max_rounds=3, min_information=0.0).run("x")
         self.assertFalse(result["grounded"])
         self.assertEqual(result["rounds_used"], 3)
 
     def test_garbage_output_not_grounded(self):
         data = bytes.fromhex("deadbeef")
         proposer = SeqProposer(["I could not find anything useful."])
-        result = ReconstructionAgent(data, proposer, max_rounds=2).run("x")
+        result = ReconstructionAgent(data, proposer, max_rounds=2, min_information=0.0).run("x")
         self.assertFalse(result["grounded"])
         # empty claim set => zero total => not trustworthy
         self.assertEqual(result["final_report"]["total_claims"], 0)
 
     def test_demo_proposer_grounds_in_one_round(self):
-        data = bytes.fromhex("4d5a9000")  # arbitrary bytes
+        data = bytes(range(64))  # long enough for an informative tail claim
         result = ReconstructionAgent(data, demo_proposer(data), max_rounds=4).run("demo")
         self.assertTrue(result["grounded"])
         self.assertEqual(result["rounds_used"], 1)
+        self.assertGreaterEqual(result["information"], 1.0)
+
+    def test_demo_on_tiny_input_is_trivial_not_grounded(self):
+        data = bytes.fromhex("4d5a9000")
+        result = ReconstructionAgent(data, demo_proposer(data), max_rounds=1).run("demo")
+        self.assertFalse(result["grounded"])
+        rep = result["final_report"]
+        self.assertTrue(rep["trustworthy"])          # nothing refuted...
+        self.assertFalse(rep["informative"])          # ...but it only restated the header
+        self.assertEqual(rep["trivial_verified"], 1)
 
     def test_feedback_lists_only_failures(self):
         data = bytes.fromhex("deadbeef")
@@ -74,7 +84,7 @@ class TestReconstructionLoop(unittest.TestCase):
                 {"kind": "bytes_at", "params": {"offset": 0, "expected": "ffff"}},   # refuted
             ])
         ])
-        result = ReconstructionAgent(data, proposer, max_rounds=1).run("x")
+        result = ReconstructionAgent(data, proposer, max_rounds=1, min_information=0.0).run("x")
         fb = format_feedback(result["history"][0]["report"])
         self.assertIn("REFUTED", fb)
         self.assertNotIn("VERIFIED", fb)

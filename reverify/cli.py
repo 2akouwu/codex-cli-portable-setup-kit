@@ -274,8 +274,12 @@ def cmd_reconstruct(args: argparse.Namespace) -> None:
     if args.mock:
         propose = demo_proposer(data)
     else:
-        propose = openai_proposer(model=args.model, base_url=args.base_url, api_key=args.api_key)
-    agent = ReconstructionAgent(data, propose, max_rounds=args.rounds)
+        propose = openai_proposer(
+            model=args.model, base_url=args.base_url, api_key=args.api_key, temperature=args.temperature
+        )
+    agent = ReconstructionAgent(
+        data, propose, max_rounds=args.rounds, samples=args.samples, min_information=args.min_information
+    )
     result = agent.run(args.goal)
 
     if args.json:
@@ -286,15 +290,21 @@ def cmd_reconstruct(args: argparse.Namespace) -> None:
         for h in result["history"]:
             rep = h["report"]
             print(
-                f"  round {h['round']}: {rep['verified']} verified, "
-                f"{rep['refuted']} refuted, {rep['inconclusive']} inconclusive"
+                f"  round {h['round']}: {rep['verified']} verified ({rep['trivial_verified']} trivial), "
+                f"{rep['refuted']} refuted, {rep['inconclusive']} inconclusive, {rep['observed']} observed, "
+                f"{rep['invalidated']} invalidated | information {rep['information']}/{rep['min_information']} "
+                f"| echoed {h['echoed']} attrition {h['attrition']}"
             )
-        status = "GROUNDED" if result["grounded"] else "NOT grounded"
-        print(f"\n{status} after {result['rounds_used']} round(s).")
+        final = result["final_report"]
         if result["grounded"]:
-            for r in result["verified_claims"]:
-                note = f" - {r['note']}" if r.get("note") else ""
-                print(f"  [VERIFIED] {r['kind']}{note}")
+            status = "GROUNDED"
+        elif final and final["trustworthy"] and not final["informative"]:
+            status = "NOT grounded: every verified claim was trivial (restates the facts)"
+        else:
+            status = "NOT grounded"
+        print(f"\n{status} after {result['rounds_used']} round(s).")
+        if final:
+            _print_results(final["results"])
     if not result["grounded"]:
         sys.exit(2)
 
@@ -314,26 +324,57 @@ def cmd_verify(args: argparse.Namespace) -> None:
         raise SystemExit("verify requires --claim '<json>' or --claims-file <path>")
 
     verifier = Verifier(data)
-    report = verifier.verify_all([Claim.from_dict(c) for c in claims_data])
+    report = verifier.verify_all(
+        [Claim.from_dict(c) for c in claims_data], min_information=args.min_information
+    )
 
     if args.json:
         print(json.dumps(report, indent=2, ensure_ascii=False))
     else:
         print("=== Reverify: tool-grounded claim verification ===")
-        symbols = {"VERIFIED": "[VERIFIED]", "REFUTED": "[REFUTED ]", "INCONCLUSIVE": "[INCONCL.]"}
-        for r in report["results"]:
-            mark = symbols.get(r["verdict"], r["verdict"])
-            note = f" - {r['note']}" if r["note"] else ""
-            print(f"{mark} {r['kind']}{note}")
-            print(f"           {r['detail']}")
+        _print_results(report["results"])
         print(
-            f"\nGrounded {report['verified']}/{report['total_claims']} "
-            f"(refuted {report['refuted']}, inconclusive {report['inconclusive']}). "
-            f"Trustworthy reconstruction: {report['trustworthy']}"
+            f"\nVerified {report['verified']}/{report['total_claims']} "
+            f"(refuted {report['refuted']}, inconclusive {report['inconclusive']}, "
+            f"observed {report['observed']}, invalidated {report['invalidated']}). "
+            f"Information {report['information']} (trivial {report['trivial_verified']}). "
+            f"Trustworthy: {report['trustworthy']}  Grounded: {report['grounded']}"
         )
     # Non-zero exit if anything was refuted, so CI / agents can gate on it.
     if report["refuted"] > 0:
         sys.exit(2)
+
+
+def _print_results(results: List[Dict[str, Any]]) -> None:
+    symbols = {
+        "VERIFIED": "[VERIFIED]", "REFUTED": "[REFUTED ]", "INCONCLUSIVE": "[INCONCL.]",
+        "OBSERVED": "[OBSERVED]", "INVALIDATED": "[INVALID.]",
+    }
+    for r in results:
+        mark = symbols.get(r["verdict"], r["verdict"])
+        ident = f" #{r['id']}" if r.get("id") else ""
+        w = r.get("weight")
+        weight = f"  w={w}" if w is not None else ""
+        flags = []
+        if r.get("trivial"):
+            flags.append("trivial")
+        if r.get("echoed"):
+            flags.append("echo")
+        if r.get("duplicate"):
+            flags.append("duplicate")
+        if (r.get("evidence") or {}).get("self_referential"):
+            flags.append("self-referential")
+        flag = f"  [{', '.join(flags)}]" if flags else ""
+        print(f"{mark} {r['kind']}{ident}{weight}{flag}")
+        print(f"           {r['detail']}")
+        ev = r.get("evidence") or {}
+        if r["verdict"] == "OBSERVED":
+            val = ev.get("actual") or ev.get("registers") or ev.get("raw")
+            print(f"           observed: {val}")
+        elif r["verdict"] == "REFUTED" and ev.get("nearest_offset_of_expected"):
+            print(f"           expected bytes actually at: {ev['nearest_offset_of_expected']}")
+        if r.get("note"):
+            print(f"           note (unverified): {r['note']}")
 
 
 def cmd_audit_boundary(args: argparse.Namespace) -> None:
@@ -470,6 +511,9 @@ def main() -> None:
     p_recon.add_argument("--model", help="Model name (defaults to OPENAI_MODEL or gpt-4o)")
     p_recon.add_argument("--api-key", help="API key (defaults to OPENAI_API_KEY env)")
     p_recon.add_argument("--base-url", help="API base URL (defaults to OPENAI_BASE_URL env)")
+    p_recon.add_argument("--samples", type=int, default=1, help="Proposals per round; the verifier selects among them")
+    p_recon.add_argument("--min-information", type=float, default=1.0, help="Weight sum verified claims must reach to count as grounded")
+    p_recon.add_argument("--temperature", type=float, default=0.7, help="Sampling temperature for the live proposer")
     p_recon.add_argument("--mock", action="store_true", help="Offline demo proposer, no network")
     p_recon.add_argument("--json", action="store_true", help="Output the full JSON run report")
     p_recon.set_defaults(func=cmd_reconstruct)
@@ -482,6 +526,7 @@ def main() -> None:
     p_verify.add_argument("target", help="File path or hex stream to check claims against")
     p_verify.add_argument("--claim", help="A single claim as a JSON object, or a JSON array of claims")
     p_verify.add_argument("--claims-file", help="Path to a JSON file with a claim object or array")
+    p_verify.add_argument("--min-information", type=float, default=1.0, help="Weight sum verified claims must reach to count as grounded")
     p_verify.add_argument("--json", action="store_true", help="Output the full JSON verdict report")
     p_verify.set_defaults(func=cmd_verify)
 
