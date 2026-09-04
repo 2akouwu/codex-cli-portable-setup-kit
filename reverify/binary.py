@@ -183,7 +183,11 @@ def _parse_with_lief(data: bytes) -> Optional[BinaryInfo]:
             f.name: int(f.address) for f in b.exported_functions
             if f.name and not getattr(f, "is_forwarded", False) and int(f.address) > 0
         }
-        info.export_forwarders = [f.name for f in b.exported_functions if f.name and getattr(f, "is_forwarded", False)]
+        # lief 1.x reports forwarded exports (lpk.dll -> GDI32.*) as plain symbols at address 0
+        info.export_forwarders = [
+            f.name for f in b.exported_functions
+            if f.name and (getattr(f, "is_forwarded", False) or int(f.address) == 0)
+        ]
         info.libraries = list(info.imports.keys())
         return info
 
