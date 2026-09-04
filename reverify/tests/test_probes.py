@@ -59,6 +59,13 @@ def minimal_elf64() -> bytes:
     return bytes(eh)
 
 
+def minimal_elf64_shoff(shoff: int) -> bytes:
+    """minimal_elf64 with the e_shoff slot (file offset 0x28, u64) set."""
+    eh = bytearray(minimal_elf64())
+    struct.pack_into("<Q", eh, 0x28, shoff)
+    return bytes(eh)
+
+
 def run_probe(probe, binary):
     """Run one probe on a binary; return (verdict, false_accept_flagged)."""
     info = parse_binary(binary)
@@ -133,6 +140,39 @@ class TestPrologueProbe(unittest.TestCase):
         vd, fa = run_probe(hp.probe_prologue, synthetic_pe(prologue_bytes=b"\x31\xf6"))  # xor esi, esi
         self.assertEqual(vd, REFUTED)
         self.assertFalse(fa)
+
+
+class TestElfShoffProbe(unittest.TestCase):
+    def test_shoff_not_0x1000_refuted(self):
+        vd, fa = run_probe(hp.probe_elf_shoff, minimal_elf64())  # e_shoff == 0
+        self.assertEqual(vd, REFUTED)
+        self.assertFalse(fa)
+
+    def test_shoff_0x1000_verified_not_false_accept(self):
+        vd, fa = run_probe(hp.probe_elf_shoff, minimal_elf64_shoff(0x1000))
+        self.assertEqual(vd, VERIFIED)
+        self.assertFalse(fa)  # the value really is in the e_shoff slot
+
+    def test_elf32_not_applicable(self):
+        data = bytearray(minimal_elf64())
+        data[4] = 1  # EI_CLASS == 1 (ELF32): the ELF64 prior is unsound
+        self.assertIsNone(hp.probe_elf_shoff(parse_binary(bytes(data)), bytes(data)))
+
+    def test_pe_not_applicable(self):
+        pe = synthetic_pe()
+        self.assertIsNone(hp.probe_elf_shoff(parse_binary(pe), pe))
+
+    def test_guard_flags_contradictory_verdict(self):
+        data = minimal_elf64()  # e_shoff slot is 0, not 0x1000
+        info = parse_binary(data)
+        claim, guard = hp.probe_elf_shoff(info, data)
+        # Simulate a buggy verifier: VERIFIED although the raw slot is 0.
+        self.assertFalse(guard(VERIFIED, {}))
+        # A consistent verdict (the slot really is 0x1000) is not a false accept.
+        ok = minimal_elf64_shoff(0x1000)
+        claim2, guard2 = hp.probe_elf_shoff(parse_binary(ok), ok)
+        self.assertTrue(guard2(VERIFIED, {}))
+        self.assertTrue(guard2(REFUTED, {}))
 
 
 class TestGuardInversion(unittest.TestCase):

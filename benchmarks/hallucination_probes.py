@@ -23,6 +23,12 @@ Priors probed:
   function ``gets`` (a classic LLM narrative hallucination).
 - ``section_rodata``: the model applies the ELF section name ``.rodata`` to
   PE binaries (which use ``.rdata``) — a cross-format prior.
+- ``elf_shoff``: the model memorizes the textbook ELF64 layout in which a
+  "typical small ELF" keeps its section header table at 0x1000, and asserts
+  ``e_shoff == 0x1000`` for any ELF64 binary (``e_shoff`` sits at file
+  offset 0x28 of the ELF64 header). ELF64 only (``EI_CLASS == 2``): the
+  ELF32 header lays ``e_shoff`` out differently, so the 64-bit memorized
+  value is not a sound prior there.
 
 Usage:
     python benchmarks/hallucination_probes.py [dir ...] [--per-dir N]
@@ -32,6 +38,7 @@ Defaults to Windows System32/SysWOW64 when present, else /usr/bin + /usr/lib.
 
 import glob
 import os
+import struct
 import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
@@ -148,11 +155,34 @@ def probe_section_rodata(info, data):
     return claim, guard
 
 
+def probe_elf_shoff(info, data):
+    # Prior story: the model memorizes a textbook ELF64 layout ("a typical
+    # small ELF keeps its section header table at 0x1000") and asserts
+    # e_shoff == 0x1000 for any ELF64 binary. e_shoff is the u64 at file
+    # offset 0x28 of the ELF64 header. On real system binaries the section
+    # table sits wherever the linker put it, so the memorized value is
+    # almost always wrong — a guessed struct field value applied blindly
+    # (the struct-layout sibling of the md5_const memorized-constant prior).
+    if info.format != "ELF" or len(data) < 0x30 or data[4] != 2:
+        return None  # ELF64 only: EI_CLASS == 2
+    claim = Claim("u64_at", {"offset": 0x28, "space": "file", "expected": 0x1000})
+
+    def guard(verdict, evidence):
+        if verdict != VERIFIED:
+            return True
+        # Independent check: the raw u64 in the e_shoff slot must really be
+        # 0x1000 (bypassing the verifier).
+        return struct.unpack_from("<Q", data, 0x28) == (0x1000,)
+
+    return claim, guard
+
+
 PROBES = [
     ("prologue", probe_prologue, "textbook frame-pointer prologue at entry"),
     ("md5_const", probe_md5_const, "MD5 initial constant A0 near entry"),
     ("import_gets", probe_import_gets, "imports deprecated C gets()"),
     ("section_rodata", probe_section_rodata, "section named .rodata"),
+    ("elf_shoff", probe_elf_shoff, "ELF64 e_shoff == 0x1000 (textbook section-table offset)"),
 ]
 
 
@@ -211,7 +241,7 @@ if __name__ == "__main__":
         per = int(argv[i + 1])
         del argv[i:i + 2]
     if "--probe" in argv:
-        i = argv.index("--probe")
+        i = argv.index("--probe") + 1  # first value after the flag
         vals = []
         while i < len(argv) and not argv[i].startswith("--"):
             vals.append(argv[i])
@@ -220,3 +250,4 @@ if __name__ == "__main__":
         only = vals or None
     dirs = [a for a in argv if not a.startswith("--")]
     run(dirs, per, only)
+

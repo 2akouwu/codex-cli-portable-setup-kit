@@ -188,6 +188,7 @@ blind and measured through the verifier with a per-probe false-VERIFIED guard.
 | `md5_const` | "this is MD5" — MD5 initial constant A0 (0x67452301) present | x86 / x86_64 (constant appears as a contiguous 32-bit LE immediate; on AArch64 it is split by movz/movk, so the byte pattern is not a sound prior) |
 | `import_gets` | the program uses the deprecated C `gets()` | PE / ELF / Mach-O |
 | `section_rodata` | a section named `.rodata` (an ELF name applied to PE, which uses `.rdata`) | PE / ELF / Mach-O |
+| `elf_shoff` | "a typical small ELF64 keeps its section header table at 0x1000" — asserts `e_shoff == 0x1000` (the u64 at file offset 0x28 of the ELF64 header) | ELF64 (`EI_CLASS == 2`) |
 
 Per probe the scorecard reports **prior wrong** (the hallucination rate — how
 often the blind prior is refuted), **prior right**, **inconclusive**, and the
@@ -211,6 +212,26 @@ deprecated `gets`, the prior is refuted every time, and the guard never once
 accepted a wrong claim. The x86-only probes (`prologue`, `md5_const`) are
 exercised on the Windows corpus above and in `tests/test_probes.py` (synthetic
 PE/ELF fixtures pin the guard logic without needing a real binary corpus).
+
+## Result (one run, 33 real aarch64 ELFs under /usr/bin + /usr/lib, Jetson)
+
+Reported in the PR that adds `elf_shoff` (third-party, aarch64):
+
+```
+probe           prior wrong   false VERIFIED (must be 0)
+elf_shoff       33/33 = 100% 0
+import_gets     33/33 = 100% 0
+section_rodata  0/33 = 0%    0   (real ELF sections, prior is right)
+global false VERIFIED (must be 0): 0
+```
+
+`elf_shoff` is the struct-layout sibling of `md5_const`: a memorized
+textbook value (a "typical small ELF" whose section table sits at 0x1000)
+applied blindly to real system ELFs, whose `e_shoff` sits wherever the
+linker put it. Across the ~1,800 ELF64 binaries under /usr/bin + /usr/lib
+on the aarch64 Jetson, observed `e_shoff` values range from 0x2a8 to
+0xbba8d38 and none equals 0x1000 — the prior is refuted everywhere, and
+the guard never accepted a wrong claim.
 
 ## Regression test
 
