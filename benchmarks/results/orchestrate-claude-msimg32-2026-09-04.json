@@ -1,0 +1,171 @@
+{
+  "goal": "Establish checkable facts about this DLL: the real instructions at the entry point, two imports it actually uses, one export, and one typed value read from the headers. Prefer observe-then-assert. Hand off when you have a few verified facts.",
+  "done": false,
+  "summary": "",
+  "sessions": 2,
+  "rollovers": [
+    {
+      "reason": "turn cap 4",
+      "tokens": 1458,
+      "session": 1
+    },
+    {
+      "reason": "turn cap 4",
+      "tokens": 308,
+      "session": 2
+    }
+  ],
+  "facts": 15,
+  "refuted": 2,
+  "established": [
+    "observed u32_at@0x3c = 0xf8",
+    "observed bytes_at@0x20 = 00000000000000000000000000000000",
+    "instructions @ 0x11d0: mode=contains = mov push sub mov mov",
+    "observed u32_at@0x100 = 0xbe3d6a23",
+    "u16_at @ 0xfc: value matches = 0x8664",
+    "observed u32_at@0x180 = 0x3640",
+    "observed u32_at@0x184 = 0xac",
+    "observed u32_at@0x188 = 0x36ec",
+    "observed u32_at@0x1e0 = 0x3158",
+    "observed u32_at@0x365c = 0x3668",
+    "observed u32_at@0x3660 = 0x367c",
+    "observed u32_at@0x3664 = 0x3690",
+    "observed u16_at@0xfe = 0x7",
+    "instructions @ 0x11d0: mode=contains = mov push sub mov mov cmp je mov",
+    "instructions @ 0x11d0: mode=contains = mov push sub mov mov cmp je mov"
+  ],
+  "known_false": [
+    "pattern_present @ 0x1000: pattern not at claimed offset pattern=ff 15 ?? ?? ?? ??",
+    "pattern_present @ 0x2000: pattern not at claimed offset pattern=ff 25 ?? ?? ?? ??"
+  ],
+  "checkpoint": {
+    "goal": "Establish checkable facts about this DLL: the real instructions at the entry point, two imports it actually uses, one export, and one typed value read from the headers. Prefer observe-then-assert. Hand off when you have a few verified facts.",
+    "done": [],
+    "todo": [],
+    "decisions": [],
+    "next_step": "",
+    "notes": [],
+    "sessions": 2,
+    "rollovers": [
+      {
+        "reason": "turn cap 4",
+        "tokens": 1458,
+        "session": 1
+      },
+      {
+        "reason": "turn cap 4",
+        "tokens": 308,
+        "session": 2
+      }
+    ],
+    "updated": "2026-09-04T14:25:51Z"
+  },
+  "checkpoint_path": "C:\\Users\\weiyo\\.claude\\jobs\\9032ed53\\tmp\\orch-claude\\sessions\\claude-demo\\checkpoint.json",
+  "ledger_path": "C:\\Users\\weiyo\\.claude\\jobs\\9032ed53\\tmp\\orch-claude\\ledger\\679c78c847abfaacb9002bc4.json",
+  "log": [
+    {
+      "session": 1,
+      "turn": 1,
+      "claims": 5,
+      "verified": 0,
+      "refuted": 0,
+      "restated": 0,
+      "added": {
+        "facts": 2,
+        "observed": 2,
+        "refuted": 0
+      }
+    },
+    {
+      "session": 1,
+      "turn": 2,
+      "claims": 5,
+      "verified": 2,
+      "refuted": 0,
+      "restated": 0,
+      "added": {
+        "facts": 3,
+        "observed": 1,
+        "refuted": 0
+      }
+    },
+    {
+      "session": 1,
+      "turn": 3,
+      "claims": 4,
+      "verified": 0,
+      "refuted": 0,
+      "restated": 0,
+      "added": {
+        "facts": 4,
+        "observed": 4,
+        "refuted": 0
+      }
+    },
+    {
+      "session": 1,
+      "turn": 4,
+      "claims": 3,
+      "verified": 0,
+      "refuted": 0,
+      "restated": 0,
+      "added": {
+        "facts": 3,
+        "observed": 3,
+        "refuted": 0
+      }
+    },
+    {
+      "session": 2,
+      "turn": 1,
+      "claims": 4,
+      "verified": 0,
+      "refuted": 0,
+      "restated": 0,
+      "added": {
+        "facts": 1,
+        "observed": 1,
+        "refuted": 0
+      }
+    },
+    {
+      "session": 2,
+      "turn": 2,
+      "claims": 2,
+      "verified": 2,
+      "refuted": 0,
+      "restated": 0,
+      "added": {
+        "facts": 2,
+        "observed": 0,
+        "refuted": 0
+      }
+    },
+    {
+      "session": 2,
+      "turn": 3,
+      "claims": 2,
+      "verified": 0,
+      "refuted": 0,
+      "restated": 0,
+      "added": {
+        "facts": 0,
+        "observed": 0,
+        "refuted": 0
+      }
+    },
+    {
+      "session": 2,
+      "turn": 4,
+      "claims": 2,
+      "verified": 0,
+      "refuted": 2,
+      "restated": 0,
+      "added": {
+        "facts": 0,
+        "observed": 0,
+        "refuted": 2
+      }
+    }
+  ]
+}

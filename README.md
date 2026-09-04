@@ -220,6 +220,12 @@ reverify orchestrate target.exe --goal "map the loader: entry, imports it really
   agent that lives in someone else's context (Claude Code, Cursor) can do the same before
   its host compacts or clears.
 
+A real run with the Claude Agent SDK driver on `msimg32.dll` (2 sessions × 4 turns, no API
+key): 15 grounded facts across the rollover — the real entry-point instructions, the machine
+type, header pointers read through typed observes — 2 guessed call-stub patterns refuted, 0
+false accepts, and the second session started from the ledger, not from a summary
+([`benchmarks/results/orchestrate-claude-msimg32-2026-09-04.json`](benchmarks/results/orchestrate-claude-msimg32-2026-09-04.json)).
+
 ## The semantic layer: functions, calls and cross-references
 
 Bytes, instructions, imports and emulation are what the deterministic core can judge on

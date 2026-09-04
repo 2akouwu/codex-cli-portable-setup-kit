@@ -246,7 +246,9 @@ class ClaudeAgentSDKDriver:
                     self._session_id = msg.session_id
                     usage = getattr(msg, "usage", None) or {}
                     if isinstance(usage, dict):
-                        self._tokens = int(usage.get("input_tokens", 0) or 0) + int(usage.get("output_tokens", 0) or 0)
+                        # the context actually sent: fresh + cache-created + cache-read input, plus output
+                        self._tokens = sum(int(usage.get(k, 0) or 0) for k in
+                                           ("input_tokens", "cache_creation_input_tokens", "cache_read_input_tokens", "output_tokens"))
             return "\n".join(text)
 
         return asyncio.run(go())
