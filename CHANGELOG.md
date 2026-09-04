@@ -44,6 +44,9 @@ could: the pure decoder was refuting correct claims.
 
 ### Fixed
 
+- **Mach-O exports now carry addresses** (`BinaryInfo.export_rvas`; caught by the corpus
+  benchmark on macOS, which found no exported function to probe): `function_at` by name and
+  the export-table oracle for the semantic engine work on Mach-O too.
 - **`section_present` judges every section with the claimed name** (caught by the matrix
   gate on macOS arm64): Mach-O carries `__TEXT,__const` and `__DATA_CONST,__const`, and a
   true claim about the second was refuted because only the first was compared. A refutation

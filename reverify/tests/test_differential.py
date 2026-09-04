@@ -133,6 +133,22 @@ class TestDifferentialParsing(unittest.TestCase):
             self.skipTest("no binaries the pure parser reads on this platform (Mach-O needs lief)")
         print(f"\n  [differential] pure==lief on {checked} real binaries")
 
+    def test_exports_carry_addresses(self):
+        """Every format that lists exports must also give their addresses (function starts) —
+        the macOS corpus benchmark found Mach-O exports without addresses."""
+        checked = 0
+        for path in CORPUS:
+            info = parse_binary(_read(path), prefer="lief")
+            if info.error or not info.exports:
+                continue
+            self.assertTrue(info.export_rvas, f"{os.path.basename(path)}: exports listed but no addresses")
+            for name, rva in list(info.export_rvas.items())[:8]:
+                self.assertIn(name, info.exports)
+                self.assertGreater(rva, 0, f"{os.path.basename(path)}: {name}")
+            checked += 1
+        if checked == 0:
+            self.skipTest("no exporting binaries in the corpus")
+
     def test_pure_imports_never_invented(self):
         """Pure parser may miss exotic imports, but must never invent a named one lief lacks."""
         for path in CORPUS:

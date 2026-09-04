@@ -237,6 +237,10 @@ def _parse_with_lief(data: bytes) -> Optional[BinaryInfo]:
         if funcs:
             info.imports["*"] = funcs
         info.exports = [f.name for f in m.exported_functions if f.name]
+        info.export_rvas = {
+            f.name: int(f.address) - (info.image_base or 0) for f in m.exported_functions
+            if f.name and int(f.address) > 0
+        }
         info.libraries = [l.name for l in getattr(m, "libraries", [])]
         return info
 
