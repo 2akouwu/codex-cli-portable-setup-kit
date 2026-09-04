@@ -1,0 +1,54 @@
+name: model eval (on demand)
+
+# The closed loop with a real model. Opt-in: add an OPENAI_API_KEY secret (and optionally
+# OPENAI_BASE_URL / OPENAI_MODEL for any OpenAI-compatible endpoint), then run this workflow.
+on:
+  workflow_dispatch:
+    inputs:
+      model:
+        description: "Model name (defaults to OPENAI_MODEL secret or gpt-4o)"
+        required: false
+        default: ""
+      per_dir:
+        description: "Binaries per corpus directory"
+        required: false
+        default: "5"
+      rounds:
+        description: "Round cap per binary"
+        required: false
+        default: "3"
+
+permissions:
+  contents: read
+
+jobs:
+  model-loop:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONUTF8: "1"
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      OPENAI_BASE_URL: ${{ secrets.OPENAI_BASE_URL }}
+      OPENAI_MODEL: ${{ inputs.model != '' && inputs.model || secrets.OPENAI_MODEL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python -m pip install -e ".[full]"
+      - name: Plumbing check (offline demo proposer)
+        run: python benchmarks/model_loop.py --mock --per-dir 2 --markdown
+      - name: Closed loop with the configured model
+        shell: bash
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "No OPENAI_API_KEY secret configured; skipping the model run." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          python benchmarks/model_loop.py --per-dir "${{ inputs.per_dir }}" --rounds "${{ inputs.rounds }}" \
+            --json model-loop.json --markdown | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: model-loop
+          path: model-loop.json
+          if-no-files-found: ignore

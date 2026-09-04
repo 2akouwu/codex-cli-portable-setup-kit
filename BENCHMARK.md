@@ -67,6 +67,37 @@ The gate is the same everywhere: one false VERIFIED fails the build. Known gap: 
 arm64 macOS runner lief reads the first slice of each universal binary, which is x86_64,
 so the arm64 Mach-O slices are not yet exercised.
 
+## The verifier as a classifier: known-true vs known-false claims of every kind
+
+`benchmarks/verifier_matrix.py` is the balanced counterpart to the prior probe: for every
+binary and every claim kind it builds one claim that is *known true* (from the bytes or the
+parsed tables) and one that is *known false* (a controlled mutation that provably does not
+hold), and tallies a confusion matrix per kind. Two gates: **false VERIFIED must be 0** for
+every kind, and a known-true byte-level or structural claim must **never** be refuted.
+*Unknown* (INCONCLUSIVE) is reported separately and never counted as a pass.
+
+Windows 11 reference record, 50 binaries, engines installed
+([`results/matrix-windows-x86_64-2026-09-04.json`](benchmarks/results/matrix-windows-x86_64-2026-09-04.json)):
+
+| kind | n | TP | FN | unk(true) | **FP** | TN | unk(false) |
+|---|---|---|---|---|---|---|---|
+| bytes_at | 50 | 50 | 0 | 0 | **0** | 50 | 0 |
+| u32_at | 50 | 50 | 0 | 0 | **0** | 50 | 0 |
+| u64_at | 50 | 50 | 0 | 0 | **0** | 50 | 0 |
+| string_present | 50 | 50 | 0 | 0 | **0** | 50 | 0 |
+| pattern_present | 39 | 39 | 0 | 0 | **0** | 39 | 0 |
+| section_present | 50 | 50 | 0 | 0 | **0** | 50 | 0 |
+| import_present | 45 | 45 | 0 | 0 | **0** | 45 | 0 |
+| export_present | 48 | 48 | 0 | 0 | **0** | 48 | 0 |
+| instructions | 45 | 45 | 0 | 0 | **0** | 45 | 0 |
+| function_at | 48 | 48 | 0 | 0 | **0** | 0 | 48 |
+
+**0 false VERIFIED of 475 known-false claims** (95% upper bound 0.8%), 0 missed known-true
+claims. The `function_at` false claims are *unknown*, not refuted, because no analysis
+engine was installed for that run — the honest answer; with angr they are refuted. CI runs
+this matrix in **every** job (three platforms, Python 3.9 and 3.13, with and without the
+engines); each record is an artifact (`matrix-<os>-py<ver>-<deps>`).
+
 ### Third-party replication: aarch64 Linux ELF (Jetson)
 
 Reported in [#5](https://github.com/2akouwu/reverify/pull/5) by @IMGillusion — 19 aarch64

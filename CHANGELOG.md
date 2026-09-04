@@ -19,6 +19,19 @@ could: the pure decoder was refuting correct claims.
   default corpora (Windows System32/SysWOW64, Linux /usr/bin + multiarch /usr/lib, macOS
   /bin + /usr/bin), deterministic sampling. CI runs it on Linux, Windows and macOS on every
   push and uploads the record; reference runs are committed under `benchmarks/results/`.
+- **Verifier confusion matrix** (`benchmarks/verifier_matrix.py`): one known-true and one
+  known-false claim of every kind per binary, tallied per kind (TP/FN/FP/TN/unknown); gates
+  on 0 false VERIFIED and 0 refuted known-true byte/structural claims; runs in every CI job.
+  Reference record: 50 binaries, 475 known-false claims, 0 false VERIFIED.
+- **Model-in-the-loop benchmark** (`benchmarks/model_loop.py`, `model-eval.yml`): the closed
+  loop against any OpenAI-compatible endpoint — grounded rate, rounds, hallucinations caught,
+  restatements rejected; `--mock` for plumbing; on-demand workflow when an `OPENAI_API_KEY`
+  secret exists.
+- **Replication package**: `benchmarks/README.md` and a pinned `benchmarks/Dockerfile`
+  (engines + binutils, suite + both gated benchmarks).
+- **SLSA build provenance** attestation for the sdist and wheel in the release workflow.
+- **Mach-O universal binaries**: lief now judges the slice matching the host CPU (arm64 on
+  arm64 Macs) instead of always the first slice.
 - **Verdict receipts**: every `verify_all` report (CLI `--json`, MCP `re_verify_claim`)
   carries `receipt` — binary SHA-256 and size, reverify version, Python, platform, which
   engine judged each subsystem, timestamp, replay command.

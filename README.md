@@ -147,9 +147,16 @@ Everything above is checkable without trusting the author:
   machine-readable record — SHA-256 of every binary, verdicts, tool versions — as an
   artifact; reference runs live in [`benchmarks/results/`](benchmarks/results/), and a
   third-party aarch64 replication is in [BENCHMARK.md](BENCHMARK.md).
+- **The verifier is measured like a classifier**: for every claim kind, known-true and
+  known-false claims on real binaries give a confusion matrix — 0 false VERIFIED of 475
+  known-false claims, 0 known-true claims missed — gated in every CI job.
 - **Every verdict carries a receipt**: `reverify verify --json` (and `re_verify_claim`)
   include the binary's SHA-256, the reverify version and which engines judged, so a report
-  can be handed over and replayed rather than believed.
+  can be handed over and replayed rather than believed. Releases ship with a SLSA build
+  provenance attestation.
+- **A replication package**: [`benchmarks/README.md`](benchmarks/README.md) — one command
+  per benchmark, a pinned Dockerfile, expected output, and how to submit a run; a
+  model-in-the-loop benchmark anyone can run against any OpenAI-compatible endpoint.
 
 ## The ledger: state that survives a context reset
 

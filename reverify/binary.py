@@ -209,8 +209,21 @@ def _parse_with_lief(data: bytes) -> Optional[BinaryInfo]:
         return info
 
     if fmt in ("MACHO", "MACH_O"):
-        # lief returns a FatBinary; take the first slice.
+        # lief returns a FatBinary: prefer the slice that matches the host CPU so an
+        # arm64 Mac judges its arm64 code (and CI on arm64 runners exercises it);
+        # fall back to the first slice.
         m = b.at(0) if hasattr(b, "at") else b
+        if hasattr(b, "at"):
+            import platform as _platform
+            host = _platform.machine().lower()
+            want = "ARM64" if host in ("arm64", "aarch64") else ("X86_64" if host in ("x86_64", "amd64") else None)
+            try:
+                for cand in b:
+                    if want and _enum_name(cand.header.cpu_type) == want:
+                        m = cand
+                        break
+            except Exception:
+                pass
         arch, bits = _MACHO_CPU.get(_enum_name(m.header.cpu_type), ("unknown", 0))
         info = BinaryInfo(
             format="MachO", arch=arch, bits=bits,
