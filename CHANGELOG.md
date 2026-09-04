@@ -2,6 +2,21 @@
 
 All notable changes to this project are documented here.
 
+## [Unreleased]
+
+### Added
+
+- **`exebench` claim kind** (PR #11 by @IMGillusion, issue #2): compile a candidate C
+  program and re-run it against recorded I/O pairs — the ExeBench / LLM4Decompile
+  re-executability metric; a pass is *tested, not proven* (TESTED tier, weight scales with
+  cases passed), a mismatch is refuted with the failing case as witness. **Runs native
+  code, so it is off by default**: `REVERIFY_ALLOW_NATIVE_EXEC=1` opts in (never enable it
+  for an MCP server reachable by untrusted agents without a sandbox); without a C compiler
+  it is INCONCLUSIVE. Works with MinGW/MSVC `.exe` outputs; temp dirs are cleaned up.
+- **Multi-prior hallucination scorecard** (`benchmarks/hallucination_probes.py`, PR #10 by
+  @IMGillusion, issue #4): four blind priors (textbook prologue, MD5 constant, `gets()`
+  import, `.rodata` on PE) with an independent re-check of every VERIFIED verdict.
+
 ## [0.10.0] - 2026-09-04
 
 Evidence at top spec. Numbers used to be run on the author's Windows machine and typed

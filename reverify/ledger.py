@@ -233,7 +233,7 @@ def tier_of(r: Dict[str, Any]) -> Optional[str]:
         kind = r.get("kind")
         if kind == "prove_equiv":
             return PROVEN
-        if kind == "behavior_equiv":
+        if kind in ("behavior_equiv", "exebench"):
             return TESTED
         if kind in SEMANTIC_KINDS:
             return DERIVED
