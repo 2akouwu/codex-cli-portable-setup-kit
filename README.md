@@ -376,6 +376,14 @@ function boundaries, the call graph and cross-references as `function_at` / `cal
 export table as an independent oracle for the engine. Tested with 208 unit tests, so the
 verifier is not just trusted, it is checked.
 
+## Community
+
+Reverify is shared with the open-source community at **[LINUX DO](https://linux.do)** — a
+place for developers to build and critique in the open. Questions, targets to test, and
+"you accepted a wrong claim here" reports are all welcome, there or in the issues.
+
+本專案在 **[LINUX DO](https://linux.do)** 開源社區分享與交流，歡迎討論、丟目標來測、或直接打臉。
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
