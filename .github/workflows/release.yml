@@ -43,6 +43,9 @@ jobs:
           path: dist/
 
   publish:
+    # Skipped until the Trusted Publisher is registered on PyPI; then:
+    #   gh variable set PYPI_TRUSTED_PUBLISHING --body true
+    if: vars.PYPI_TRUSTED_PUBLISHING == 'true'
     needs: build
     runs-on: ubuntu-latest
     environment: pypi
