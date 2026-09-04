@@ -1,0 +1,8 @@
+# Only the Actions pins. The package itself has no required dependencies, so
+# package-update PRs would be pure noise for contributors and maintainer alike.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

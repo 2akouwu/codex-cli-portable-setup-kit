@@ -1,0 +1,62 @@
+name: CI
+
+# Contributors do nothing beyond opening the PR: this runs, and a green ci-ok is the only gate.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: tests (${{ matrix.os }}, py${{ matrix.python }}, ${{ matrix.deps }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # The pure-Python core must pass everywhere with nothing installed ...
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python: ["3.9", "3.13"]
+        deps: [pure]
+        include:
+          # ... and the mature engines (capstone, unicorn, lief, z3) must upgrade it cleanly.
+          - { os: ubuntu-latest, python: "3.13", deps: full }
+          - { os: windows-latest, python: "3.13", deps: full }
+          - { os: macos-latest, python: "3.13", deps: full }
+    env:
+      PYTHONUTF8: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install (pure-Python core)
+        if: matrix.deps == 'pure'
+        run: python -m pip install -e .
+      - name: Install (with engines)
+        if: matrix.deps == 'full'
+        run: python -m pip install -e ".[full]"
+      - name: Engines in use
+        run: reverify backends
+      - name: Tests
+        run: python -m unittest discover -s reverify/tests -p "test_*.py"
+
+  # Single required check for branch protection, so the matrix can change freely.
+  ci-ok:
+    name: ci-ok
+    if: always()
+    needs: [tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: All test jobs passed
+        run: |
+          echo "tests: ${{ needs.tests.result }}"
+          test "${{ needs.tests.result }}" = "success"
