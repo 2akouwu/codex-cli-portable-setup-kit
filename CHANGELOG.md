@@ -4,6 +4,17 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-09-05
+
+The ledger already keeps grounded facts across a context reset. This release decides *when*
+to reset and makes the reset lossless on the four agent CLIs people actually use — Claude
+Code, Codex CLI, Gemini CLI and OpenCode. Built-in compaction rewrites the conversation into
+a model-written summary and keeps going, so the model's own mistakes ride forward as if they
+were state. Instead, the session is *replaced*: at the context threshold the guard asks the
+model to hand off to a file with a fixed shape, verifies the file was really written before it
+issues a receipt, and the fresh session opens on that file plus the user's verbatim request —
+never a paraphrase. Same contract everywhere; per-CLI adapters cover only what differs.
+
 ### Added
 
 - **Rollover for any agent CLI** (`reverify/rollover_harness.py`, `reverify rollover`): one

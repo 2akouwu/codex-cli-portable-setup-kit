@@ -1,3 +1,3 @@
 """Single source of the package version (importable as a package or flat)."""
 
-__version__ = "0.10.0"
+__version__ = "0.11.0"
