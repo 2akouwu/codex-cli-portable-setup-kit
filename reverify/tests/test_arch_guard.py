@@ -38,7 +38,7 @@ class TestDisassemblerGuard(unittest.TestCase):
             self.assertTrue(Disassembler(arch="x86_64").disassemble(bytes.fromhex("90c3")))
 
     def test_verifier_says_inconclusive_not_verified(self):
-        data = b"\x00" * 16 + ARM64_SUB_SP + b"\x00" * 16
+        data = bytes.fromhex("31c0c3") + b"\x00" * 13 + ARM64_SUB_SP + b"\x00" * 16   # xor eax, eax; ret; ...
         with mock.patch.object(Disassembler, "_init_capstone", _no_capstone):
             v = Verifier(data)
             # the junk x86 decode of these bytes is "db 0xff; add eax, eax" — a wrong 'add' claim must not verify
@@ -47,8 +47,49 @@ class TestDisassemblerGuard(unittest.TestCase):
             self.assertIn("capstone", r["detail"])
             r2 = v.verify(Claim("instructions", {"offset": 16, "arch": "arm64", "mnemonics": ["sub"]}))
             self.assertEqual(r2["verdict"], INCONCLUSIVE)   # unknown, not refuted either
-            r3 = v.verify(Claim("instructions", {"offset": 0, "arch": "x86_64", "mnemonics": ["add"]}))
-            self.assertIn(r3["verdict"], (VERIFIED, "REFUTED"))  # x86 path unaffected
+            r3 = v.verify(Claim("instructions", {"offset": 0, "arch": "x86_64", "mnemonics": ["xor", "ret"]}))
+            self.assertEqual(r3["verdict"], VERIFIED)              # x86 path unaffected
+            r4 = v.verify(Claim("instructions", {"offset": 0, "arch": "x86_64", "mnemonics": ["add"]}))
+            self.assertEqual(r4["verdict"], "REFUTED")
+
+
+class TestPureDecoderHonesty(unittest.TestCase):
+    """The pure decoder decodes what it knows, says ``db`` for the rest, and the
+    verifier treats ``db`` as unknown — never as grounds for a refutation."""
+
+    def test_prologue_and_rex_forms_decode(self):
+        with mock.patch.object(Disassembler, "_init_capstone", _no_capstone):
+            d = Disassembler(arch="x86_64")
+            text = [f"{i.mnemonic} {i.op_str}".strip() for i in d.disassemble(bytes.fromhex("554889e5"))]
+            self.assertEqual(text, ["push rbp", "mov rbp, rsp"])
+            self.assertEqual([f"{i.mnemonic} {i.op_str}" for i in d.disassemble(bytes.fromhex("4831c0"))], ["xor rax, rax"])
+            self.assertEqual([f"{i.mnemonic} {i.op_str}" for i in d.disassemble(bytes.fromhex("4d89c8"))], ["mov r8, r9"])
+            self.assertEqual([f"{i.mnemonic} {i.op_str}" for i in d.disassemble(bytes.fromhex("31c0"))], ["xor eax, eax"])
+            self.assertEqual([i.mnemonic for i in Disassembler(arch="x86").disassemble(bytes.fromhex("55"))], ["push"])
+            self.assertEqual(Disassembler(arch="x86").disassemble(bytes.fromhex("55"))[0].op_str, "ebp")
+
+    def test_memory_forms_and_unknown_opcodes_are_db_not_guesses(self):
+        with mock.patch.object(Disassembler, "_init_capstone", _no_capstone):
+            d = Disassembler(arch="x86_64")
+            for hexcode in ("8b45f8", "0f1f440000", "488d0500000000"):
+                code = bytes.fromhex(hexcode)
+                insns = d.disassemble(code)
+                self.assertEqual(sum(i.size for i in insns), len(code), hexcode)   # every byte accounted for
+                self.assertNotIn("mov", [i.mnemonic for i in insns[:1]] if hexcode == "8b45f8" else [], hexcode)
+                self.assertTrue(any(i.mnemonic in ("db", "rex") for i in insns), hexcode)
+
+    def test_verifier_does_not_refute_on_undecodable_bytes(self):
+        data = bytes.fromhex("0f1f440000") + b"\xc3"   # nop dword ptr [rax+rax]; ret
+        with mock.patch.object(Disassembler, "_init_capstone", _no_capstone):
+            v = Verifier(data)
+            right = v.verify(Claim("instructions", {"offset": 0, "mnemonics": ["nop"]}))
+            wrong = v.verify(Claim("instructions", {"offset": 0, "mnemonics": ["call"]}))
+            self.assertEqual(right["verdict"], INCONCLUSIVE)     # not verified from junk ...
+            self.assertEqual(wrong["verdict"], INCONCLUSIVE)     # ... and not refuted from junk either
+            self.assertIn("capstone", wrong["detail"])
+            # bytes the pure decoder does understand are still judged normally
+            ok = v.verify(Claim("instructions", {"offset": 5, "mnemonics": ["ret"]}))
+            self.assertEqual(ok["verdict"], VERIFIED)
 
 
 class TestEmulatorGuard(unittest.TestCase):

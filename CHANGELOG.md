@@ -2,6 +2,32 @@
 
 All notable changes to this project are documented here.
 
+## [0.9.2] - 2026-09-04
+
+The first CI run (six pure-Python jobs, no engines) caught what a maintainer machine
+with everything installed never could: the pure decoder was refuting correct claims.
+
+### Fixed
+
+- **Pure decoder never refutes on bytes it cannot decode.** In pure mode (no capstone)
+  an `instructions` claim whose window contains bytes the fallback does not understand
+  is now `INCONCLUSIVE` with an install hint — not `REFUTED` (and never `VERIFIED`).
+- **Pure decoder understands the common x64 forms**: the REX prefix is consumed as part
+  of the instruction (`48 89 e5` is `mov rbp, rsp`, r8–r15 named), `push`/`pop` use
+  64-bit registers in long mode (`push rbp`, not `push ebp`), register-direct
+  `mov`/`add`/`sub`/`xor` decode, and **memory forms are left as `db` instead of being
+  misread as register forms** (a real mis-decode of `mov eax, [rbp-8]` before). Every byte
+  is still accounted for.
+
+### Added
+
+- **CI** (`.github/workflows/ci.yml`): Linux, Windows and macOS × Python 3.9 and 3.13 with
+  nothing installed, plus Python 3.13 with the engines, aggregated into one required check;
+  a weekly/on-demand angr job; a tag-triggered release workflow that publishes to PyPI via
+  Trusted Publishing; Dependabot for Actions pins only.
+- **Zero-ceremony contributing**: no CLA, no sign-off, no issue-first rule, no checklist;
+  squash merges; CI runs the matrix so contributors don't have to.
+
 ## [0.9.1] - 2026-09-04
 
 ### Fixed
