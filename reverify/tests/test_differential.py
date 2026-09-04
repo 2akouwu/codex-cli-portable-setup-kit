@@ -169,6 +169,27 @@ class TestUnmappedSectionsNeverTranslate(unittest.TestCase):
         self.assertIsNone(info.section_containing_rva(0x10))
         self.assertIsNotNone(info.section(".comment"))       # still listed for section_present
 
+    def test_duplicate_section_names_are_judged_by_address(self):
+        """Mach-O has __TEXT,__const and __DATA_CONST,__const: a true claim about the second
+        must not be refuted because the first was found — caught by the matrix gate on macOS."""
+        from binary import BinaryInfo, Section
+        info = BinaryInfo(format="MachO", arch="arm64", bits=64, image_base=0x100000000)
+        info.sections = [
+            Section("__text", 0x1000, 0x200, 0x200, 0x1000),
+            Section("__const", 0x1200, 0x100, 0x100, 0x1200),
+            Section("__const", 0x4000, 0x100, 0x100, 0x4000),
+        ]
+        v = Verifier(b"\x00" * 0x5000)
+        v._bin_cache = info
+        ok2 = v.verify(Claim("section_present", {"name": "__const", "virtual_address": 0x4000}))
+        ok1 = v.verify(Claim("section_present", {"name": "__const", "virtual_address": 0x1200}))
+        bad = v.verify(Claim("section_present", {"name": "__const", "virtual_address": 0x4010}))
+        self.assertEqual(ok2["verdict"], VERIFIED)
+        self.assertEqual(ok1["verdict"], VERIFIED)
+        self.assertEqual(bad["verdict"], REFUTED)
+        self.assertEqual(bad["evidence"]["candidates"], ["0x1200", "0x4000"])
+        self.assertEqual(v.verify(Claim("section_present", {"name": "__nope"}))["verdict"], REFUTED)
+
 
 @unittest.skipUnless(len(CORPUS) >= 2, "no real-binary corpus on this machine")
 class TestAddressRoundTrip(unittest.TestCase):

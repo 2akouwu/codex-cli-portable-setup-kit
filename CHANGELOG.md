@@ -44,6 +44,14 @@ could: the pure decoder was refuting correct claims.
 
 ### Fixed
 
+- **`section_present` judges every section with the claimed name** (caught by the matrix
+  gate on macOS arm64): Mach-O carries `__TEXT,__const` and `__DATA_CONST,__const`, and a
+  true claim about the second was refuted because only the first was compared. A refutation
+  now lists every candidate address.
+- **Reproducible compiled corpus** (`benchmarks/corpus/`): small C libraries built in CI
+  with gcc / clang / MSVC at -O0 and -O2 (manifest with toolchain versions, flags and
+  hashes); both benchmarks run on it, the prologue prior probing exported functions
+  (`--probe exports`), where the prior may legitimately be right at -O0.
 - **Unmapped ELF sections no longer take part in address translation** (caught by the
   Linux CI job the moment the corpus included ELF): `.debug_*`, `.comment`, `.symtab`
   all report virtual address 0, so a file offset inside one of them round-tripped into

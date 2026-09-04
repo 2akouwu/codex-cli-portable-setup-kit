@@ -60,6 +60,29 @@ jobs:
         with:
           name: benchmark-${{ matrix.os }}
           path: bench-*.json
+      - name: MSVC developer environment (Windows)
+        if: matrix.deps == 'full' && runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+      - name: Build the reproducible corpus from source (gcc / clang / cl, -O0 and -O2)
+        if: matrix.deps == 'full'
+        shell: bash
+        run: python benchmarks/corpus/build.py
+      - name: Benchmarks on the compiled corpus (exported functions; the prior may be right at -O0)
+        if: matrix.deps == 'full'
+        shell: bash
+        run: |
+          python benchmarks/prologue_prior.py benchmarks/corpus/build --probe exports --per-dir 60 --json "bench-corpus-${{ matrix.os }}.json" --markdown --fail-on-false-verified | tee -a "$GITHUB_STEP_SUMMARY"
+          python benchmarks/verifier_matrix.py benchmarks/corpus/build --per-dir 60 --json "matrix-corpus-${{ matrix.os }}.json" --fail-on-false-verified | tee -a "$GITHUB_STEP_SUMMARY"
+          cp benchmarks/corpus/build/manifest.json "corpus-manifest-${{ matrix.os }}.json"
+      - name: Keep the corpus manifest (toolchain versions, flags, hashes)
+        if: matrix.deps == 'full'
+        uses: actions/upload-artifact@v4
+        with:
+          name: corpus-${{ matrix.os }}
+          path: |
+            corpus-manifest-*.json
+            bench-corpus-*.json
+            matrix-corpus-*.json
       - name: Verifier confusion matrix on real binaries (false VERIFIED must be 0, known-true never refuted)
         shell: bash
         run: python benchmarks/verifier_matrix.py --per-dir 25 --json "matrix-${{ matrix.os }}-${{ matrix.deps }}.json" --fail-on-false-verified | tee -a "$GITHUB_STEP_SUMMARY"

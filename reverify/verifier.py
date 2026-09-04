@@ -729,18 +729,26 @@ class Verifier:
         bad = self._not_parseable(info)
         if bad:
             return bad
-        sec = info.section(str(p["name"]))
+        name = str(p["name"])
+        # Mach-O (and some ELF) binaries carry several sections with the same name in
+        # different segments (__TEXT,__const and __DATA_CONST,__const): judge against all
+        # of them, not the first one found — caught by the matrix benchmark on macOS.
+        matches = [s for s in info.sections if s.name == name]
         evidence = {"format": info.format, "backend": info.backend, "sections": [s.name for s in info.sections]}
-        if sec is None:
+        if not matches:
             return REFUTED, evidence, "section absent"
+        want = _as_int(p["virtual_address"]) if "virtual_address" in p else None
+        sec = next((s for s in matches if want is None or s.virtual_address == want), None)
+        evidence["candidates"] = [hex(s.virtual_address) for s in matches]
+        if sec is None:
+            return REFUTED, evidence, (f"section present but at a different virtual address "
+                                       f"({', '.join(hex(s.virtual_address) for s in matches)})")
         evidence["section"] = {
             "virtual_address": hex(sec.virtual_address),
             "virtual_size": sec.virtual_size,
             "raw_size": sec.raw_size,
             "offset": sec.offset,
         }
-        if "virtual_address" in p and _as_int(p["virtual_address"]) != sec.virtual_address:
-            return REFUTED, evidence, "section present but virtual address differs"
         return VERIFIED, evidence, "section present"
 
     # -- semantic layer: function boundaries, call graph, xrefs (engine-derived) --
