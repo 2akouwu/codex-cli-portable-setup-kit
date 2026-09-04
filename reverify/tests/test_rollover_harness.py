@@ -458,11 +458,21 @@ class DoctorAndInstructions(Base):
         self.assertTrue(text.startswith("# Agents\nexisting\n\n"))
 
     def test_main_routes_cli_name_and_doctor(self):
-        out = io.StringIO()
-        with redirect_stdout(out):
-            self.assertEqual(rh.main(["doctor"]), 1)      # nothing installed in this temp home -> problems
-            self.assertEqual(rh.main(["instructions"]), 0)
-        self.assertIn("hooks: no", out.getvalue())
+        original = shutil.which
+        try:
+            shutil.which = lambda name: "/bin/claude" if name == "claude" else None   # CI runners have no CLI on PATH
+            out = io.StringIO()
+            with redirect_stdout(out):
+                self.assertEqual(rh.main(["doctor"]), 1)      # claude on PATH but nothing installed -> a problem
+                self.assertEqual(rh.main(["instructions"]), 0)
+            text = out.getvalue()
+            self.assertIn("hooks: no", text)
+            self.assertIn("to install : reverify rollover install --harness claude", text)
+            shutil.which = lambda name: None
+            with redirect_stdout(io.StringIO()):
+                self.assertEqual(rh.main(["doctor"]), 0)      # no CLI at all: nothing to fix
+        finally:
+            shutil.which = original
 
 
 class Selection(Base):
