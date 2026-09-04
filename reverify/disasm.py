@@ -37,12 +37,12 @@ class Disassembler:
     def _init_capstone(self) -> None:
         try:
             import capstone
-            if "64" in self.arch or "x64" in self.arch or "amd64" in self.arch:
-                self._capstone_cs = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_64)
-            elif "arm64" in self.arch or "aarch64" in self.arch:
+            if "arm64" in self.arch or "aarch64" in self.arch:
                 self._capstone_cs = capstone.Cs(capstone.CS_ARCH_ARM64, capstone.CS_MODE_ARM)
             elif "arm" in self.arch:
                 self._capstone_cs = capstone.Cs(capstone.CS_ARCH_ARM, capstone.CS_MODE_ARM)
+            elif "64" in self.arch or "x64" in self.arch or "amd64" in self.arch:
+                self._capstone_cs = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_64)
             else:
                 self._capstone_cs = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
         except ImportError:

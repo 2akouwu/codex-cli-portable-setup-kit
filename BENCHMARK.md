@@ -47,3 +47,27 @@ marked a wrong claim VERIFIED**.
 
 The model here was Claude, plugged in as the injected proposer — no API key, no
 specific model (see [EXAMPLE.md](EXAMPLE.md)).
+
+## Result (aarch64 Linux ELF)
+
+Same probe on an aarch64 host (Jetson, `/usr/bin` — 19 aarch64 ELFs):
+
+```
+prior wrong (hallucination rate): 19/19 = 100%
+false VERIFIED (must be 0)       : 0
+true bytes after 1 feedback round: 19/19 = 100%
+```
+
+Reading it honestly:
+
+- The x86 textbook prior (`push; mov`) is a weak probe on ARM64 — it is
+  *expected* to be wrong, because aarch64 entry points open with a
+  `sub sp, sp, #N` / `mov x29, sp` frame, not `push rbp`. The load-bearing
+  number is the **zero false-VERIFIED**: the soundness guarantee (a wrong claim
+  is never accepted) holds across architectures, not just x86.
+- Producing this surfaced an arch-routing bug: `disasm.py` matched
+  `"64" in arch` for x86_64 *before* checking for arm64, so `"arm64"` was
+  silently decoded as x86_64 (entry points came back as junk x86 mnemonics and
+  round-2 convergence fell to 11%). `prologue_prior.py` also hard-coded the arch
+  to the x86 family. Using `info.arch` fixes both: aarch64 entry points now
+  decode to real `nop`/`mov` bytes and round-2 converges 100%.

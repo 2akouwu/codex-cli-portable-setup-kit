@@ -265,11 +265,20 @@ class TestDisasmOracle(unittest.TestCase):
             self.skipTest("no .text")
         data = _read(CORPUS[0])[sec.offset : sec.offset + 64]
         ours = [i.mnemonic for i in Disassembler(arch=info.arch).disassemble(data)][:5]
-        # best-effort: objdump raw binary blob
+        # best-effort: objdump raw binary blob (objdump target follows the binary's arch)
+        objdump_target = {
+            "x86_64": "i386:x86-64", "x86": "i386",
+            "arm64": "aarch64", "aarch64": "aarch64", "arm": "arm",
+        }
+        target = objdump_target.get(info.arch)
+        if target is None:
+            self.skipTest(f"no objdump target for arch {info.arch}")
         proc = subprocess.run(
-            [tool, "-D", "-b", "binary", "-m", "i386:x86-64" if info.bits == 64 else "i386", "/dev/stdin"],
+            [tool, "-D", "-b", "binary", "-m", target, "/dev/stdin"],
             input=data, capture_output=True, timeout=20,
         )
+        if proc.returncode != 0:
+            self.skipTest(f"objdump target '{target}' unavailable on this machine")
         text = proc.stdout.decode("latin1", "ignore").lower()
         self.assertTrue(all(m in text for m in ours[:3]) or not ours, f"ours={ours}")
 
