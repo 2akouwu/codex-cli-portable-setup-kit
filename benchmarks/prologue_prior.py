@@ -66,7 +66,7 @@ def run(dirs, per_dir=12):
         info = parse_binary(data)
         if info.format not in ("PE", "ELF", "MachO") or not info.entrypoint:
             continue
-        arch = "x86_64" if info.bits == 64 else "x86"
+        arch = info.arch if info.arch in ("x86", "x86_64", "arm", "arm64") else ("x86_64" if info.bits == 64 else "x86")
         v = Verifier(data)
         r1 = v.verify(Claim("instructions", {"offset": info.entrypoint, "space": "rva", "mnemonics": PRIOR, "arch": arch}))
         if r1["verdict"] == INCONCLUSIVE:
