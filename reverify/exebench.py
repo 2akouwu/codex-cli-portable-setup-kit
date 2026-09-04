@@ -9,6 +9,12 @@ adapter compiles a *candidate C program* and re-runs it against recorded input
 
 Honest scope and labelling (kept consistent with ``behavior.py``):
 
+- **This runs native code.** Unlike ``emulate_result`` / ``behavior_equiv`` (Unicorn
+  emulation) the candidate is compiled and executed on the host, so a claim's
+  ``c_source`` is arbitrary code. The adapter is therefore **off by default**:
+  it returns ``inconclusive`` unless the environment opts in with
+  ``REVERIFY_ALLOW_NATIVE_EXEC=1`` (never enable it for an MCP server exposed to
+  untrusted agents without a sandbox).
 - The candidate C is compiled with a C compiler. The whole adapter is *gated*:
   if no compiler is available it returns ``inconclusive`` rather than failing.
 - I/O contract: each test case passes its inputs to the program as command-line
@@ -33,6 +39,17 @@ import subprocess
 import tempfile
 from typing import Any, Dict, List, Optional, Sequence
 
+NATIVE_EXEC_ENV = "REVERIFY_ALLOW_NATIVE_EXEC"
+NATIVE_EXEC_HINT = (
+    f"native execution of candidate C is off by default; set {NATIVE_EXEC_ENV}=1 in a trusted, "
+    "sandboxed environment to enable it"
+)
+
+
+def native_exec_allowed() -> bool:
+    """True when the environment has opted in to compiling and running candidate code."""
+    return os.environ.get(NATIVE_EXEC_ENV, "").strip().lower() in ("1", "true", "yes", "on")
+
 
 def has_compiler(cc: str = "gcc") -> bool:
     """True if the C compiler ``cc`` is on PATH."""
@@ -51,25 +68,33 @@ def compile_candidate(
     cc: str = "gcc",
     extra_flags: Optional[Sequence[str]] = None,
     timeout: int = 30,
+    workdir: Optional[str] = None,
 ) -> Optional[str]:
     """Compile ``c_source`` to an executable; return the binary path or None.
 
     Gated: returns ``None`` when ``cc`` is absent or the compile fails. The
-    source and output live in a temp dir; the caller owns cleanup of the path.
+    source and output live in ``workdir`` (a fresh temp dir when omitted; the
+    caller owns cleanup — ``exebench_verify`` uses a temporary directory that is
+    removed afterwards).
     """
     if not has_compiler(cc):
         return None
-    workdir = tempfile.mkdtemp(prefix="exebench.")
+    workdir = workdir or tempfile.mkdtemp(prefix="exebench.")
     src = os.path.join(workdir, "candidate.c")
     out = os.path.join(workdir, "candidate")
     with open(src, "w", encoding="utf-8") as f:
         f.write(c_source)
     cmd = [cc, "-O0", "-w", *list(extra_flags or []), "-o", out, src]
     try:
-        subprocess.run(cmd, capture_output=True, timeout=timeout, check=False)
+        subprocess.run(cmd, capture_output=True, timeout=timeout, check=False, cwd=workdir,
+                       stdin=subprocess.DEVNULL)
     except (subprocess.TimeoutExpired, OSError):
         return None
-    return out if os.path.isfile(out) and os.access(out, os.X_OK) else None
+    # MinGW / MSVC toolchains append .exe to the requested output name
+    for cand in (out, out + ".exe"):
+        if os.path.isfile(cand) and os.access(cand, os.X_OK):
+            return cand
+    return None
 
 
 def run_case(
@@ -84,6 +109,8 @@ def run_case(
             [binary, *[str(a) for a in input_args]],
             capture_output=True,
             timeout=timeout,
+            cwd=os.path.dirname(binary) or None,
+            stdin=subprocess.DEVNULL,
         )
     except (subprocess.TimeoutExpired, OSError):
         return None
@@ -130,6 +157,10 @@ def ExeBenchRecord(data: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+def _inconclusive(total: int, detail: str) -> Dict[str, Any]:
+    return {"status": "inconclusive", "passed": 0, "total": total, "failures": [], "detail": detail}
+
+
 def exebench_verify(
     record: Dict[str, Any],
     c_source: str,
@@ -142,40 +173,31 @@ def exebench_verify(
 
     Returns ``{status, passed, total, failures, detail}`` where status is
     ``"pass"`` / ``"fail"`` / ``"inconclusive"``. A ``fail`` carries the first
-    failing case as a concrete witness.
+    failing case as a concrete witness. Off unless ``REVERIFY_ALLOW_NATIVE_EXEC=1``.
     """
     rec = ExeBenchRecord(record)
-    if not rec["test_cases"]:
-        return {"status": "inconclusive", "passed": 0, "total": 0, "failures": [], "detail": "record has no test cases"}
-    if not has_compiler(cc):
-        return {
-            "status": "inconclusive",
-            "passed": 0,
-            "total": len(rec["test_cases"]),
-            "failures": [],
-            "detail": f"no C compiler '{cc}' available; cannot compile the candidate",
-        }
-    binary = compile_candidate(c_source, cc=cc, extra_flags=extra_flags, timeout=timeout)
-    if binary is None:
-        return {
-            "status": "inconclusive",
-            "passed": 0,
-            "total": len(rec["test_cases"]),
-            "failures": [],
-            "detail": "candidate did not compile (no compiler, or compile error)",
-        }
-    failures: List[Dict[str, Any]] = []
-    passed = 0
-    for case in rec["test_cases"]:
-        got = run_case(binary, case["input"], timeout=timeout)
-        if got is None:
-            failures.append({"input": case["input"], "expected": case["expected"], "got": None})
-            continue
-        if got != case["expected"]:
-            failures.append({"input": case["input"], "expected": case["expected"], "got": got})
-        else:
-            passed += 1
     total = len(rec["test_cases"])
+    if not rec["test_cases"]:
+        return _inconclusive(0, "record has no test cases")
+    if not native_exec_allowed():
+        return _inconclusive(total, NATIVE_EXEC_HINT)
+    if not has_compiler(cc):
+        return _inconclusive(total, f"no C compiler '{cc}' available; cannot compile the candidate")
+    with tempfile.TemporaryDirectory(prefix="exebench.") as workdir:
+        binary = compile_candidate(c_source, cc=cc, extra_flags=extra_flags, timeout=timeout, workdir=workdir)
+        if binary is None:
+            return _inconclusive(total, "candidate did not compile (no compiler, or compile error)")
+        failures: List[Dict[str, Any]] = []
+        passed = 0
+        for case in rec["test_cases"]:
+            got = run_case(binary, case["input"], timeout=timeout)
+            if got is None:
+                failures.append({"input": case["input"], "expected": case["expected"], "got": None})
+                continue
+            if got != case["expected"]:
+                failures.append({"input": case["input"], "expected": case["expected"], "got": got})
+            else:
+                passed += 1
     if failures:
         return {
             "status": "fail",

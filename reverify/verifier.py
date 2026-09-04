@@ -660,6 +660,8 @@ class Verifier:
             "cc": cc,
             "passed": res["passed"],
             "total": res["total"],
+            "native_execution": True,  # compiled and run on the host (opt-in), not emulated
+            "weight_basis": {"inputs_tested": res["passed"]},
         }
         if res["status"] == "pass":
             return VERIFIED, evidence, res["detail"]
@@ -1111,6 +1113,10 @@ def base_weight(result: Dict[str, Any]) -> float:
         base = 1.0 if "offset" in p else 0.5
         tested = int(basis.get("inputs_tested", 0) or 0)
         return base * min(1.0, tested / 8.0) * ent
+    if kind == "exebench":
+        # tested by native re-execution against recorded I/O pairs; scale by cases passed
+        tested = int(basis.get("inputs_tested", 0) or 0)
+        return min(1.0, tested / 8.0)
     if kind == "prove_equiv":
         # proof-grade (for all inputs); zero if the two sides are the same expression
         a = str(p.get("a", p.get("expr", "")))
