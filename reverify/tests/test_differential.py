@@ -147,6 +147,29 @@ class TestDifferentialParsing(unittest.TestCase):
             self.assertFalse(invented, f"{os.path.basename(path)}: pure invented imports {list(invented)[:5]}")
 
 
+class TestUnmappedSectionsNeverTranslate(unittest.TestCase):
+    """An ELF .debug_* section (virtual address 0) must not map file offsets onto other sections.
+
+    Caught by CI on Linux: the interpreter's .debug_aranges offset round-tripped into a
+    different section because every unmapped section claims address 0.
+    """
+
+    def test_va_zero_sections_are_ignored_for_translation(self):
+        from binary import BinaryInfo, Section
+        info = BinaryInfo(format="ELF", arch="x86_64", bits=64, image_base=0x400000)
+        info.sections = [
+            Section(".text", 0x1000, 0x200, 0x200, 0x400),
+            Section(".debug_aranges", 0, 0x100, 0x100, 0x800),
+            Section(".comment", 0, 0x40, 0x40, 0x900),
+        ]
+        self.assertEqual(info.offset_to_rva(0x450), 0x1050)
+        self.assertEqual(info.rva_to_offset(0x1050), 0x450)
+        self.assertIsNone(info.offset_to_rva(0x850))        # unmapped: no address
+        self.assertIsNone(info.rva_to_offset(0x50))          # address 0x50 is not inside any loaded section
+        self.assertIsNone(info.section_containing_rva(0x10))
+        self.assertIsNotNone(info.section(".comment"))       # still listed for section_present
+
+
 @unittest.skipUnless(len(CORPUS) >= 2, "no real-binary corpus on this machine")
 class TestAddressRoundTrip(unittest.TestCase):
     def test_file_rva_file_identity(self):
@@ -155,8 +178,8 @@ class TestAddressRoundTrip(unittest.TestCase):
             if info.format == "raw" or not info.sections:
                 continue
             for s in info.sections:
-                if s.raw_size <= 0:
-                    continue
+                if s.raw_size <= 0 or s.virtual_address == 0:
+                    continue  # unmapped sections (ELF .debug_*, .comment, ...) have no address to round-trip
                 off = s.offset
                 rva = info.offset_to_rva(off)
                 self.assertIsNotNone(rva, f"{os.path.basename(path)}: {s.name} offset->rva")

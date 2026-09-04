@@ -65,16 +65,24 @@ class BinaryInfo:
         return None
 
     # -- address translation (file offset <-> RVA <-> VA) ----------------------
+    #
+    # Only *loaded* sections take part. ELF sections that are not mapped at run
+    # time (.debug_*, .comment, .symtab, ...) all report virtual address 0, so
+    # translating through them would map one file region onto another; they stay
+    # in ``sections`` (so ``section_present`` still sees them) but never translate.
+
+    def loaded_sections(self) -> List[Section]:
+        return [s for s in self.sections if s.virtual_address != 0]
 
     def rva_to_offset(self, rva: int) -> Optional[int]:
-        for s in self.sections:
+        for s in self.loaded_sections():
             span = max(s.virtual_size, s.raw_size)
             if s.virtual_address <= rva < s.virtual_address + span:
                 return s.offset + (rva - s.virtual_address)
         return None
 
     def offset_to_rva(self, off: int) -> Optional[int]:
-        for s in self.sections:
+        for s in self.loaded_sections():
             if s.offset <= off < s.offset + s.raw_size:
                 return s.virtual_address + (off - s.offset)
         return None
@@ -85,7 +93,7 @@ class BinaryInfo:
         return self.rva_to_offset(va - self.image_base)
 
     def section_containing_rva(self, rva: int) -> Optional[Section]:
-        for s in self.sections:
+        for s in self.loaded_sections():
             if s.virtual_address <= rva < s.virtual_address + max(s.virtual_size, s.raw_size):
                 return s
         return None

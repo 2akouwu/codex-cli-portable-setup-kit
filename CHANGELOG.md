@@ -31,6 +31,11 @@ could: the pure decoder was refuting correct claims.
 
 ### Fixed
 
+- **Unmapped ELF sections no longer take part in address translation** (caught by the
+  Linux CI job the moment the corpus included ELF): `.debug_*`, `.comment`, `.symtab`
+  all report virtual address 0, so a file offset inside one of them round-tripped into
+  another section. `rva_to_offset` / `offset_to_rva` / `section_containing_rva` now use
+  loaded sections only; the sections stay listed for `section_present`.
 - **Pure decoder never refutes on bytes it cannot decode.** In pure mode (no capstone)
   an `instructions` claim whose window contains bytes the fallback does not understand
   is now `INCONCLUSIVE` with an install hint — not `REFUTED` (and never `VERIFIED`).
