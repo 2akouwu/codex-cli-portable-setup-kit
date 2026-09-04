@@ -139,8 +139,10 @@ class TestDifferentialParsing(unittest.TestCase):
         checked = 0
         for path in CORPUS:
             info = parse_binary(_read(path), prefer="lief")
-            # Mach-O executables export only __mh_execute_header (the image header, not a function)
-            functions = [e for e in info.exports if not e.startswith("__mh_") and not e.startswith("_mh_")]
+            # Mach-O executables export only __mh_execute_header (the image header, not a function);
+            # some PE DLLs (lpk.dll) only forward every export to another DLL — no code here either.
+            functions = [e for e in info.exports
+                         if not e.startswith("__mh_") and not e.startswith("_mh_") and e not in info.export_forwarders]
             if info.error or not functions:
                 continue
             self.assertTrue(info.export_rvas, f"{os.path.basename(path)}: exports listed but no addresses")

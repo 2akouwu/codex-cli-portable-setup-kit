@@ -41,6 +41,7 @@ class BinaryInfo:
     imports: Dict[str, List[str]] = field(default_factory=dict)   # lib -> functions ("*" for ELF)
     exports: List[str] = field(default_factory=list)
     export_rvas: Dict[str, int] = field(default_factory=dict)  # export name -> RVA (function starts, independently known)
+    export_forwarders: List[str] = field(default_factory=list)  # PE exports that forward to another DLL (no code here)
     libraries: List[str] = field(default_factory=list)            # linked libs (ELF/MachO)
     backend: str = "pure-python"
     error: Optional[str] = None
@@ -182,6 +183,7 @@ def _parse_with_lief(data: bytes) -> Optional[BinaryInfo]:
             f.name: int(f.address) for f in b.exported_functions
             if f.name and not getattr(f, "is_forwarded", False) and int(f.address) > 0
         }
+        info.export_forwarders = [f.name for f in b.exported_functions if f.name and getattr(f, "is_forwarded", False)]
         info.libraries = list(info.imports.keys())
         return info
 
@@ -272,7 +274,9 @@ def _parse_pe_pure(data: bytes) -> BinaryInfo:
         except (TypeError, ValueError):
             continue
         forwarded = exp_dir[0] <= rva < exp_dir[0] + exp_dir[1]  # an RVA inside the export directory is a forwarder string
-        if e.get("name") and rva > 0 and not forwarded:
+        if e.get("name") and forwarded:
+            info.export_forwarders.append(e["name"])
+        elif e.get("name") and rva > 0:
             info.export_rvas[e["name"]] = rva
     info.libraries = list(info.imports.keys())
     return info
