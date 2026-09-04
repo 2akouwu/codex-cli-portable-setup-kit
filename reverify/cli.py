@@ -28,6 +28,7 @@ try:  # installed package (e.g. the ``reverify`` console script)
     from .ledger import Ledger, context_for_directory, hook_config, list_ledgers, ledger_dir
     from .semantic import semantic_view
     from .rollover import Orchestrator, MockDriver, make_driver, demo_scripts
+    from .claude_rollover import main as claude_rollover_main
 except ImportError:  # run directly as a script: ``python reverify/cli.py ...``
     from pe_parser import PEParser, BinaryParseError
     from disasm import Disassembler, pattern_scan, create_patch
@@ -42,6 +43,7 @@ except ImportError:  # run directly as a script: ``python reverify/cli.py ...``
     from ledger import Ledger, context_for_directory, hook_config, list_ledgers, ledger_dir
     from semantic import semantic_view
     from rollover import Orchestrator, MockDriver, make_driver, demo_scripts
+    from claude_rollover import main as claude_rollover_main
 
 
 def load_input_bytes(input_val: str, offset: int = 0, length: int = 0) -> bytes:
@@ -508,6 +510,11 @@ def _print_results(results: List[Dict[str, Any]]) -> None:
             print(f"           note (unverified): {r['note']}")
 
 
+def cmd_rollover(args: argparse.Namespace) -> None:
+    """Claude Code without compaction: hooks + launcher (see reverify/claude_rollover.py)."""
+    sys.exit(claude_rollover_main([args.action] + list(args.rest)))
+
+
 def cmd_audit_boundary(args: argparse.Namespace) -> None:
     workspace = args.workspace or os.getcwd()
     urls = args.urls.split(",") if args.urls else None
@@ -720,6 +727,17 @@ def main() -> None:
     p_audit.add_argument("--urls", help="Comma-separated URLs to evaluate for SSRF / loopback filtering")
     p_audit.add_argument("--json", action="store_true", help="Output full JSON audit report")
     p_audit.set_defaults(func=cmd_audit_boundary)
+
+    # rollover (Claude Code without compaction)
+    p_roll = subparsers.add_parser(
+        "rollover",
+        help="Claude Code without compaction: Stop/SessionStart hooks that hand off to files, "
+             "and a launcher that replaces the session with a fresh one on the receipt",
+    )
+    p_roll.add_argument("action", choices=["install", "uninstall", "run", "request", "status", "stop", "session-start", "help"],
+                        help="install/uninstall the hooks, run the launcher, request a rollover (from inside a session), status")
+    p_roll.add_argument("rest", nargs=argparse.REMAINDER, help="options for the action; for run, arguments after -- go to claude")
+    p_roll.set_defaults(func=cmd_rollover)
 
     args = parser.parse_args()
     args.func(args)

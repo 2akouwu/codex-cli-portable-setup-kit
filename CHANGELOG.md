@@ -6,6 +6,18 @@ All notable changes to this project are documented here.
 
 ### Added
 
+- **Claude Code without compaction** (`reverify/claude_rollover.py`, `reverify rollover`):
+  a Stop hook that measures the live context from the transcript and, at the threshold or on
+  the model's own `reverify rollover request`, blocks one stop and asks for a hand-off *file*
+  (fixed sections, UNVERIFIED) instead of an in-band summary; a receipt is issued only after
+  the file is verified rewritten and well-formed (fail closed), carrying the transcript
+  SHA-256 and the user's verbatim first/latest messages; a launcher (`reverify rollover run --
+  <claude args>`) consumes the receipt exactly once, cancels the rollover if a user message
+  landed meanwhile, ignores unknown schemas and too-frequent receipts, ends the session and
+  starts a fresh one whose opening quotes the original request verbatim; `install` /
+  `uninstall` manage `~/.claude/settings.json` (auto-compaction off, backups kept); an
+  append-only `events.jsonl` audit trail. 29 new tests, zero dependencies.
+
 - **Rollover controller** (`reverify/rollover.py`, `reverify orchestrate`): runs a goal as a
   sequence of fresh-context sessions. The model asks for a rollover through a small JSON
   protocol (claims / note / checkpoint / rollover / done); a rollover also fires on a

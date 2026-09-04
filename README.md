@@ -226,6 +226,39 @@ type, header pointers read through typed observes — 2 guessed call-stub patter
 false accepts, and the second session started from the ledger, not from a summary
 ([`benchmarks/results/orchestrate-claude-msimg32-2026-09-04.json`](benchmarks/results/orchestrate-claude-msimg32-2026-09-04.json)).
 
+## Claude Code without compaction: `reverify rollover`
+
+The same rule applied to an interactive Claude Code session. Built-in auto-compaction is
+turned off, and instead of a model-written summary the session is *replaced*:
+
+```bash
+reverify rollover install                 # two hooks in ~/.claude/settings.json, auto-compaction off (backup kept)
+reverify rollover run -- --permission-mode auto   # start Claude Code through the launcher (any claude args after --)
+```
+
+- **Guard** (Stop hook). Measures the live context from the session transcript. At the
+  threshold (`REVERIFY_ROLLOVER_TOKENS`, default 200k), or when the model itself runs
+  `reverify rollover request --reason ...`, it blocks one stop and asks the model to write the
+  hand-off *file* — fixed sections, labelled UNVERIFIED — and its memory index. Nothing is
+  summarized in the conversation.
+- **Receipt, fail closed.** On the next stop the guard checks that the hand-off was really
+  rewritten and is well-formed; only then does it write a receipt carrying the transcript's
+  SHA-256 and the user's **verbatim** first and latest messages. A missing or malformed
+  hand-off means no receipt and a re-arm 100k further up.
+- **Launcher.** `reverify rollover run` waits for the receipt, gives a queued user message a
+  moment to land (if one did, that rollover is off), ends the session and starts a fresh one
+  whose first message points at the hand-off and quotes the original request verbatim — so
+  objective A cannot drift into B on the way. The old transcript stays on disk as an audit
+  trail and is never resumed; every decision is appended to `~/.claude/rollover/events.jsonl`.
+- **Without the launcher** (remote or bridge sessions, where nothing can end the live
+  session) the guard still keeps the hand-off fresh; the next new session prints a one-line
+  pointer to it and continues from files.
+
+Compare with a compaction summary: the hand-off is written while the model still has the
+whole context, into a file with a fixed shape, separated from verified facts (memory files,
+the ledger) — and the conversation that produced it is dropped, not paraphrased. Zero
+dependencies; `reverify rollover uninstall` puts the settings back.
+
 ## The semantic layer: functions, calls and cross-references
 
 Bytes, instructions, imports and emulation are what the deterministic core can judge on
