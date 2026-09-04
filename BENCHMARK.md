@@ -63,9 +63,11 @@ are committed under `benchmarks/results/ci-*.json` and attached to every run as 
 
 Across the reference run, the three CI runs and the third-party aarch64 run below: **275
 binaries, 4 formats/architectures, 0 false VERIFIED** (pooled 95% upper bound about 1.4%).
-The gate is the same everywhere: one false VERIFIED fails the build. Known gap: on the
-arm64 macOS runner lief reads the first slice of each universal binary, which is x86_64,
-so the arm64 Mach-O slices are not yet exercised.
+The gate is the same everywhere: one false VERIFIED fails the build. Known gap: for the
+*universal* system binaries on the arm64 macOS runner, lief still judges the x86_64 slice
+(slice selection by host CPU is in place but has not taken effect on the runner yet — under
+investigation); AArch64 Mach-O code **is** exercised through the compiled corpus below,
+which is built natively for arm64 on that runner.
 
 ## A corpus anyone can rebuild: the prior is right exactly when it should be
 
