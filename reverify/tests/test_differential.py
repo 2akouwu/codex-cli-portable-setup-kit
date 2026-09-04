@@ -139,7 +139,9 @@ class TestDifferentialParsing(unittest.TestCase):
         checked = 0
         for path in CORPUS:
             info = parse_binary(_read(path), prefer="lief")
-            if info.error or not info.exports:
+            # Mach-O executables export only __mh_execute_header (the image header, not a function)
+            functions = [e for e in info.exports if not e.startswith("__mh_") and not e.startswith("_mh_")]
+            if info.error or not functions:
                 continue
             self.assertTrue(info.export_rvas, f"{os.path.basename(path)}: exports listed but no addresses")
             for name, rva in list(info.export_rvas.items())[:8]:
