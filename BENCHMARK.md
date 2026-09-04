@@ -173,3 +173,49 @@ which is what replication is for.
 The model in the worked example ([EXAMPLE.md](EXAMPLE.md)) was Claude, plugged in as the
 injected proposer — no API key, no specific model. The benchmark itself needs no model at
 all: the prior is fixed, so anyone can run it.
+
+## Multi-prior hallucination scorecard (`hallucination_probes.py`)
+
+Reproducible: `python benchmarks/hallucination_probes.py [dir ...] [--per-dir N]
+[--probe name ...]` (defaults to Windows System32 / SysWOW64, else /usr/bin +
+/usr/lib). It extends the single-probe script above into a **scorecard** over
+several model priors that reflect real LLM hallucination patterns, each applied
+blind and measured through the verifier with a per-probe false-VERIFIED guard.
+
+| probe | prior it probes | applicability |
+|---|---|---|
+| `prologue` | textbook frame-pointer prologue at the entry | x86 / x86_64 |
+| `md5_const` | "this is MD5" — MD5 initial constant A0 (0x67452301) present | x86 / x86_64 (constant appears as a contiguous 32-bit LE immediate; on AArch64 it is split by movz/movk, so the byte pattern is not a sound prior) |
+| `import_gets` | the program uses the deprecated C `gets()` | PE / ELF / Mach-O |
+| `section_rodata` | a section named `.rodata` (an ELF name applied to PE, which uses `.rdata`) | PE / ELF / Mach-O |
+
+Per probe the scorecard reports **prior wrong** (the hallucination rate — how
+often the blind prior is refuted), **prior right**, **inconclusive**, and the
+global **false VERIFIED** count, which must be 0. A VERIFIED verdict is
+re-checked against the raw bytes / parse (bypassing the verifier) so a wrong
+accept is caught, not trusted.
+
+## Result (one run, 8 real arm64 ELFs under /usr/bin)
+
+```
+probe           prior wrong   false VERIFIED (must be 0)
+prologue        0/8          0   (skipped: x86-family only)
+md5_const       0/8          0   (skipped: x86-family only)
+import_gets     8/8 = 100%   0
+section_rodata  0/8 = 0%     0   (.rodata is a real ELF section, prior is right)
+global false VERIFIED (must be 0): 0
+```
+
+`import_gets` is a clean field confirmation: none of the system ELFs import the
+deprecated `gets`, the prior is refuted every time, and the guard never once
+accepted a wrong claim. The x86-only probes (`prologue`, `md5_const`) are
+exercised on the Windows corpus above and in `tests/test_probes.py` (synthetic
+PE/ELF fixtures pin the guard logic without needing a real binary corpus).
+
+## Regression test
+
+`tests/test_probes.py` builds a synthetic PE32+ and a minimal ELF and pins the
+guard logic: a VERIFIED verdict whose evidence contradicts the claim must be
+flagged as a false accept (this is where an earlier draft of the prologue guard
+was inverted), while a genuinely consistent VERIFIED is not. Run with
+`python -m pytest reverify/tests/test_probes.py`.
