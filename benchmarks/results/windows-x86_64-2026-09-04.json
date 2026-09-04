@@ -1,0 +1,1336 @@
+{
+ "schema": 1,
+ "benchmark": "prologue_prior",
+ "prior": [
+  "push",
+  "mov"
+ ],
+ "generated": "2026-09-04T12:04:25Z",
+ "environment": {
+  "reverify": "0.10.0",
+  "python": "3.14.6",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "machine": "AMD64",
+  "engines": {
+   "disassembly": {
+    "engine": "capstone",
+    "version": "5.0.7"
+   },
+   "emulation": {
+    "engine": "unicorn",
+    "version": "2.1.4"
+   },
+   "binary_parsing": {
+    "engine": "lief",
+    "version": "1.0.0-d05b3499b"
+   },
+   "proof": {
+    "engine": "z3",
+    "version": "5.1.0"
+   },
+   "semantic": {
+    "engine": "pure-python",
+    "version": null,
+    "note": "function boundaries, call graph and xrefs need pip install \"reverify[angr]\""
+   },
+   "full_fidelity": true
+  }
+ },
+ "corpus": {
+  "dirs": [
+   "C:\\Windows\\System32",
+   "C:\\Windows\\SysWOW64"
+  ],
+  "per_dir": 40,
+  "sampling": "sorted, fixed stride"
+ },
+ "rows": [
+  {
+   "file": "BarcodeProvisioningPlugin.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "2906710c19316d8654b999bcef424a7bb664a8ba6930e7e492349e187bb91a7f",
+   "size": 139264,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x1ac0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "ComposerFramework.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "86100dcc315aeffbf2660c065292d8fe0d36869babc5574e4221f17d0d950ea8",
+   "size": 299008,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x3c90",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "DevPropMgr.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "f68d3fba791c4732968dec7641df408183000def7d67d92cd926b7a68e793a0c",
+   "size": 200704,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x8180",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "ExplorerFrame.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "35a7f3923dfe5e81630102c01420c7386ccc1080a5175efc1aa0b12191c97c79",
+   "size": 3198976,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x1453b0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "IpNatHlpClient.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "3da7bda2dfc887c3879cda44c841b7e4ae5faebfa8ff78d7287c757f4c14223e",
+   "size": 67488,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x1290",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "MSVPXENC.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "8cb0cf5aa1e45f8ed4f1db70f83391c5a16d01671ff99b0d6a50e73b401c07e4",
+   "size": 67576,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x1670",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "MsftOemDllIgneous.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "bd91330142eb2f8f686a079d3c88fa0384fb8ccb9422e543e733bb0242fcb55a",
+   "size": 86016,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x1de0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "PhoneCallHistoryApis.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "8e1685cd76f920c6a04c49c55694f1b835c747f4034f10522157283ce8533476",
+   "size": 245760,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x1f80",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "ResetEngine.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "4859c8dc95c2ea97644d3bae707c603b353cc529e24376477b4d74a081d6349d",
+   "size": 2975208,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x4b80",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "SettingsHandlers_InputPersonalization.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "22448d815470f2571e8103f77c582026ccd659c594debe4b12884a630750f885",
+   "size": 520192,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x2e20",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "SystemSupportInfo.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "84f13c95f7fec932531dde35c7af2da2b2413f6b6f21ac7ce7a56ad6ff442bb7",
+   "size": 81920,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x1530",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "VaultCDS.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "e04446893dfab819d39276bfad3b257b052b7908847810784a04fdde33033859",
+   "size": 167936,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x26c0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "Windows.ApplicationModel.Background.SystemEventsBroker.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "0405953e575748fe8ee2d14f47954b96351a47ec5e018b360f3099e2ce406ed9",
+   "size": 151552,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x1570",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "Windows.Internal.System.UserProfile.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "095b51fb4667832c14394d2c54c1bb980a4797089a0a78467acb9fb625ca8c00",
+   "size": 266240,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x22f0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "Windows.UI.AppDefaults.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "1d6e0bdb89b56b84e3f923357757a3544ebae7257d3ab3d8706182db239d512b",
+   "size": 528384,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x3df0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "XAPOFX1_0.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "671c24f825629381870567d726b7dbc3890d665648043c041eb1100163c49e12",
+   "size": 68104,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0xbcf4",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "appverifUI.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "79db51813bd9b6f5edaa4bc07f04fa598f76c4f1e702077d40ba9f38a295c1cf",
+   "size": 166248,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x15b0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "cflapi.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "0731632015585cc80e39dde53f159808a7e53b39b24df468b68b7bcbfa3ee938",
+   "size": 290816,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x2440",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "d3d10_1.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "ac338412d2b50f4b29e80d33a1acf6f25d80d80db684625d76bf8db43b4a6821",
+   "size": 208896,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x65f0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "dfshim.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "5cde036cc65a8c24fef6f1a32e2e1e2c323f7d71061cb487e70a0916412c618f",
+   "size": 1613824,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x1070",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "dsprop.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "4fd97d48dd65713590ba8aa3682ac7a0980bf3f99fe8a9cd21d0b45828965140",
+   "size": 208896,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x1c90",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "fcon.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "328dccb07089ea4ddf0ba31f0f5b4ef0410ca99e17873991ac36e0697bafec67",
+   "size": 1310720,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x3220",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gptext.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "9f49044cf1da98ed34c5d7e6cc47d230a1a278ac8783aeea90d6bc2c6969773a",
+   "size": 53248,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x1290",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "ipxlatcfg.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "62a7b3468e3d9c185ff21d49563dab553c7e14ac9b486a9b47c46f7ad3933fca",
+   "size": 184320,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x1d00",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "lapscsp.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "e2d88c9be91a8f28ed599cd2285daa1a35ebe97e438e13161a761bf91649c763",
+   "size": 135168,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x1970",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "mfcore.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "6a08fd2d66cd522d0bd761314f2c689052304a1f929e08f717272c92ddb04a6d",
+   "size": 4335984,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x3dd80",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "mov",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "msctfp.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "26f8f02d3caf6e74834f258538749963461aaf80b186874ab918e9d69ce4d0b4",
+   "size": 208896,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x1290",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "mswmdm.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "8845fb3f0d176e910eaa52e6c73e368563f8cd09856cc562c5791aabb539d913",
+   "size": 385024,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x1660",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "ntasn1.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "04a37b3d847944b0086c330195d3ffa84c6178125684740254d4a964551977e5",
+   "size": 270056,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0xcd60",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "mov",
+    "push"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "pngfilt.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "09be31b995fa94b3f87ea11ad9c83ce20334253030a219179f09a3f8e795a0d0",
+   "size": 94208,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x1440",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "rastlsext.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "320a8dfa215f058daabea61bff0050e049d5b682a3bfaefbaa408c8fc0594e6e",
+   "size": 352256,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x20e0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "shell32.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "a7779772d197cd94a2309d4739b85587d7e86a20e406baec4932307d71bbc2d2",
+   "size": 7947424,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x1f3500",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "syncas.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "a15c68d9c508f7653bfbf06ea35b5044c689fd8a8746d29d26fe58da7c067773",
+   "size": 378376,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x5c38",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "umpoext.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "58d31d360727bcbbc68f5696d1a7bbb567a5dc4a6996955ab7d665edd4319b2c",
+   "size": 225280,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0xb1f0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "vmdevicehost.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "b8e219cbc02b0a72c014c04f14ca690a3a34faee06d706c5aa661b618c144769",
+   "size": 266240,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x1f80",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "windowsudk.shellcommon.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "843b0d1a031f883395780313564bb2c9708373fa372c826dcc8405cc6c6ea91e",
+   "size": 6971392,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0xf5880",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "wpnapps.dll",
+   "dir": "C:\\Windows\\System32",
+   "sha256": "65c5696c09b004aea19e976875fa2f1d6ce31fed6c56b717ff74ee184007cd99",
+   "size": 1437696,
+   "format": "PE",
+   "arch": "x86_64",
+   "entry": "0x5de20",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "push",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "BitsProxy.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "ba33f9e16b0ee915c056243c929c339e7b902eaeda7ef250a2afc247e8d71ef1",
+   "size": 51200,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x8590",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "D3DCompiler_40.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "f0a6f156d13150de6ebb094233e5ff78581fbdb77bd0ff8d083698c42bc8e13b",
+   "size": 2036576,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x1dc4ff",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "EapTeapExt.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "ac501bec727f7ee210d81af3222e7e95f7097e1c463d2ef9f0f1f830e3582a81",
+   "size": 85504,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x106b0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "InstallService.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "c5766feb8d254044f3dd84ce7e6af4c9f8f3008cb11b531010c311a7b688da56",
+   "size": 2679808,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x20e9a0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "MSVidCtl.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "a07c5a6b729c4bfa6aa31a14eb1574bca2dd5957e1348923b6efa2aa2c0a03f9",
+   "size": 2216448,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x1460b0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "OnDemandBrokerClient.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "984406ffe3a11f648ee3324d5c7eaf15968465699f81d9af0a582df696be5f09",
+   "size": 33792,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x4340",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "RegCtrl.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "9be11c1009765793c6711ea5912a1f5e7d9b142aee0689db18265aab1102cdb4",
+   "size": 43520,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x7150",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "TaskApis.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "64b5d581ad464f1f99dd9c8c16cc9b4d6893d2ee0f499b865b546f19c6154b4b",
+   "size": 295424,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x40b20",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "WPDShServiceObj.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "ed5d23f473f7a21e620aa527ef4d64466009fb5ad52bdb6c9b8206e2edb50d58",
+   "size": 58880,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x4530",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "Windows.Devices.Scanners.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "9c538aef83d87d1a3a1e508f925d81302bafddce933390e75d1eee04c01f2f95",
+   "size": 173568,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x24dc0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "Windows.Networking.BackgroundTransfer.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "1a7baf06aa2a83833ff9c26ea001889ba6000b871e82958e5c48ecbf0215a13f",
+   "size": 903168,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x5ce00",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "Windows.Web.Diagnostics.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "18902f5acc798d2f88e5f6687f0bef2ddba9afee40edefad33487211fcebc752",
+   "size": 162304,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x1ec30",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "XpsToPclmConverter.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "df6d72787f28ea3b929d92a8cede4afdd602a4fd214244f805fb8e538d4b5068",
+   "size": 165888,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x1a3a0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "bcryptprimitives.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "c0fba4406bf9ca909f6f463f08189d6eb47238d7bb590d58344af8cadd6bda8e",
+   "size": 501112,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x3f570",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "push"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "comdlg32.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "f0e9d5d9d48c3660bc670d2a434d13e42d7b15abecfbbdeeaf1a89b2856cf444",
+   "size": 727552,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x97670",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "d3dcsx_43.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "b46a44b6fce8f141c9e02798645db2ee0da5c69ea71195e29f83a91a355fa2ca",
+   "size": 1868128,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0xf664d",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "dhcpcore.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "aa423ba556fd03ffa50e832925559e2ecb7fd46575aa36d4cd1c2062bcfd801c",
+   "size": 375272,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x1c1b0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "dpnet.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "0a89b5a50312dc08832f53b75034b4c702bff96618ff02f643f8ebd1ac5244dd",
+   "size": 10240,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x18f0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "enterpriseresourcemanager.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "68667d1410ef420f1b8aaf921011a7a8dd22570de4c1e98f30470038692b3975",
+   "size": 90624,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x11630",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gnsdk_fp.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "6c2992c08b2d74caa3507badd34684c0794b710cf9adaa34e11b444e3c0ae5ae",
+   "size": 285144,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x12ce0",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "cmp",
+    "jne"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "imm32.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "c69ca53458deb7609f9a879b356f62330be743343aaa08afd055f15fa4fe2a95",
+   "size": 148344,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x3aa0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "push"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "keyiso.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "7fa4450130cf39c7b5dcfbe82fe3dca183585cdb18d2cfe57e3f3714b42f3149",
+   "size": 70656,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x8590",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "and"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "mfc140u.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "c5822d9f3965a6982623c2d691df397f3e71c35f1b552f74dc24e5e7e40f07ff",
+   "size": 4882368,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x2b61a0",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "cmp",
+    "jne"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "mprext.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "cf5560a7308d3663f6eecdf9c70883b46900a85c78e38905d00e74360987f038",
+   "size": 13312,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x14c0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "mskeyprotcli.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "68ef98e6526ec8880e1e5e19a2dc59424ec06dac4c76faa44719c9e197430a89",
+   "size": 172032,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x22900",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "ngckeyenum.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "786761dc442b673062d619bbe189372ddd4d943635f16b0bfed51f002d1d3e42",
+   "size": 183808,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x24ca0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "profext.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "3755a119ac4bc2a0c24ba38b6aa29f4bb68c4ddacf0a160d1fbe1b1af418075a",
+   "size": 151464,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x11980",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "rpchttp.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "005032cbc39e610b3e2e99239bc685279ddc806a97318f05fbe749c3c071095c",
+   "size": 157696,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x3460",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "slcext.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "3cc6392a17405616e0a6be8c3a9e1e52cca6366a31ff9cf926d57063c178122a",
+   "size": 21504,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x1b20",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "tcpipcfg.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "394adc17072ccc1b31119214b71800209636c3c2f2da878df78a8b5b9601b052",
+   "size": 215040,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x2abf0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "user32.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "b3cc6f999873061683021abd4aeea6551f0a56a642c6f90c77744e10488248d9",
+   "size": 1916288,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x30b40",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "wdi.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "0ea1d71dd9567c4d6a15c1243e601ae9ffe45a8f2731239c6e4940538fb7f3c3",
+   "size": 80896,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x8490",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "winrssrv.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "dfd96f2b4ccfa21c853c9658885a0998d934e9061886fd6601096c80a7d77e1f",
+   "size": 9728,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x1a60",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "wshelper.dll",
+   "dir": "C:\\Windows\\SysWOW64",
+   "sha256": "e4ac25a1b6e60eaf43a03aee462a60785e3426cc946981e66bf2092b43533f8c",
+   "size": 16896,
+   "format": "PE",
+   "arch": "x86",
+   "entry": "0x2ee0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "push",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  }
+ ],
+ "inconclusive": [],
+ "totals": {
+  "tested": 71,
+  "prior_wrong": 69,
+  "false_verified": 0,
+  "recovered_after_1_round": 71,
+  "inconclusive": 0,
+  "false_verified_rate_upper95": 0.05132974174790491
+ }
+}

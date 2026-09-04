@@ -41,6 +41,7 @@ class BinaryInfo:
     imports: Dict[str, List[str]] = field(default_factory=dict)   # lib -> functions ("*" for ELF)
     exports: List[str] = field(default_factory=list)
     export_rvas: Dict[str, int] = field(default_factory=dict)  # export name -> RVA (function starts, independently known)
+    export_forwarders: List[str] = field(default_factory=list)  # PE exports that forward to another DLL (no code here)
     libraries: List[str] = field(default_factory=list)            # linked libs (ELF/MachO)
     backend: str = "pure-python"
     error: Optional[str] = None
@@ -65,16 +66,24 @@ class BinaryInfo:
         return None
 
     # -- address translation (file offset <-> RVA <-> VA) ----------------------
+    #
+    # Only *loaded* sections take part. ELF sections that are not mapped at run
+    # time (.debug_*, .comment, .symtab, ...) all report virtual address 0, so
+    # translating through them would map one file region onto another; they stay
+    # in ``sections`` (so ``section_present`` still sees them) but never translate.
+
+    def loaded_sections(self) -> List[Section]:
+        return [s for s in self.sections if s.virtual_address != 0]
 
     def rva_to_offset(self, rva: int) -> Optional[int]:
-        for s in self.sections:
+        for s in self.loaded_sections():
             span = max(s.virtual_size, s.raw_size)
             if s.virtual_address <= rva < s.virtual_address + span:
                 return s.offset + (rva - s.virtual_address)
         return None
 
     def offset_to_rva(self, off: int) -> Optional[int]:
-        for s in self.sections:
+        for s in self.loaded_sections():
             if s.offset <= off < s.offset + s.raw_size:
                 return s.virtual_address + (off - s.offset)
         return None
@@ -85,7 +94,7 @@ class BinaryInfo:
         return self.rva_to_offset(va - self.image_base)
 
     def section_containing_rva(self, rva: int) -> Optional[Section]:
-        for s in self.sections:
+        for s in self.loaded_sections():
             if s.virtual_address <= rva < s.virtual_address + max(s.virtual_size, s.raw_size):
                 return s
         return None
@@ -174,6 +183,11 @@ def _parse_with_lief(data: bytes) -> Optional[BinaryInfo]:
             f.name: int(f.address) for f in b.exported_functions
             if f.name and not getattr(f, "is_forwarded", False) and int(f.address) > 0
         }
+        # lief 1.x reports forwarded exports (lpk.dll -> GDI32.*) as plain symbols at address 0
+        info.export_forwarders = [
+            f.name for f in b.exported_functions
+            if f.name and (getattr(f, "is_forwarded", False) or int(f.address) == 0)
+        ]
         info.libraries = list(info.imports.keys())
         return info
 
@@ -193,16 +207,33 @@ def _parse_with_lief(data: bytes) -> Optional[BinaryInfo]:
         if funcs:
             info.imports["*"] = funcs
         info.exports = [f.name for f in b.exported_functions if f.name]
+        # ELF/Mach-O section tables carry absolute addresses, and every "rva" in reverify
+        # for these formats is that same absolute address — keep exports in the same space.
         info.export_rvas = {
-            f.name: int(f.address) - (info.image_base or 0) for f in b.exported_functions
-            if f.name and int(f.address) > 0
+            f.name: int(f.address) for f in b.exported_functions
+            if f.name and int(f.address) > (info.image_base or 0)
         }
         info.libraries = list(getattr(b, "libraries", []) or [])
         return info
 
     if fmt in ("MACHO", "MACH_O"):
-        # lief returns a FatBinary; take the first slice.
+        # lief returns a FatBinary: prefer the slice that matches the host CPU so an
+        # arm64 Mac judges its arm64 code (and CI on arm64 runners exercises it);
+        # fall back to the first slice.
         m = b.at(0) if hasattr(b, "at") else b
+        if hasattr(b, "at"):
+            import platform as _platform
+            host = _platform.machine().lower()
+            want = "ARM64" if host in ("arm64", "aarch64") else ("X86_64" if host in ("x86_64", "amd64") else None)
+            try:
+                count = int(getattr(b, "size", 0) or 0) or len(b)
+                for i in range(count):
+                    cand = b.at(i)
+                    if want and cand is not None and _enum_name(cand.header.cpu_type) == want:
+                        m = cand
+                        break
+            except Exception:
+                pass
         arch, bits = _MACHO_CPU.get(_enum_name(m.header.cpu_type), ("unknown", 0))
         info = BinaryInfo(
             format="MachO", arch=arch, bits=bits,
@@ -216,6 +247,12 @@ def _parse_with_lief(data: bytes) -> Optional[BinaryInfo]:
         if funcs:
             info.imports["*"] = funcs
         info.exports = [f.name for f in m.exported_functions if f.name]
+        # Same absolute-address space as the section table; __mh_execute_header & co. sit at
+        # the image base itself and are symbols, not functions.
+        info.export_rvas = {
+            f.name: int(f.address) for f in m.exported_functions
+            if f.name and int(f.address) > (info.image_base or 0)
+        }
         info.libraries = [l.name for l in getattr(m, "libraries", [])]
         return info
 
@@ -246,7 +283,9 @@ def _parse_pe_pure(data: bytes) -> BinaryInfo:
         except (TypeError, ValueError):
             continue
         forwarded = exp_dir[0] <= rva < exp_dir[0] + exp_dir[1]  # an RVA inside the export directory is a forwarder string
-        if e.get("name") and rva > 0 and not forwarded:
+        if e.get("name") and forwarded:
+            info.export_forwarders.append(e["name"])
+        elif e.get("name") and rva > 0:
             info.export_rvas[e["name"]] = rva
     info.libraries = list(info.imports.keys())
     return info

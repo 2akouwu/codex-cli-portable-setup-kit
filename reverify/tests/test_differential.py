@@ -48,12 +48,34 @@ def _sample(paths, n):
     return [paths[int(i * stride)] for i in range(n)]
 
 
+_MAGICS = (b"MZ", b"\x7fELF", b"\xcf\xfa\xed\xfe", b"\xce\xfa\xed\xfe",
+           b"\xca\xfe\xba\xbe", b"\xfe\xed\xfa\xcf", b"\xfe\xed\xfa\xce")
+
+
+def _is_binary(p):
+    try:
+        with open(p, "rb") as f:
+            head = f.read(4)
+    except OSError:
+        return False
+    return len(head) == 4 and any(head.startswith(m) for m in _MAGICS)
+
+
 def real_binaries(per_dir=12):
-    """Real PEs present on this machine: x64 (System32), x86 (SysWOW64), plus the interpreter."""
+    """Real binaries present on this machine, per platform — Windows PE (System32 x64,
+    SysWOW64 x86), Linux ELF (/usr/bin and the multiarch /usr/lib), macOS Mach-O
+    (/bin, /usr/bin) — plus the interpreter itself. CI runs this on all three."""
     out = [sys.executable]
-    for d in (r"C:\Windows\System32", r"C:\Windows\SysWOW64"):
+    if sys.platform.startswith("win"):
+        dirs = [(r"C:\Windows\System32", "*.dll"), (r"C:\Windows\SysWOW64", "*.dll")]
+    elif sys.platform == "darwin":
+        dirs = [("/bin", "*"), ("/usr/bin", "*")]
+    else:
+        dirs = [("/usr/bin", "*"), ("/usr/lib/x86_64-linux-gnu", "*.so*"),
+                ("/usr/lib/aarch64-linux-gnu", "*.so*"), ("/lib/x86_64-linux-gnu", "*.so*")]
+    for d, pat in dirs:
         if os.path.isdir(d):
-            cand = [p for p in glob.glob(os.path.join(d, "*.dll")) if _ok_size(p)]
+            cand = [p for p in glob.glob(os.path.join(d, pat)) if os.path.isfile(p) and _ok_size(p) and _is_binary(p)]
             out += _sample(cand, per_dir)
     seen, uniq = set(), []
     for p in out:
@@ -91,21 +113,45 @@ class TestDifferentialParsing(unittest.TestCase):
             lief = parse_binary(data, prefer="lief")
             if lief.error or lief.format == "raw":
                 continue  # lief could not parse it either; nothing to diff
+            if lief.format == "MachO":
+                continue  # there is no pure Mach-O reader (documented: Mach-O needs lief)
             name = os.path.basename(path)
             self.assertIsNone(pure.error, f"pure parser errored on {name}: {pure.error}")
             self.assertEqual(pure.format, lief.format, name)
             self.assertEqual(pure.arch, lief.arch, f"{name}: arch")
             self.assertEqual(pure.bits, lief.bits, f"{name}: bits")
-            self.assertEqual(pure.image_base, lief.image_base, f"{name}: image_base")
             self.assertEqual(pure.entrypoint, lief.entrypoint, f"{name}: entrypoint")
-            self.assertEqual(
-                [s.name for s in pure.sections], [s.name for s in lief.sections], f"{name}: section names"
-            )
-            for ps, ls in zip(pure.sections, lief.sections):
-                self.assertEqual(ps.virtual_address, ls.virtual_address, f"{name}: {ps.name} RVA")
+            if lief.format == "PE":  # the pure ELF reader is header-only: no sections or image base to diff
+                self.assertEqual(pure.image_base, lief.image_base, f"{name}: image_base")
+                self.assertEqual(
+                    [s.name for s in pure.sections], [s.name for s in lief.sections], f"{name}: section names"
+                )
+                for ps, ls in zip(pure.sections, lief.sections):
+                    self.assertEqual(ps.virtual_address, ls.virtual_address, f"{name}: {ps.name} RVA")
             checked += 1
-        self.assertGreater(checked, 0, "no binaries were actually compared")
+        if checked == 0:
+            self.skipTest("no binaries the pure parser reads on this platform (Mach-O needs lief)")
         print(f"\n  [differential] pure==lief on {checked} real binaries")
+
+    def test_exports_carry_addresses(self):
+        """Every format that lists exports must also give their addresses (function starts) —
+        the macOS corpus benchmark found Mach-O exports without addresses."""
+        checked = 0
+        for path in CORPUS:
+            info = parse_binary(_read(path), prefer="lief")
+            # Mach-O executables export only __mh_execute_header (the image header, not a function);
+            # some PE DLLs (lpk.dll) only forward every export to another DLL — no code here either.
+            functions = [e for e in info.exports
+                         if not e.startswith("__mh_") and not e.startswith("_mh_") and e not in info.export_forwarders]
+            if info.error or not functions:
+                continue
+            self.assertTrue(info.export_rvas, f"{os.path.basename(path)}: exports listed but no addresses")
+            for name, rva in list(info.export_rvas.items())[:8]:
+                self.assertIn(name, info.exports)
+                self.assertGreater(rva, 0, f"{os.path.basename(path)}: {name}")
+            checked += 1
+        if checked == 0:
+            self.skipTest("no exporting binaries in the corpus")
 
     def test_pure_imports_never_invented(self):
         """Pure parser may miss exotic imports, but must never invent a named one lief lacks."""
@@ -121,6 +167,50 @@ class TestDifferentialParsing(unittest.TestCase):
             self.assertFalse(invented, f"{os.path.basename(path)}: pure invented imports {list(invented)[:5]}")
 
 
+class TestUnmappedSectionsNeverTranslate(unittest.TestCase):
+    """An ELF .debug_* section (virtual address 0) must not map file offsets onto other sections.
+
+    Caught by CI on Linux: the interpreter's .debug_aranges offset round-tripped into a
+    different section because every unmapped section claims address 0.
+    """
+
+    def test_va_zero_sections_are_ignored_for_translation(self):
+        from binary import BinaryInfo, Section
+        info = BinaryInfo(format="ELF", arch="x86_64", bits=64, image_base=0x400000)
+        info.sections = [
+            Section(".text", 0x1000, 0x200, 0x200, 0x400),
+            Section(".debug_aranges", 0, 0x100, 0x100, 0x800),
+            Section(".comment", 0, 0x40, 0x40, 0x900),
+        ]
+        self.assertEqual(info.offset_to_rva(0x450), 0x1050)
+        self.assertEqual(info.rva_to_offset(0x1050), 0x450)
+        self.assertIsNone(info.offset_to_rva(0x850))        # unmapped: no address
+        self.assertIsNone(info.rva_to_offset(0x50))          # address 0x50 is not inside any loaded section
+        self.assertIsNone(info.section_containing_rva(0x10))
+        self.assertIsNotNone(info.section(".comment"))       # still listed for section_present
+
+    def test_duplicate_section_names_are_judged_by_address(self):
+        """Mach-O has __TEXT,__const and __DATA_CONST,__const: a true claim about the second
+        must not be refuted because the first was found — caught by the matrix gate on macOS."""
+        from binary import BinaryInfo, Section
+        info = BinaryInfo(format="MachO", arch="arm64", bits=64, image_base=0x100000000)
+        info.sections = [
+            Section("__text", 0x1000, 0x200, 0x200, 0x1000),
+            Section("__const", 0x1200, 0x100, 0x100, 0x1200),
+            Section("__const", 0x4000, 0x100, 0x100, 0x4000),
+        ]
+        v = Verifier(b"\x00" * 0x5000)
+        v._bin_cache = info
+        ok2 = v.verify(Claim("section_present", {"name": "__const", "virtual_address": 0x4000}))
+        ok1 = v.verify(Claim("section_present", {"name": "__const", "virtual_address": 0x1200}))
+        bad = v.verify(Claim("section_present", {"name": "__const", "virtual_address": 0x4010}))
+        self.assertEqual(ok2["verdict"], VERIFIED)
+        self.assertEqual(ok1["verdict"], VERIFIED)
+        self.assertEqual(bad["verdict"], REFUTED)
+        self.assertEqual(bad["evidence"]["candidates"], ["0x1200", "0x4000"])
+        self.assertEqual(v.verify(Claim("section_present", {"name": "__nope"}))["verdict"], REFUTED)
+
+
 @unittest.skipUnless(len(CORPUS) >= 2, "no real-binary corpus on this machine")
 class TestAddressRoundTrip(unittest.TestCase):
     def test_file_rva_file_identity(self):
@@ -129,8 +219,8 @@ class TestAddressRoundTrip(unittest.TestCase):
             if info.format == "raw" or not info.sections:
                 continue
             for s in info.sections:
-                if s.raw_size <= 0:
-                    continue
+                if s.raw_size <= 0 or s.virtual_address == 0:
+                    continue  # unmapped sections (ELF .debug_*, .comment, ...) have no address to round-trip
                 off = s.offset
                 rva = info.offset_to_rva(off)
                 self.assertIsNotNone(rva, f"{os.path.basename(path)}: {s.name} offset->rva")
@@ -177,6 +267,7 @@ class TestRobustnessFuzz(unittest.TestCase):
     """Malformed input must degrade, never crash; and a claim verifies iff bytes match."""
 
     def _malformed(self, rng, n=400):
+        n = int(os.environ.get("REVERIFY_FUZZ_N", n))  # the nightly fuzz job raises this
         out = []
         real_head = _read(CORPUS[0])[:256] if CORPUS else b"MZ" + b"\x00" * 200
         for _ in range(n):
@@ -232,7 +323,7 @@ class TestRobustnessFuzz(unittest.TestCase):
     def test_soundness_verify_iff_match(self):
         """On arbitrary bytes: expected==actual -> VERIFIED; one bit flipped -> never VERIFIED."""
         rng = random.Random(3)
-        for _ in range(500):
+        for _ in range(int(os.environ.get("REVERIFY_FUZZ_N", 500))):
             n = rng.randint(16, 200)
             data = bytes(rng.getrandbits(8) for _ in range(n))
             off = rng.randint(0, n - 4)
@@ -265,11 +356,20 @@ class TestDisasmOracle(unittest.TestCase):
             self.skipTest("no .text")
         data = _read(CORPUS[0])[sec.offset : sec.offset + 64]
         ours = [i.mnemonic for i in Disassembler(arch=info.arch).disassemble(data)][:5]
-        # best-effort: objdump raw binary blob
+        # best-effort: objdump raw binary blob (objdump target follows the binary's arch)
+        objdump_target = {
+            "x86_64": "i386:x86-64", "x86": "i386",
+            "arm64": "aarch64", "aarch64": "aarch64", "arm": "arm",
+        }
+        target = objdump_target.get(info.arch)
+        if target is None:
+            self.skipTest(f"no objdump target for arch {info.arch}")
         proc = subprocess.run(
-            [tool, "-D", "-b", "binary", "-m", "i386:x86-64" if info.bits == 64 else "i386", "/dev/stdin"],
+            [tool, "-D", "-b", "binary", "-m", target, "/dev/stdin"],
             input=data, capture_output=True, timeout=20,
         )
+        if proc.returncode != 0:
+            self.skipTest(f"objdump target '{target}' unavailable on this machine")
         text = proc.stdout.decode("latin1", "ignore").lower()
         self.assertTrue(all(m in text for m in ours[:3]) or not ours, f"ours={ours}")
 

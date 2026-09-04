@@ -1,0 +1,59 @@
+name: release
+
+# Tag vX.Y.Z -> build -> publish to PyPI via Trusted Publishing (no token anywhere).
+# PyPI side: project settings -> Publishing -> GitHub: owner 2akouwu, repo reverify,
+# workflow release.yml, environment pypi.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Tag must match the package version
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          ver="$(python -c 'import tomllib,pathlib; print(tomllib.loads(pathlib.Path("pyproject.toml").read_text())["project"]["version"])')"
+          echo "tag=$tag version=$ver"
+          test "$tag" = "$ver"
+      - name: Build and check
+        run: |
+          python -m pip install build twine
+          python -m build
+          python -m twine check dist/*
+      - name: Build provenance attestation (SLSA) for the sdist and wheel
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: dist/*
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    # Skipped until the Trusted Publisher is registered on PyPI; then:
+    #   gh variable set PYPI_TRUSTED_PUBLISHING --body true
+    if: vars.PYPI_TRUSTED_PUBLISHING == 'true'
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1

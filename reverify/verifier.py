@@ -37,22 +37,29 @@ factual, informative and non-repetitive.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import math
+import platform
+import time
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Tuple
 
 try:  # package import (e.g. ``from reverify import Verifier``)
-    from .disasm import Disassembler, pattern_scan
-    from .emulator import make_emulator
+    from .disasm import Disassembler, pattern_scan, UnsupportedArch, PSEUDO_MNEMONICS
+    from .emulator import make_emulator, EmulatorError
     from .protocol_parser import ProtobufDissector
     from .binary import parse_binary, shannon_entropy
     from .behavior import behavioral_equiv, prove_expr_equiv
     from .exebench import exebench_verify
     from .semantic import semantic_view, INSTALL_HINT as SEMANTIC_HINT
+    from .backends import backend_report
+    from ._version import __version__
 except ImportError:  # flat import (CLI, MCP server, and the test suite)
-    from disasm import Disassembler, pattern_scan
-    from emulator import make_emulator
+    from disasm import Disassembler, pattern_scan, UnsupportedArch, PSEUDO_MNEMONICS
+    from emulator import make_emulator, EmulatorError
+    from backends import backend_report
+    from _version import __version__
     from protocol_parser import ProtobufDissector
     from binary import parse_binary, shannon_entropy
     from behavior import behavioral_equiv, prove_expr_equiv
@@ -183,6 +190,28 @@ class Verifier:
         self.data = data
         self._bin_cache = None
         self._sem_cache = None
+        self._sha_cache: Optional[str] = None
+
+    def receipt(self) -> Dict[str, Any]:
+        """Everything a third party needs to re-run these checks: which bytes, with which tools.
+
+        Verdicts are deterministic given the same bytes and the same engines, so a
+        report plus its receipt is evidence that can be handed over and replayed —
+        not a claim that has to be taken on trust.
+        """
+        if self._sha_cache is None:
+            self._sha_cache = hashlib.sha256(self.data).hexdigest()
+        engines = backend_report()
+        return {
+            "binary_sha256": self._sha_cache,
+            "binary_size": len(self.data),
+            "reverify": __version__,
+            "python": platform.python_version(),
+            "platform": platform.platform(),
+            "engines": {k: v.get("engine") for k, v in engines.items() if isinstance(v, dict) and "engine" in v},
+            "generated": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "replay": "reverify verify <file> --claims-file <claims.json>",
+        }
 
     def _binary(self):
         """Parsed view of the binary (lief when available), cached per verifier."""
@@ -222,7 +251,9 @@ class Verifier:
         """
         results = [self.verify(c) for c in claims]
         _apply_dependencies(results)
-        return summarize(results, facts=facts, min_information=min_information)
+        report = summarize(results, facts=facts, min_information=min_information)
+        report["receipt"] = self.receipt()
+        return report
 
     # -- addressing -----------------------------------------------------------
 
@@ -423,8 +454,20 @@ class Verifier:
             return INCONCLUSIVE, {"address": addr, "file_size": len(self.data)}, "offset out of range"
         code = self.data[off : off + length] if length else self.data[off : off + 64]
         base = _as_int(p["base"]) if "base" in p else 0x1000
-        insns = Disassembler(arch=arch).disassemble(code, base_address=base)
+        dis = Disassembler(arch=arch)
+        try:
+            insns = dis.disassemble(code, base_address=base)
+        except UnsupportedArch as exc:
+            # never judge non-x86 bytes with the x86-only fallback: that could accept a wrong claim
+            return INCONCLUSIVE, {"address": addr, "arch": arch, "error": str(exc)}, str(exc)
         actual = [i.mnemonic.lower() for i in insns]
+        if dis.engine != "capstone":
+            window = actual if mode == "contains" else actual[: max(len(expected), 1)]
+            if any(m in PSEUDO_MNEMONICS for m in window):
+                # the pure decoder could not decode these bytes: unknown, not refuted (and never verified)
+                hint = 'the pure-Python decoder does not handle these bytes; install capstone (pip install "reverify[capstone]") to judge this claim'
+                return INCONCLUSIVE, {"address": addr, "arch": arch, "engine": dis.engine,
+                                      "actual_mnemonics": actual[: max(len(expected) + 4, 8)], "error": hint}, hint
         actual_ops = [i.op_str for i in insns]
         matched = b"".join(bytes(i.bytes) for i in insns[: len(expected)])
         evidence: Dict[str, Any] = {
@@ -718,18 +761,26 @@ class Verifier:
         bad = self._not_parseable(info)
         if bad:
             return bad
-        sec = info.section(str(p["name"]))
+        name = str(p["name"])
+        # Mach-O (and some ELF) binaries carry several sections with the same name in
+        # different segments (__TEXT,__const and __DATA_CONST,__const): judge against all
+        # of them, not the first one found — caught by the matrix benchmark on macOS.
+        matches = [s for s in info.sections if s.name == name]
         evidence = {"format": info.format, "backend": info.backend, "sections": [s.name for s in info.sections]}
-        if sec is None:
+        if not matches:
             return REFUTED, evidence, "section absent"
+        want = _as_int(p["virtual_address"]) if "virtual_address" in p else None
+        sec = next((s for s in matches if want is None or s.virtual_address == want), None)
+        evidence["candidates"] = [hex(s.virtual_address) for s in matches]
+        if sec is None:
+            return REFUTED, evidence, (f"section present but at a different virtual address "
+                                       f"({', '.join(hex(s.virtual_address) for s in matches)})")
         evidence["section"] = {
             "virtual_address": hex(sec.virtual_address),
             "virtual_size": sec.virtual_size,
             "raw_size": sec.raw_size,
             "offset": sec.offset,
         }
-        if "virtual_address" in p and _as_int(p["virtual_address"]) != sec.virtual_address:
-            return REFUTED, evidence, "section present but virtual address differs"
         return VERIFIED, evidence, "section present"
 
     # -- semantic layer: function boundaries, call graph, xrefs (engine-derived) --

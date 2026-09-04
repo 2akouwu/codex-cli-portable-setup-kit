@@ -208,9 +208,9 @@ def _pure_view(data: bytes, info: Optional[BinaryInfo] = None, notes: Optional[L
     if info.format == "raw" or info.error:
         view.notes.append("not a parseable binary")
         return view.finalize()
+    # For ELF/Mach-O the entry point and the section table share one absolute-address space
+    # (reverify's "rva" for those formats); PE entry points are RVAs already.
     entry = info.entrypoint
-    if entry is not None and info.format == "ELF" and info.image_base is not None:
-        entry = entry - info.image_base
     if entry is not None:
         view.entry_rva = entry
         view.functions[entry] = Function(entry, "entry", is_export=False)
@@ -241,7 +241,11 @@ def _angr_view(data: bytes, sha: str) -> SemanticView:
     proj = angr.Project(path, auto_load_libs=False)
     cfg = proj.analyses.CFGFast(normalize=True, data_references=True, show_progressbar=False)
     mo = proj.loader.main_object
-    base = int(mo.mapped_base)
+    # Translate angr's mapped addresses into reverify's address space: RVAs for PE
+    # (mapped base == image base), the file's own absolute addresses for ELF/Mach-O
+    # (cle may map a PIE at a different base than the file's preferred one).
+    mapped = int(mo.mapped_base)
+    base = mapped if info.format == "PE" else (mapped - int(info.image_base or 0))
     ext = proj.loader.extern_object
     ext_range = (int(ext.min_addr), int(ext.max_addr)) if ext is not None else None
     exports = set(info.exports)

@@ -14,22 +14,31 @@ bytes (or a minimal synthetic sample) and the claim, and it jumps the queue.
 
 ## How to contribute
 
-1. Fork, branch, and make your change.
-2. Add or update tests under `reverify/tests/`. Run the whole suite:
-   ```bash
-   cd reverify && python -m unittest discover -s tests
-   ```
-   Everything must stay green, with and without the optional engines installed
-   (`pip install "reverify[full]"` gives you capstone/unicorn/lief).
-3. For anything touching a reader (parser, disassembler, emulator), prefer a
-   **differential or known-answer test** over a hand-written expectation — check
-   your code against lief / capstone / Unicorn / a hand-verified vector, not
-   against your own understanding. See `tests/test_differential.py` and
-   `tests/test_oracle.py` for the pattern. Hand-written tests share the author's
-   blind spots; cross-checks don't.
-4. Keep the pure-Python fallback working: the toolkit must install and run with no
-   compiled dependencies.
-5. Open a PR describing what changed and how it's verified.
+Open a PR. That is the whole procedure — no CLA, no sign-off, no issue required
+first, no commit-message format. CI runs the suite on Linux, Windows and macOS,
+with and without the optional engines, so you don't have to; we squash-merge, so
+your branch history doesn't matter; and small things (style, a typo in the PR)
+get fixed by the maintainer rather than sent back.
+
+To run the tests locally:
+
+```bash
+pip install -e .            # or:  pip install -e ".[full]"  for capstone / unicorn / lief / z3
+python -m unittest discover -s reverify/tests -p "test_*.py"
+```
+
+Two things make a change easy to accept:
+
+- A behavior change comes with a test that would fail without it.
+- For anything touching a reader (parser, disassembler, emulator), prefer a
+  **differential or known-answer test** over a hand-written expectation — check
+  your code against lief / capstone / Unicorn / a hand-verified vector, not
+  against your own understanding (see `reverify/tests/test_differential.py` and
+  `test_oracle.py`). Hand-written tests share the author's blind spots;
+  cross-checks don't.
+
+The pure-Python fallback must keep working with no compiled dependencies; CI
+checks that too.
 
 ## Good first contributions
 

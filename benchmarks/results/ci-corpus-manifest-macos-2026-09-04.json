@@ -1,0 +1,88 @@
+{
+ "generated": "2026-09-04T12:43:09Z",
+ "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+ "machine": "arm64",
+ "sources": {
+  "frames.c": "2ef938db4a9ae1208779744cb68f0131377c1dd3fc418c7f96bae6f046f79992",
+  "mathlib.c": "87776c7cfb1b8f4e1ace6f19d5e064573581396538785accd08d3d944f439c38"
+ },
+ "compilers": {
+  "gcc": "Apple clang version 21.0.0 (clang-2100.1.1.101)",
+  "clang": "Apple clang version 21.0.0 (clang-2100.1.1.101)"
+ },
+ "artifacts": [
+  {
+   "file": "gcc-O0-frames.dylib",
+   "compiler": "gcc",
+   "opt": "O0",
+   "source": "frames.c",
+   "flags": "-O0 -fno-omit-frame-pointer -fPIC -dynamiclib -fcf-protection=none -o",
+   "size": 33584,
+   "sha256": "5d5215b9805274809389b85ef7f0dd49639d100ecca060d6c397dbf0bd95fe75"
+  },
+  {
+   "file": "gcc-O0-mathlib.dylib",
+   "compiler": "gcc",
+   "opt": "O0",
+   "source": "mathlib.c",
+   "flags": "-O0 -fno-omit-frame-pointer -fPIC -dynamiclib -fcf-protection=none -o",
+   "size": 17016,
+   "sha256": "50d87c5d64610a520cf5724ce52308979291459ac3ea8ff82834f3829ca3bd84"
+  },
+  {
+   "file": "gcc-O2-frames.dylib",
+   "compiler": "gcc",
+   "opt": "O2",
+   "source": "frames.c",
+   "flags": "-O2 -fomit-frame-pointer -fPIC -dynamiclib -fcf-protection=none -o",
+   "size": 16880,
+   "sha256": "71117c9eefbc347bd8c51572c5eec92f236a42f75637e9c4095b1778664d3622"
+  },
+  {
+   "file": "gcc-O2-mathlib.dylib",
+   "compiler": "gcc",
+   "opt": "O2",
+   "source": "mathlib.c",
+   "flags": "-O2 -fomit-frame-pointer -fPIC -dynamiclib -fcf-protection=none -o",
+   "size": 33592,
+   "sha256": "95f853cfa3ee77ab9b598c5227a5fbcad873b7bf78f3ab309c00b13799a8fe24"
+  },
+  {
+   "file": "clang-O0-frames.dylib",
+   "compiler": "clang",
+   "opt": "O0",
+   "source": "frames.c",
+   "flags": "-O0 -fno-omit-frame-pointer -fPIC -dynamiclib -fcf-protection=none -o",
+   "size": 33592,
+   "sha256": "8c20c1025dec47aa4d40d7081dcd9a169140df5ca10120939ea58a3c115c8c15"
+  },
+  {
+   "file": "clang-O0-mathlib.dylib",
+   "compiler": "clang",
+   "opt": "O0",
+   "source": "mathlib.c",
+   "flags": "-O0 -fno-omit-frame-pointer -fPIC -dynamiclib -fcf-protection=none -o",
+   "size": 17016,
+   "sha256": "9d9e2d44fb67ffc74a127de95beb91fc44a258386c56c0d0ff87a582f20c8406"
+  },
+  {
+   "file": "clang-O2-frames.dylib",
+   "compiler": "clang",
+   "opt": "O2",
+   "source": "frames.c",
+   "flags": "-O2 -fomit-frame-pointer -fPIC -dynamiclib -fcf-protection=none -o",
+   "size": 16888,
+   "sha256": "64245a18935d8d149a5dd2436ac16540bc77827e0b15f08c7fd95db7a110c00a"
+  },
+  {
+   "file": "clang-O2-mathlib.dylib",
+   "compiler": "clang",
+   "opt": "O2",
+   "source": "mathlib.c",
+   "flags": "-O2 -fomit-frame-pointer -fPIC -dynamiclib -fcf-protection=none -o",
+   "size": 33592,
+   "sha256": "7d68a32e1e9edfd5cdf031793061d7446a15b3f6a8a339e41166a61c73a4a36e"
+  }
+ ],
+ "failures": []
+}

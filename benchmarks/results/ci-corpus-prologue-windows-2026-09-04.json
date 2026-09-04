@@ -1,0 +1,742 @@
+{
+ "schema": 1,
+ "benchmark": "prologue_prior",
+ "prior": [
+  "push",
+  "mov"
+ ],
+ "generated": "2026-09-04T12:43:45Z",
+ "environment": {
+  "reverify": "0.10.0",
+  "python": "3.13.15",
+  "platform": "Windows-2025Server-10.0.26100-SP0",
+  "machine": "AMD64",
+  "engines": {
+   "disassembly": {
+    "engine": "capstone",
+    "version": "5.0.7"
+   },
+   "emulation": {
+    "engine": "unicorn",
+    "version": "2.1.4"
+   },
+   "binary_parsing": {
+    "engine": "lief",
+    "version": "1.0.0-d05b3499b"
+   },
+   "proof": {
+    "engine": "z3",
+    "version": "5.1.0"
+   },
+   "semantic": {
+    "engine": "pure-python",
+    "version": null,
+    "note": "function boundaries, call graph and xrefs need pip install \"reverify[angr]\""
+   },
+   "full_fidelity": true
+  }
+ },
+ "corpus": {
+  "dirs": [
+   "benchmarks/corpus/build"
+  ],
+  "per_dir": 60,
+  "sampling": "sorted, fixed stride",
+  "probe": "exports"
+ },
+ "rows": [
+  {
+   "file": "cl-O0-frames.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "48e4c6bc896170019a90ce1507053471d7a1ef20ca230e2869fd15c83aa73b5c",
+   "size": 103936,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_frame_calls",
+   "entry": "0x10e0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "sub",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "cl-O0-frames.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "48e4c6bc896170019a90ce1507053471d7a1ef20ca230e2869fd15c83aa73b5c",
+   "size": 103936,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_frame_sum",
+   "entry": "0x1130",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "sub",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "cl-O0-frames.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "48e4c6bc896170019a90ce1507053471d7a1ef20ca230e2869fd15c83aa73b5c",
+   "size": 103936,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_frame_xor",
+   "entry": "0x1000",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "sub",
+    "mov",
+    "xor"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "cl-O0-mathlib.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "2b5d4edd10f49d5da319416e1558ee66cba2d3137ab4113088b4f22d191d03ad",
+   "size": 103936,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_add",
+   "entry": "0x1000",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "mov",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "cl-O0-mathlib.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "2b5d4edd10f49d5da319416e1558ee66cba2d3137ab4113088b4f22d191d03ad",
+   "size": 103936,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_banner",
+   "entry": "0x1190",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "lea",
+    "ret",
+    "int3",
+    "int3"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "cl-O0-mathlib.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "2b5d4edd10f49d5da319416e1558ee66cba2d3137ab4113088b4f22d191d03ad",
+   "size": 103936,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_fnv1a",
+   "entry": "0x10c0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "sub",
+    "movabs"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "cl-O0-mathlib.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "2b5d4edd10f49d5da319416e1558ee66cba2d3137ab4113088b4f22d191d03ad",
+   "size": 103936,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_mba_add",
+   "entry": "0x1030",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "mov",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "cl-O0-mathlib.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "2b5d4edd10f49d5da319416e1558ee66cba2d3137ab4113088b4f22d191d03ad",
+   "size": 103936,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_popcount",
+   "entry": "0x1070",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "sub",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "cl-O0-mathlib.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "2b5d4edd10f49d5da319416e1558ee66cba2d3137ab4113088b4f22d191d03ad",
+   "size": 103936,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_strlen",
+   "entry": "0x1150",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "sub",
+    "mov",
+    "movsxd"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "cl-O2-frames.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "bd89c29a23d3b0c5775e25852742699a3feaacf8e18abf11f380ba2061b3b568",
+   "size": 103936,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_frame_calls",
+   "entry": "0x1000",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "imul",
+    "xor",
+    "imul",
+    "xor"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "cl-O2-frames.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "bd89c29a23d3b0c5775e25852742699a3feaacf8e18abf11f380ba2061b3b568",
+   "size": 103936,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_frame_sum",
+   "entry": "0x1020",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "sub",
+    "mov",
+    "xor",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "cl-O2-frames.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "bd89c29a23d3b0c5775e25852742699a3feaacf8e18abf11f380ba2061b3b568",
+   "size": 103936,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_frame_xor",
+   "entry": "0x10f0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "sub",
+    "xor",
+    "nop",
+    "lea"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "cl-O2-mathlib.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "b7925e617f530372bf8ec57730a47c0802a7fa52c88b5671f5c5a171c7ed74e3",
+   "size": 103424,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_add",
+   "entry": "0x1000",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "lea",
+    "ret",
+    "int3",
+    "int3"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "cl-O2-mathlib.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "b7925e617f530372bf8ec57730a47c0802a7fa52c88b5671f5c5a171c7ed74e3",
+   "size": 103424,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_banner",
+   "entry": "0x1010",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "lea",
+    "ret",
+    "int3",
+    "int3"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "cl-O2-mathlib.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "b7925e617f530372bf8ec57730a47c0802a7fa52c88b5671f5c5a171c7ed74e3",
+   "size": 103424,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_fnv1a",
+   "entry": "0x1020",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "xor",
+    "movabs",
+    "test",
+    "je"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "cl-O2-mathlib.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "b7925e617f530372bf8ec57730a47c0802a7fa52c88b5671f5c5a171c7ed74e3",
+   "size": 103424,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_mba_add",
+   "entry": "0x1060",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "xor",
+    "and",
+    "lea"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "cl-O2-mathlib.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "b7925e617f530372bf8ec57730a47c0802a7fa52c88b5671f5c5a171c7ed74e3",
+   "size": 103424,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_popcount",
+   "entry": "0x1070",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "xor",
+    "test",
+    "je",
+    "nop"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "cl-O2-mathlib.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "b7925e617f530372bf8ec57730a47c0802a7fa52c88b5671f5c5a171c7ed74e3",
+   "size": 103424,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_strlen",
+   "entry": "0x1090",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "xor",
+    "cmp",
+    "je",
+    "nop"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O0-frames.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "3894b058f0191d130d249c8a4a96a94b7060b91b0b56f88aa0677f4d709b4647",
+   "size": 40027,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_frame_calls",
+   "entry": "0x13ab",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "sub",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O0-frames.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "3894b058f0191d130d249c8a4a96a94b7060b91b0b56f88aa0677f4d709b4647",
+   "size": 40027,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_frame_sum",
+   "entry": "0x13f9",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "sub",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O0-frames.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "3894b058f0191d130d249c8a4a96a94b7060b91b0b56f88aa0677f4d709b4647",
+   "size": 40027,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_frame_xor",
+   "entry": "0x1310",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "sub",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O0-mathlib.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "8bcb714e3a81c47c47460dfba6399a93ef49559769ad8381e1b46b8906a269dc",
+   "size": 40127,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_add",
+   "entry": "0x1310",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "mov",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O0-mathlib.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "8bcb714e3a81c47c47460dfba6399a93ef49559769ad8381e1b46b8906a269dc",
+   "size": 40127,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_banner",
+   "entry": "0x1423",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "lea",
+    "pop"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O0-mathlib.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "8bcb714e3a81c47c47460dfba6399a93ef49559769ad8381e1b46b8906a269dc",
+   "size": 40127,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_fnv1a",
+   "entry": "0x1382",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "sub",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O0-mathlib.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "8bcb714e3a81c47c47460dfba6399a93ef49559769ad8381e1b46b8906a269dc",
+   "size": 40127,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_mba_add",
+   "entry": "0x1329",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "mov",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O0-mathlib.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "8bcb714e3a81c47c47460dfba6399a93ef49559769ad8381e1b46b8906a269dc",
+   "size": 40127,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_popcount",
+   "entry": "0x134d",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "sub",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O0-mathlib.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "8bcb714e3a81c47c47460dfba6399a93ef49559769ad8381e1b46b8906a269dc",
+   "size": 40127,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_strlen",
+   "entry": "0x13ee",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "sub",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O2-frames.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "e9093e87f7a9f69eb7f0ae74a43c23cdfc5f46cab6946e51843f1056aa25f166",
+   "size": 39981,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_frame_calls",
+   "entry": "0x1380",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "shl",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O2-frames.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "e9093e87f7a9f69eb7f0ae74a43c23cdfc5f46cab6946e51843f1056aa25f166",
+   "size": 39981,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_frame_sum",
+   "entry": "0x13b0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "test",
+    "jle",
+    "movsxd",
+    "xor"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O2-frames.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "e9093e87f7a9f69eb7f0ae74a43c23cdfc5f46cab6946e51843f1056aa25f166",
+   "size": 39981,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_frame_xor",
+   "entry": "0x1320",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "sub",
+    "xor",
+    "mov",
+    "nop"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O2-mathlib.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "010035e7dd1e95601cc0ab0465769f83bbd3db8ff0024e5f043dd75368b5ffd4",
+   "size": 40127,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_add",
+   "entry": "0x1320",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "lea",
+    "ret",
+    "nop",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O2-mathlib.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "010035e7dd1e95601cc0ab0465769f83bbd3db8ff0024e5f043dd75368b5ffd4",
+   "size": 40127,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_banner",
+   "entry": "0x13e0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "lea",
+    "ret",
+    "nop",
+    "nop"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O2-mathlib.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "010035e7dd1e95601cc0ab0465769f83bbd3db8ff0024e5f043dd75368b5ffd4",
+   "size": 40127,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_fnv1a",
+   "entry": "0x1360",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "test",
+    "je",
+    "movabs",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O2-mathlib.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "010035e7dd1e95601cc0ab0465769f83bbd3db8ff0024e5f043dd75368b5ffd4",
+   "size": 40127,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_mba_add",
+   "entry": "0x1330",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "xor",
+    "and",
+    "lea"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O2-mathlib.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "010035e7dd1e95601cc0ab0465769f83bbd3db8ff0024e5f043dd75368b5ffd4",
+   "size": 40127,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_popcount",
+   "entry": "0x1340",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "xor",
+    "test",
+    "je",
+    "nop"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O2-mathlib.dll",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "010035e7dd1e95601cc0ab0465769f83bbd3db8ff0024e5f043dd75368b5ffd4",
+   "size": 40127,
+   "format": "PE",
+   "arch": "x86_64",
+   "symbol": "rv_strlen",
+   "entry": "0x13b0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "sub",
+    "cmp",
+    "je",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  }
+ ],
+ "inconclusive": [],
+ "totals": {
+  "tested": 36,
+  "prior_wrong": 27,
+  "false_verified": 0,
+  "recovered_after_1_round": 36,
+  "inconclusive": 0,
+  "false_verified_rate_upper95": 0.09642183044857634
+ }
+}

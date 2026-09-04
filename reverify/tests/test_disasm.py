@@ -41,5 +41,39 @@ class TestDisassembler(unittest.TestCase):
         self.assertEqual(patches[0]["patched_bytes"], "eb")
 
 
+class TestArchRouting(unittest.TestCase):
+    """arm64/aarch64 must reach the ARM64 decoder, not be misread as x86_64.
+
+    Regression for the capstone arch switch, which selected x86_64 on
+    ``"64" in arch`` -- true for "arm64"/"aarch64" too -- and silently decoded
+    ARM64 bytes as x86_64.
+    """
+
+    def _capstone_present(self):
+        try:
+            import capstone  # noqa: F401
+            return True
+        except ImportError:
+            return False
+
+    def test_arm64_routes_to_arm64(self):
+        if not self._capstone_present():
+            self.skipTest("capstone not installed")
+        # aarch64: sub sp, sp, #0x10  ->  FF 03 00 D1 (little-endian of D10003FF)
+        code = bytes([0xFF, 0x03, 0x00, 0xD1])
+        for name in ("arm64", "aarch64"):
+            ins = Disassembler(arch=name).disassemble(code)
+            self.assertEqual([i.mnemonic for i in ins], ["sub"], name)
+
+    def test_arm64_does_not_decode_as_x86(self):
+        if not self._capstone_present():
+            self.skipTest("capstone not installed")
+        # Same bytes must NOT come out as x86 instructions under an arm64 decoder.
+        code = bytes([0xFF, 0x03, 0x00, 0xD1])
+        x86 = [i.mnemonic for i in Disassembler(arch="x86_64").disassemble(code)]
+        arm = [i.mnemonic for i in Disassembler(arch="arm64").disassemble(code)]
+        self.assertNotEqual(x86, arm)
+
+
 if __name__ == "__main__":
     unittest.main()

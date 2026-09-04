@@ -1,0 +1,742 @@
+{
+ "schema": 1,
+ "benchmark": "prologue_prior",
+ "prior": [
+  "push",
+  "mov"
+ ],
+ "generated": "2026-09-04T12:43:15Z",
+ "environment": {
+  "reverify": "0.10.0",
+  "python": "3.13.15",
+  "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+  "machine": "x86_64",
+  "engines": {
+   "disassembly": {
+    "engine": "capstone",
+    "version": "5.0.7"
+   },
+   "emulation": {
+    "engine": "unicorn",
+    "version": "2.1.4"
+   },
+   "binary_parsing": {
+    "engine": "lief",
+    "version": "1.0.0-d05b3499b"
+   },
+   "proof": {
+    "engine": "z3",
+    "version": "5.1.0"
+   },
+   "semantic": {
+    "engine": "pure-python",
+    "version": null,
+    "note": "function boundaries, call graph and xrefs need pip install \"reverify[angr]\""
+   },
+   "full_fidelity": true
+  }
+ },
+ "corpus": {
+  "dirs": [
+   "benchmarks/corpus/build"
+  ],
+  "per_dir": 60,
+  "sampling": "sorted, fixed stride",
+  "probe": "exports"
+ },
+ "rows": [
+  {
+   "file": "clang-O0-frames.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "a8c495be34eebae4e1b903c7af091442c64cafcff0f8876ba363b52cb521c66d",
+   "size": 15352,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_frame_calls",
+   "entry": "0x11c0",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "sub",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O0-frames.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "a8c495be34eebae4e1b903c7af091442c64cafcff0f8876ba363b52cb521c66d",
+   "size": 15352,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_frame_sum",
+   "entry": "0x1230",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "mov",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O0-frames.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "a8c495be34eebae4e1b903c7af091442c64cafcff0f8876ba363b52cb521c66d",
+   "size": 15352,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_frame_xor",
+   "entry": "0x1100",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "sub",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O0-mathlib.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "6cf7e30c297ed5328090839ce40cd82d6789ecb1d7f8cb12066ee59055ad5124",
+   "size": 15480,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_add",
+   "entry": "0x1100",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "mov",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O0-mathlib.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "6cf7e30c297ed5328090839ce40cd82d6789ecb1d7f8cb12066ee59055ad5124",
+   "size": 15480,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_banner",
+   "entry": "0x1240",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "lea",
+    "pop"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O0-mathlib.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "6cf7e30c297ed5328090839ce40cd82d6789ecb1d7f8cb12066ee59055ad5124",
+   "size": 15480,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_fnv1a",
+   "entry": "0x1190",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "mov",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O0-mathlib.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "6cf7e30c297ed5328090839ce40cd82d6789ecb1d7f8cb12066ee59055ad5124",
+   "size": 15480,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_mba_add",
+   "entry": "0x1120",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "mov",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O0-mathlib.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "6cf7e30c297ed5328090839ce40cd82d6789ecb1d7f8cb12066ee59055ad5124",
+   "size": 15480,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_popcount",
+   "entry": "0x1150",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "mov",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O0-mathlib.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "6cf7e30c297ed5328090839ce40cd82d6789ecb1d7f8cb12066ee59055ad5124",
+   "size": 15480,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_strlen",
+   "entry": "0x1200",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "mov",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O2-frames.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "d41405437b5a9d0a3586542608002e9d6775de9d98ed07a43b331d8f3ad32e94",
+   "size": 15320,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_frame_calls",
+   "entry": "0x11f0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "shl",
+    "sub",
+    "xor"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O2-frames.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "d41405437b5a9d0a3586542608002e9d6775de9d98ed07a43b331d8f3ad32e94",
+   "size": 15320,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_frame_sum",
+   "entry": "0x1220",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "test",
+    "jle",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O2-frames.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "d41405437b5a9d0a3586542608002e9d6775de9d98ed07a43b331d8f3ad32e94",
+   "size": 15320,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_frame_xor",
+   "entry": "0x1100",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "sub",
+    "mov",
+    "lea",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O2-mathlib.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "fc779513a61b243192a14f228d16573f5c2a495780d0a1cbd0a9f093acc8caf2",
+   "size": 15480,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_add",
+   "entry": "0x1100",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "lea",
+    "ret",
+    "nop",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O2-mathlib.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "fc779513a61b243192a14f228d16573f5c2a495780d0a1cbd0a9f093acc8caf2",
+   "size": 15480,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_banner",
+   "entry": "0x1210",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "lea",
+    "ret",
+    "endbr64",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O2-mathlib.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "fc779513a61b243192a14f228d16573f5c2a495780d0a1cbd0a9f093acc8caf2",
+   "size": 15480,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_fnv1a",
+   "entry": "0x1140",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "movabs",
+    "test",
+    "je",
+    "movabs"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O2-mathlib.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "fc779513a61b243192a14f228d16573f5c2a495780d0a1cbd0a9f093acc8caf2",
+   "size": 15480,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_mba_add",
+   "entry": "0x1110",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "xor",
+    "and",
+    "lea"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O2-mathlib.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "fc779513a61b243192a14f228d16573f5c2a495780d0a1cbd0a9f093acc8caf2",
+   "size": 15480,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_popcount",
+   "entry": "0x1120",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "xor",
+    "test",
+    "je",
+    "nop"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O2-mathlib.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "fc779513a61b243192a14f228d16573f5c2a495780d0a1cbd0a9f093acc8caf2",
+   "size": 15480,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_strlen",
+   "entry": "0x11f0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "nop",
+    "inc",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O0-frames.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "1de5180f2c34c3bf4f6ebc25eeab19f0eec3009d1ab2ebbfb92881fa24d4d38d",
+   "size": 15448,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_frame_calls",
+   "entry": "0x11e7",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "sub",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O0-frames.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "1de5180f2c34c3bf4f6ebc25eeab19f0eec3009d1ab2ebbfb92881fa24d4d38d",
+   "size": 15448,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_frame_sum",
+   "entry": "0x123a",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "mov",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O0-frames.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "1de5180f2c34c3bf4f6ebc25eeab19f0eec3009d1ab2ebbfb92881fa24d4d38d",
+   "size": 15448,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_frame_xor",
+   "entry": "0x1109",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "sub",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O0-mathlib.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "e2284442358fedff2a07d4d676d782f12706e18683e8f416d94bfdc16fe0ce13",
+   "size": 15272,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_add",
+   "entry": "0x10f9",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "mov",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O0-mathlib.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "e2284442358fedff2a07d4d676d782f12706e18683e8f416d94bfdc16fe0ce13",
+   "size": 15272,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_banner",
+   "entry": "0x11f8",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "lea",
+    "pop"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O0-mathlib.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "e2284442358fedff2a07d4d676d782f12706e18683e8f416d94bfdc16fe0ce13",
+   "size": 15272,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_fnv1a",
+   "entry": "0x1166",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "mov",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O0-mathlib.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "e2284442358fedff2a07d4d676d782f12706e18683e8f416d94bfdc16fe0ce13",
+   "size": 15272,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_mba_add",
+   "entry": "0x1112",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "mov",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O0-mathlib.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "e2284442358fedff2a07d4d676d782f12706e18683e8f416d94bfdc16fe0ce13",
+   "size": 15272,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_popcount",
+   "entry": "0x1139",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "mov",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O0-mathlib.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "e2284442358fedff2a07d4d676d782f12706e18683e8f416d94bfdc16fe0ce13",
+   "size": 15272,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_strlen",
+   "entry": "0x11ca",
+   "prior_verdict": "VERIFIED",
+   "actual_entry": [
+    "push",
+    "mov",
+    "mov",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O2-frames.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "8abbcb900f656f2e90348399bdb4679094dddb54fd3e34564b49e82adb62ee69",
+   "size": 15408,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_frame_calls",
+   "entry": "0x1190",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "shl",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O2-frames.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "8abbcb900f656f2e90348399bdb4679094dddb54fd3e34564b49e82adb62ee69",
+   "size": 15408,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_frame_sum",
+   "entry": "0x11c0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "test",
+    "jle",
+    "movsxd",
+    "xor"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O2-frames.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "8abbcb900f656f2e90348399bdb4679094dddb54fd3e34564b49e82adb62ee69",
+   "size": 15408,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_frame_xor",
+   "entry": "0x1110",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "sub",
+    "mov",
+    "mov",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O2-mathlib.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "33b96aa3b9b25be58022c5bc5b64d72cf2a197d5f4da0a8e3af4aec1a7c2cd93",
+   "size": 15568,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_add",
+   "entry": "0x1110",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "lea",
+    "ret",
+    "nop",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O2-mathlib.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "33b96aa3b9b25be58022c5bc5b64d72cf2a197d5f4da0a8e3af4aec1a7c2cd93",
+   "size": 15568,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_banner",
+   "entry": "0x11c0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "lea",
+    "ret",
+    "endbr64",
+    "sub"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O2-mathlib.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "33b96aa3b9b25be58022c5bc5b64d72cf2a197d5f4da0a8e3af4aec1a7c2cd93",
+   "size": 15568,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_fnv1a",
+   "entry": "0x1150",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "movabs",
+    "test",
+    "je",
+    "movabs"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O2-mathlib.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "33b96aa3b9b25be58022c5bc5b64d72cf2a197d5f4da0a8e3af4aec1a7c2cd93",
+   "size": 15568,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_mba_add",
+   "entry": "0x1120",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "xor",
+    "and",
+    "lea"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O2-mathlib.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "33b96aa3b9b25be58022c5bc5b64d72cf2a197d5f4da0a8e3af4aec1a7c2cd93",
+   "size": 15568,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_popcount",
+   "entry": "0x1130",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "xor",
+    "test",
+    "je",
+    "nop"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O2-mathlib.so",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "33b96aa3b9b25be58022c5bc5b64d72cf2a197d5f4da0a8e3af4aec1a7c2cd93",
+   "size": 15568,
+   "format": "ELF",
+   "arch": "x86_64",
+   "symbol": "rv_strlen",
+   "entry": "0x1190",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "cmp",
+    "je",
+    "sub",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  }
+ ],
+ "inconclusive": [],
+ "totals": {
+  "tested": 36,
+  "prior_wrong": 18,
+  "false_verified": 0,
+  "recovered_after_1_round": 36,
+  "inconclusive": 0,
+  "false_verified_rate_upper95": 0.09642183044857634
+ }
+}

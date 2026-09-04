@@ -4,6 +4,30 @@ import re
 from typing import Dict, Any, List, Optional, Tuple
 
 
+class UnsupportedArch(ValueError):
+    """The requested architecture needs capstone: the pure-Python decoder is x86/x64 only.
+
+    Raised instead of silently decoding ARM/MIPS/... bytes as x86, which would
+    let a wrong claim verify against junk (a false VERIFIED).
+    """
+
+
+_PURE_UNSUPPORTED = ("arm", "aarch", "mips", "ppc", "powerpc", "riscv", "sparc")
+
+#: Pseudo-mnemonics the pure decoder emits for bytes it does not understand.
+#: A verifier must never refute a claim on the strength of these.
+PSEUDO_MNEMONICS = ("db", "rex")
+
+_REG32 = ["eax", "ecx", "edx", "ebx", "esp", "ebp", "esi", "edi",
+          "r8d", "r9d", "r10d", "r11d", "r12d", "r13d", "r14d", "r15d"]
+_REG64 = ["rax", "rcx", "rdx", "rbx", "rsp", "rbp", "rsi", "rdi",
+          "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15"]
+_ALU_RM_R = {0x01: "add", 0x29: "sub", 0x31: "xor", 0x89: "mov"}   # op r/m, r
+_ALU_R_RM = {0x03: "add", 0x2B: "sub", 0x33: "xor", 0x8B: "mov"}   # op r, r/m
+_JCC = ["jo", "jno", "jb", "jnb", "jz", "jnz", "jbe", "jnbe",
+        "js", "jns", "jp", "jnp", "jl", "jge", "jle", "jg"]
+
+
 class Instruction:
     def __init__(self, address: int, size: int, mnemonic: str, op_str: str, raw_bytes: bytes):
         self.address = address
@@ -34,15 +58,19 @@ class Disassembler:
         self._capstone_cs = None
         self._init_capstone()
 
+    @property
+    def engine(self) -> str:
+        return "capstone" if self._capstone_cs is not None else "pure-python"
+
     def _init_capstone(self) -> None:
         try:
             import capstone
-            if "64" in self.arch or "x64" in self.arch or "amd64" in self.arch:
-                self._capstone_cs = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_64)
-            elif "arm64" in self.arch or "aarch64" in self.arch:
+            if "arm64" in self.arch or "aarch64" in self.arch:
                 self._capstone_cs = capstone.Cs(capstone.CS_ARCH_ARM64, capstone.CS_MODE_ARM)
             elif "arm" in self.arch:
                 self._capstone_cs = capstone.Cs(capstone.CS_ARCH_ARM, capstone.CS_MODE_ARM)
+            elif "64" in self.arch or "x64" in self.arch or "amd64" in self.arch:
+                self._capstone_cs = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_64)
             else:
                 self._capstone_cs = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
         except ImportError:
@@ -56,156 +84,106 @@ class Disassembler:
                     Instruction(ins.address, ins.size, ins.mnemonic, ins.op_str, bytes(ins.bytes))
                 )
             return instructions
+        if any(tag in self.arch for tag in _PURE_UNSUPPORTED):
+            raise UnsupportedArch(
+                f"'{self.arch}' disassembly needs capstone (the pure-Python decoder is x86/x64 only): "
+                'pip install "reverify[capstone]"'
+            )
         return self._disassemble_pure_python(code, base_address)
 
+    # -- pure-Python x86/x64 decoder ------------------------------------------
+    #
+    # Deliberately small and honest: it decodes the common register-direct forms
+    # (prologues, moves, ALU on registers, branches) and emits ``db`` for anything
+    # else — never a guess. Every byte is accounted for (sum of sizes == len).
+
     def _disassemble_pure_python(self, code: bytes, base_address: int) -> List[Instruction]:
-        """Pure-Python basic x86/x64 instruction decoder."""
         instructions: List[Instruction] = []
+        is64 = ("64" in self.arch or "amd64" in self.arch) and "arm" not in self.arch
         offset = 0
         addr = base_address
         length = len(code)
 
-        reg32 = ["eax", "ecx", "edx", "ebx", "esp", "ebp", "esi", "edi"]
-        reg64 = ["rax", "rcx", "rdx", "rbx", "rsp", "rbp", "rsi", "rdi"]
-
         while offset < length:
             b0 = code[offset]
-            rex_w = False
-
-            # REX prefix in 64-bit mode (0x40 - 0x4F): this pure fallback does not
-            # combine it with the following opcode; emit it as its own byte so the
-            # decode always accounts for every byte (capstone does the real work).
-            if ("64" in self.arch or "amd64" in self.arch) and (0x40 <= b0 <= 0x4F):
-                instructions.append(Instruction(addr, 1, "rex", "", bytes([b0])))
+            prefix = 0
+            rex = 0
+            if is64 and 0x40 <= b0 <= 0x4F and offset + 1 < length:
+                rex, prefix = b0, 1
+            decoded = self._decode_one(code, offset + prefix, addr + prefix, is64, rex)
+            if decoded is None:
+                # undecodable: account for exactly one byte (the REX byte itself, if that is what we are on)
+                instructions.append(Instruction(addr, 1, "rex" if prefix else "db", hex(b0), bytes([b0])))
                 offset += 1
                 addr += 1
                 continue
-
-            regs = reg64 if rex_w else reg32
-
-            # NOP
-            if b0 == 0x90:
-                instructions.append(Instruction(addr, 1, "nop", "", bytes([b0])))
-                offset += 1
-                addr += 1
-            # INT 3 (Breakpoint)
-            elif b0 == 0xCC:
-                instructions.append(Instruction(addr, 1, "int3", "", bytes([b0])))
-                offset += 1
-                addr += 1
-            # RET
-            elif b0 == 0xC3:
-                instructions.append(Instruction(addr, 1, "ret", "", bytes([b0])))
-                offset += 1
-                addr += 1
-            # RET imm16
-            elif b0 == 0xC2 and offset + 2 < length:
-                imm = int.from_bytes(code[offset + 1 : offset + 3], "little")
-                instructions.append(Instruction(addr, 3, "ret", hex(imm), code[offset : offset + 3]))
-                offset += 3
-                addr += 3
-            # PUSH r32/r64 (0x50 - 0x57)
-            elif 0x50 <= b0 <= 0x57:
-                reg = regs[b0 - 0x50]
-                instructions.append(Instruction(addr, 1, "push", reg, bytes([b0])))
-                offset += 1
-                addr += 1
-            # POP r32/r64 (0x58 - 0x5F)
-            elif 0x58 <= b0 <= 0x5F:
-                reg = regs[b0 - 0x58]
-                instructions.append(Instruction(addr, 1, "pop", reg, bytes([b0])))
-                offset += 1
-                addr += 1
-            # PUSH imm32
-            elif b0 == 0x68 and offset + 4 < length:
-                imm = int.from_bytes(code[offset + 1 : offset + 5], "little", signed=True)
-                instructions.append(Instruction(addr, 5, "push", hex(imm), code[offset : offset + 5]))
-                offset += 5
-                addr += 5
-            # PUSH imm8
-            elif b0 == 0x6A and offset + 1 < length:
-                imm = int.from_bytes(code[offset + 1 : offset + 2], "little", signed=True)
-                instructions.append(Instruction(addr, 2, "push", hex(imm), code[offset : offset + 2]))
-                offset += 2
-                addr += 2
-            # MOV r32/r64, imm32/imm64 (0xB8 - 0xBF)
-            elif 0xB8 <= b0 <= 0xBF:
-                reg = regs[b0 - 0xB8]
-                imm_len = 8 if rex_w else 4
-                if offset + imm_len < length:
-                    imm = int.from_bytes(code[offset + 1 : offset + 1 + imm_len], "little")
-                    raw = code[offset : offset + 1 + imm_len]
-                    instructions.append(Instruction(addr, len(raw), "mov", f"{reg}, {hex(imm)}", raw))
-                    offset += len(raw)
-                    addr += len(raw)
-                else:  # truncated immediate: emit the opcode byte, do not drop it
-                    instructions.append(Instruction(addr, 1, "db", hex(b0), bytes([b0])))
-                    offset += 1
-                    addr += 1
-            # XOR reg, reg (0x31 / 0x33)
-            elif b0 in (0x31, 0x33) and offset + 1 < length:
-                modrm = code[offset + 1]
-                src = regs[(modrm >> 3) & 7]
-                dst = regs[modrm & 7]
-                raw = code[offset : offset + 2]
-                instructions.append(Instruction(addr, 2, "xor", f"{dst}, {src}", raw))
-                offset += 2
-                addr += 2
-            # ADD reg, reg (0x01 / 0x03)
-            elif b0 in (0x01, 0x03) and offset + 1 < length:
-                modrm = code[offset + 1]
-                src = regs[(modrm >> 3) & 7]
-                dst = regs[modrm & 7]
-                raw = code[offset : offset + 2]
-                instructions.append(Instruction(addr, 2, "add", f"{dst}, {src}", raw))
-                offset += 2
-                addr += 2
-            # SUB reg, reg (0x29 / 0x2B)
-            elif b0 in (0x29, 0x2B) and offset + 1 < length:
-                modrm = code[offset + 1]
-                src = regs[(modrm >> 3) & 7]
-                dst = regs[modrm & 7]
-                raw = code[offset : offset + 2]
-                instructions.append(Instruction(addr, 2, "sub", f"{dst}, {src}", raw))
-                offset += 2
-                addr += 2
-            # JMP rel8 (0xEB)
-            elif b0 == 0xEB and offset + 1 < length:
-                rel = int.from_bytes(code[offset + 1 : offset + 2], "little", signed=True)
-                target = addr + 2 + rel
-                instructions.append(Instruction(addr, 2, "jmp", hex(target), code[offset : offset + 2]))
-                offset += 2
-                addr += 2
-            # JMP rel32 (0xE9)
-            elif b0 == 0xE9 and offset + 4 < length:
-                rel = int.from_bytes(code[offset + 1 : offset + 5], "little", signed=True)
-                target = addr + 5 + rel
-                instructions.append(Instruction(addr, 5, "jmp", hex(target), code[offset : offset + 5]))
-                offset += 5
-                addr += 5
-            # CALL rel32 (0xE8)
-            elif b0 == 0xE8 and offset + 4 < length:
-                rel = int.from_bytes(code[offset + 1 : offset + 5], "little", signed=True)
-                target = addr + 5 + rel
-                instructions.append(Instruction(addr, 5, "call", hex(target), code[offset : offset + 5]))
-                offset += 5
-                addr += 5
-            # Jcc rel8 (0x70 - 0x7F)
-            elif 0x70 <= b0 <= 0x7F and offset + 1 < length:
-                jcc_names = ["jo", "jno", "jb", "jnb", "jz", "jnz", "jbe", "jnbe", "js", "jns", "jp", "jnp", "jl", "jge", "jle", "jg"]
-                jname = jcc_names[b0 - 0x70]
-                rel = int.from_bytes(code[offset + 1 : offset + 2], "little", signed=True)
-                target = addr + 2 + rel
-                instructions.append(Instruction(addr, 2, jname, hex(target), code[offset : offset + 2]))
-                offset += 2
-                addr += 2
-            # Default / unknown byte
-            else:
-                instructions.append(Instruction(addr, 1, "db", hex(b0), bytes([b0])))
-                offset += 1
-                addr += 1
+            mnemonic, op_str, size = decoded
+            total = prefix + size
+            instructions.append(Instruction(addr, total, mnemonic, op_str, code[offset : offset + total]))
+            offset += total
+            addr += total
 
         return instructions
+
+    @staticmethod
+    def _decode_one(code: bytes, pos: int, addr: int, is64: bool, rex: int) -> Optional[Tuple[str, str, int]]:
+        """Decode one instruction at ``pos`` (after any REX prefix). Returns (mnemonic, operands, size) or None."""
+        if pos >= len(code):
+            return None
+        b0 = code[pos]
+        rem = len(code) - pos
+        rex_w, rex_r, rex_b = bool(rex & 8), bool(rex & 4), bool(rex & 1)
+        wide = is64 and rex_w
+
+        def reg(n: int, wide_: bool) -> str:
+            return (_REG64 if wide_ else _REG32)[n]
+
+        if b0 == 0x90:
+            return "nop", "", 1
+        if b0 == 0xCC:
+            return "int3", "", 1
+        if b0 == 0xC3:
+            return "ret", "", 1
+        if b0 == 0xC2 and rem >= 3:
+            return "ret", hex(int.from_bytes(code[pos + 1 : pos + 3], "little")), 3
+        if 0x50 <= b0 <= 0x57:   # push r: 64-bit operand size by default in long mode
+            return "push", reg((b0 - 0x50) + (8 if rex_b else 0), is64), 1
+        if 0x58 <= b0 <= 0x5F:
+            return "pop", reg((b0 - 0x58) + (8 if rex_b else 0), is64), 1
+        if b0 == 0x68 and rem >= 5:
+            return "push", hex(int.from_bytes(code[pos + 1 : pos + 5], "little", signed=True)), 5
+        if b0 == 0x6A and rem >= 2:
+            return "push", hex(int.from_bytes(code[pos + 1 : pos + 2], "little", signed=True)), 2
+        if 0xB8 <= b0 <= 0xBF:   # mov r, imm32 / imm64 (REX.W)
+            imm_len = 8 if wide else 4
+            if rem < 1 + imm_len:
+                return None      # truncated immediate: leave the bytes as db, do not invent an operand
+            imm = int.from_bytes(code[pos + 1 : pos + 1 + imm_len], "little")
+            return "mov", f"{reg((b0 - 0xB8) + (8 if rex_b else 0), wide)}, {hex(imm)}", 1 + imm_len
+        if (b0 in _ALU_RM_R or b0 in _ALU_R_RM) and rem >= 2:
+            modrm = code[pos + 1]
+            if modrm >> 6 != 3:
+                return None      # memory operand: length depends on SIB/displacement — not decoded, never guessed
+            r = ((modrm >> 3) & 7) + (8 if rex_r else 0)
+            rm = (modrm & 7) + (8 if rex_b else 0)
+            if b0 in _ALU_RM_R:
+                mnemonic, dst, src = _ALU_RM_R[b0], rm, r
+            else:
+                mnemonic, dst, src = _ALU_R_RM[b0], r, rm
+            return mnemonic, f"{reg(dst, wide)}, {reg(src, wide)}", 2
+        if b0 == 0xEB and rem >= 2:
+            rel = int.from_bytes(code[pos + 1 : pos + 2], "little", signed=True)
+            return "jmp", hex(addr + 2 + rel), 2
+        if b0 == 0xE9 and rem >= 5:
+            rel = int.from_bytes(code[pos + 1 : pos + 5], "little", signed=True)
+            return "jmp", hex(addr + 5 + rel), 5
+        if b0 == 0xE8 and rem >= 5:
+            rel = int.from_bytes(code[pos + 1 : pos + 5], "little", signed=True)
+            return "call", hex(addr + 5 + rel), 5
+        if 0x70 <= b0 <= 0x7F and rem >= 2:
+            rel = int.from_bytes(code[pos + 1 : pos + 2], "little", signed=True)
+            return _JCC[b0 - 0x70], hex(addr + 2 + rel), 2
+        return None
 
 
 def pattern_scan(data: bytes, pattern: str) -> List[int]:
