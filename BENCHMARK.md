@@ -119,7 +119,18 @@ Windows 11 reference record, 50 binaries, engines installed
 claims. The `function_at` false claims are *unknown*, not refuted, because no analysis
 engine was installed for that run — the honest answer; with angr they are refuted. CI runs
 this matrix in **every** job (three platforms, Python 3.9 and 3.13, with and without the
-engines); each record is an artifact (`matrix-<os>-py<ver>-<deps>`).
+engines); each record is an artifact (`matrix-<os>-py<ver>-<deps>`). From CI run
+33874141359 on each runner's system binaries, engines installed (records under
+`results/ci-matrix-*.json`):
+
+| platform | binaries | known-false claims | **false VERIFIED** | 95% upper bound | known-true missed |
+|---|---|---|---|---|---|
+| Linux x86_64 | 50 | 654 | **0** | 0.6% | 0 |
+| Windows Server x86/x86_64 | 50 | 461 | **0** | 0.8% | 0 |
+| macOS arm64 | 46 | 417 | **0** | 0.9% | 0 |
+
+Pooled with the reference run: **0 false VERIFIED of 2,007 known-false claims** across four
+platforms (95% upper bound about 0.2%).
 
 ### Third-party replication: aarch64 Linux ELF (Jetson)
 
