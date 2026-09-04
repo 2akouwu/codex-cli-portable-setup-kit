@@ -28,7 +28,7 @@ try:  # installed package (e.g. the ``reverify`` console script)
     from .ledger import Ledger, context_for_directory, hook_config, list_ledgers, ledger_dir
     from .semantic import semantic_view
     from .rollover import Orchestrator, MockDriver, make_driver, demo_scripts
-    from .claude_rollover import main as claude_rollover_main
+    from .rollover_harness import main as claude_rollover_main
 except ImportError:  # run directly as a script: ``python reverify/cli.py ...``
     from pe_parser import PEParser, BinaryParseError
     from disasm import Disassembler, pattern_scan, create_patch
@@ -43,7 +43,7 @@ except ImportError:  # run directly as a script: ``python reverify/cli.py ...``
     from ledger import Ledger, context_for_directory, hook_config, list_ledgers, ledger_dir
     from semantic import semantic_view
     from rollover import Orchestrator, MockDriver, make_driver, demo_scripts
-    from claude_rollover import main as claude_rollover_main
+    from rollover_harness import main as claude_rollover_main
 
 
 def load_input_bytes(input_val: str, offset: int = 0, length: int = 0) -> bytes:
@@ -511,7 +511,7 @@ def _print_results(results: List[Dict[str, Any]]) -> None:
 
 
 def cmd_rollover(args: argparse.Namespace) -> None:
-    """Claude Code without compaction: hooks + launcher (see reverify/claude_rollover.py)."""
+    """Rollover for any agent CLI: hooks + launcher (see reverify/rollover_harness.py)."""
     sys.exit(claude_rollover_main([args.action] + list(args.rest)))
 
 
@@ -731,10 +731,10 @@ def main() -> None:
     # rollover (Claude Code without compaction)
     p_roll = subparsers.add_parser(
         "rollover",
-        help="Claude Code without compaction: Stop/SessionStart hooks that hand off to files, "
-             "and a launcher that replaces the session with a fresh one on the receipt",
+        help="Rollover for Claude Code / Codex / Gemini CLI / OpenCode: hooks that hand off to files "
+             "instead of compacting, and a launcher that replaces the session with a fresh one",
     )
-    p_roll.add_argument("action", choices=["install", "uninstall", "run", "request", "status", "stop", "session-start", "help"],
+    p_roll.add_argument("action", choices=["install", "uninstall", "run", "request", "status", "hook", "stop", "session-start", "help"],
                         help="install/uninstall the hooks, run the launcher, request a rollover (from inside a session), status")
     p_roll.add_argument("rest", nargs=argparse.REMAINDER, help="options for the action; for run, arguments after -- go to claude")
     p_roll.set_defaults(func=cmd_rollover)

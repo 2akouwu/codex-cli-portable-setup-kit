@@ -48,4 +48,4 @@ reverify-mcp = "reverify.mcp_server:run_mcp_server"
 packages = ["reverify"]
 
 [tool.setuptools.package-data]
-reverify = ["py.typed"]
+reverify = ["py.typed", "plugins/opencode/*.js"]

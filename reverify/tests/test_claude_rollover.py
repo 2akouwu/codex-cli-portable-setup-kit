@@ -218,10 +218,14 @@ class Guard(Base):
         receipt = json.loads(cr.receipt_path("sess-1").read_text(encoding="utf-8"))
         self.assertEqual(receipt["reason"], "request: switching to another task")
 
-    def test_request_needs_a_session(self):
+    def test_request_without_a_session_is_keyed_by_cwd(self):
         out = io.StringIO()
         with redirect_stdout(out):
-            self.assertEqual(cr.run_request([]), 2)
+            self.assertEqual(cr.run_request(["--reason", "done here"]), 0)
+        self.assertIn("this directory", out.getvalue())
+        self.assertIsNotNone(cr.pop_request("any-session", cwd=os.getcwd()))
+        with redirect_stdout(io.StringIO()):
+            self.assertEqual(cr.run_request(["--session"]), 2)
 
     def test_receipt_is_keyed_by_launch_id_when_launched(self):
         env = dict(os.environ)
@@ -255,8 +259,8 @@ class Guard(Base):
             cr.run_stop({"session_id": "s", "transcript_path": str(transcript), "cwd": str(self.root)})
         data = json.loads(out.getvalue())
         self.assertEqual(data["decision"], "block")
-        self.assertIn(str(self.root / ".claude" / cr.HANDOFF_NAME), data["reason"])
-        self.assertIn("whichever memory index", data["reason"])
+        self.assertIn(str(self.root / ".reverify" / cr.HANDOFF_NAME), data["reason"])
+        self.assertIn("whichever memory or notes index", data["reason"])
 
     def test_main_fails_open_on_bad_stdin(self):
         sys.stdin = io.StringIO("not json")
@@ -305,7 +309,7 @@ class Settings(Base):
         self.assertIs(settings["autoCompactEnabled"], False)
         self.assertNotIn("autoCompactWindow", settings)
         self.assertEqual(len(settings["hooks"]["Stop"]), 1)
-        self.assertIn("claude_rollover.py", settings["hooks"]["Stop"][0]["hooks"][0]["command"])
+        self.assertIn("rollover_harness.py", settings["hooks"]["Stop"][0]["hooks"][0]["command"])
         self.assertEqual(len(settings["hooks"]["SessionStart"]), 2)
         self.assertEqual(settings["hooks"]["SessionStart"][0]["hooks"][0]["command"], "reverify ledger --context")
         self.assertEqual(settings["env"][cr.ENV_TOKENS], "150000")
@@ -322,13 +326,13 @@ class Settings(Base):
         os.environ[cr.ENV_SETTINGS] = str(path)
         out = io.StringIO()
         with redirect_stdout(out):
-            self.assertEqual(cr.run_install(["--threshold", "180k", "--step", "50k"]), 0)
+            self.assertEqual(cr.run_install(["--harness", "claude", "--threshold", "180k", "--step", "50k"]), 0)
         data = json.loads(path.read_text(encoding="utf-8"))
         self.assertIs(data["autoCompactEnabled"], False)
         self.assertEqual(data["env"], {cr.ENV_TOKENS: "180000", cr.ENV_STEP: "50000"})
         self.assertTrue(any(p.name.startswith("settings.json.bak-reverify-") for p in self.root.iterdir()))
         with redirect_stdout(io.StringIO()):
-            self.assertEqual(cr.run_uninstall([]), 0)
+            self.assertEqual(cr.run_uninstall(["--harness", "claude"]), 0)
         self.assertEqual(json.loads(path.read_text(encoding="utf-8")), {"theme": "dark"})
 
 
@@ -500,8 +504,8 @@ class OpeningPrompt(unittest.TestCase):
 class HookCommand(unittest.TestCase):
     def test_hook_command_points_at_this_module_and_interpreter(self):
         command = cr.hook_command("stop")
-        self.assertIn("claude_rollover.py", command)
-        self.assertTrue(command.endswith(" stop"))
+        self.assertIn("rollover_harness.py", command)
+        self.assertTrue(command.endswith(" hook claude stop"))
         self.assertIn(Path(sys.executable).resolve().as_posix(), command)
 
     def test_module_runs_standalone_and_prints_usage(self):

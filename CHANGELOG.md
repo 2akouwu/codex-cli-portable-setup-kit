@@ -6,17 +6,24 @@ All notable changes to this project are documented here.
 
 ### Added
 
-- **Claude Code without compaction** (`reverify/claude_rollover.py`, `reverify rollover`):
-  a Stop hook that measures the live context from the transcript and, at the threshold or on
-  the model's own `reverify rollover request`, blocks one stop and asks for a hand-off *file*
-  (fixed sections, UNVERIFIED) instead of an in-band summary; a receipt is issued only after
-  the file is verified rewritten and well-formed (fail closed), carrying the transcript
-  SHA-256 and the user's verbatim first/latest messages; a launcher (`reverify rollover run --
-  <claude args>`) consumes the receipt exactly once, cancels the rollover if a user message
-  landed meanwhile, ignores unknown schemas and too-frequent receipts, ends the session and
-  starts a fresh one whose opening quotes the original request verbatim; `install` /
-  `uninstall` manage `~/.claude/settings.json` (auto-compaction off, backups kept); an
-  append-only `events.jsonl` audit trail. 29 new tests, zero dependencies.
+- **Rollover for any agent CLI** (`reverify/rollover_harness.py`, `reverify rollover`): one
+  state machine and hand-off contract for Claude Code, Codex CLI, Gemini CLI and OpenCode.
+  The guard runs at each harness's "turn finished" hook (Claude Code / Codex `Stop`, Gemini
+  `AfterAgent`, OpenCode `session.idle` through a bundled plugin), measures the live context
+  from the harness's own transcript (Claude JSONL usage, Codex rollout `token_count`, Gemini
+  chats JSONL `tokens`, OpenCode SDK / SQLite store), and at the threshold — or on the model's
+  own `reverify rollover request` — blocks one stop and asks for a hand-off *file* (fixed
+  sections, UNVERIFIED) instead of an in-band summary. A receipt is issued only after the file
+  is verified rewritten and well-formed (fail closed) and carries the transcript SHA-256 plus
+  the user's verbatim first/latest messages. The fresh session comes from the launcher
+  (`reverify rollover run --harness X -- <args>`: exactly-once receipt, cancelled if a user
+  message landed meanwhile, unknown schema / too-frequent receipts ignored, opening quotes the
+  original request verbatim), from Gemini's in-process `clearContext` + `BeforeAgent`
+  injection, or from the OpenCode plugin (new session + opening prompt). `install` /
+  `uninstall` manage each CLI's own config with backups (Claude `settings.json`, Codex
+  `hooks.json` + `config.toml`, Gemini `settings.json`, OpenCode plugin + `opencode.json`)
+  and turn built-in compaction off. `claude_rollover.py` stays as a compatibility shim.
+  Append-only `events.jsonl` audit trail. 43 tests, zero dependencies.
 
 - **Rollover controller** (`reverify/rollover.py`, `reverify orchestrate`): runs a goal as a
   sequence of fresh-context sessions. The model asks for a rollover through a small JSON
