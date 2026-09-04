@@ -26,14 +26,16 @@ try:  # installed package
     from .protocol_parser import ProtobufDissector, format_hexdump
     from .verifier import Verifier, Claim, summarize, claim_key, VERIFIED
     from .backends import backend_report
-    from .ledger import Ledger, list_ledgers, LEDGER_INSTRUCTIONS
+    from .ledger import Ledger, list_ledgers, LEDGER_INSTRUCTIONS, ledger_dir
+    from .rollover import Checkpoint
 except ImportError:  # run directly: ``python reverify/mcp_server.py``
     from binary import parse_binary
     from disasm import Disassembler, pattern_scan
     from protocol_parser import ProtobufDissector, format_hexdump
     from verifier import Verifier, Claim, summarize, claim_key, VERIFIED
     from backends import backend_report
-    from ledger import Ledger, list_ledgers, LEDGER_INSTRUCTIONS
+    from ledger import Ledger, list_ledgers, LEDGER_INSTRUCTIONS, ledger_dir
+    from rollover import Checkpoint
 
 try:
     from ._version import __version__ as SERVER_VERSION
@@ -154,6 +156,25 @@ TOOLS_MANIFEST = [
                 "space": {"type": "string", "enum": ["file", "rva", "va"], "default": "file"},
                 "name": {"type": "string", "description": "Function, export or import name (alternative to offset)"},
                 "limit": {"type": "integer", "default": 60}
+            },
+            "required": ["file_path"]
+        }
+    },
+    {
+        "name": "re_checkpoint",
+        "description": (
+            "Save or load your hand-off for a long task on a binary (done / todo / decisions / next_step). "
+            "Use it before your context is compacted or cleared; after a reset, load it together with "
+            "re_ledger. What you write here is stored as UNVERIFIED — only re_verify_claim results become facts."
+        ),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "file_path": {"type": "string", "description": "Target binary file path"},
+                "action": {"type": "string", "enum": ["save", "load"], "default": "load"},
+                "task": {"type": "string", "description": "Task id (defaults to 'default')", "default": "default"},
+                "checkpoint": {"type": "object", "description": "For save: {done: [], todo: [], decisions: [], next_step: ''}"},
+                "goal": {"type": "string", "description": "For save: the goal this hand-off belongs to"}
             },
             "required": ["file_path"]
         }
@@ -286,6 +307,39 @@ def handle_tool_call(name: str, arguments: Dict[str, Any]) -> str:
                 elif query == "reachable":
                     out["reachable_from_entry"] = (f.rva in view.reachable) if f else None
             return json.dumps(out, indent=2, ensure_ascii=False, default=str)
+
+        elif name == "re_checkpoint":
+            fpath = arguments["file_path"]
+            action = str(arguments.get("action", "load"))
+            task = str(arguments.get("task") or "default")
+            data = _read(fpath)
+            led = Ledger.for_bytes(data, file_path=fpath)
+            base = ledger_dir(None).parent / "sessions" / f"{led.sha256[:24]}-{task}"
+            path = base / "checkpoint.json"
+            if action == "save":
+                cp = Checkpoint(str(arguments.get("goal", "")))
+                if path.exists():
+                    try:
+                        with open(path, "r", encoding="utf-8") as f:
+                            cp = Checkpoint.from_dict(json.load(f))
+                    except (OSError, ValueError):
+                        pass
+                if arguments.get("goal"):
+                    cp.goal = str(arguments["goal"])
+                cp.merge(arguments.get("checkpoint") or {})
+                cp.sessions += 1
+                base.mkdir(parents=True, exist_ok=True)
+                with open(path, "w", encoding="utf-8") as f:
+                    json.dump(cp.to_dict(), f, indent=1, ensure_ascii=False)
+                return json.dumps({"saved": str(path), "checkpoint": cp.to_dict(),
+                                   "hint": "after a context reset call re_checkpoint(load) and re_ledger(show)"}, indent=2, ensure_ascii=False)
+            if not path.exists():
+                return json.dumps({"checkpoint": None, "ledger_index": led.index_line(),
+                                   "hint": "no hand-off saved for this task; the ledger still holds every verified fact"}, indent=2, ensure_ascii=False)
+            with open(path, "r", encoding="utf-8") as f:
+                cp = Checkpoint.from_dict(json.load(f))
+            return json.dumps({"checkpoint": cp.to_dict(), "handoff": cp.handoff_text(), "ledger_index": led.index_line(),
+                               "established": led.established(30), "known_false": led.known_false()}, indent=2, ensure_ascii=False)
 
         elif name == "re_ledger":
             fpath = arguments["file_path"]

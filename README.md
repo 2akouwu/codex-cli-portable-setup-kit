@@ -194,6 +194,32 @@ and `re_ledger` hands them back after the host compacts or clears its context (t
 server's `instructions` tell the agent to do so). Nothing unverified is ever stored — claim
 notes are excluded on purpose.
 
+## The loop that never fills up: fresh sessions with a verified hand-off
+
+For a long task the ledger is not enough on its own — something has to decide *when* to
+drop the transcript and *what* the next context starts with. `reverify orchestrate` runs a
+goal as a sequence of fresh-context sessions and keeps the model in charge of the timing:
+
+```bash
+reverify orchestrate target.exe --goal "map the loader: entry, imports it really uses, exports" \
+  --driver claude           # Claude Agent SDK on your Claude Code login; or openai (OPENAI_* env), or mock
+```
+
+- The model works through a small JSON protocol: propose claims, take notes, update its
+  hand-off, **ask for a rollover** when its context feels long or confused, or declare done.
+- A rollover also happens on a **token budget** per session and on **drift** — when
+  restatements (trivial, echo, already-known) dominate the last turns, the loop is going in
+  circles and gets a fresh start.
+- The next session opens with the fact sheet, a one-line ledger index and a bounded
+  hand-off. **ESTABLISHED and KNOWN FALSE come from the ledger, never from the model**; the
+  model's own decisions and notes travel labelled *unverified*. That is the difference from
+  every "summarize and continue" loop: a hallucination cannot ride the hand-off into the
+  next context as if it were a fact.
+- The checkpoint (`.reverify/sessions/<task>/checkpoint.json`, with a history) resumes across
+  runs (`--task <id>`). Over MCP, `re_checkpoint` saves and loads the same hand-off so an
+  agent that lives in someone else's context (Claude Code, Cursor) can do the same before
+  its host compacts or clears.
+
 ## The semantic layer: functions, calls and cross-references
 
 Bytes, instructions, imports and emulation are what the deterministic core can judge on

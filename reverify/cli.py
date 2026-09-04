@@ -27,6 +27,7 @@ try:  # installed package (e.g. the ``reverify`` console script)
     from .agent import ReconstructionAgent, openai_proposer, demo_proposer
     from .ledger import Ledger, context_for_directory, hook_config, list_ledgers, ledger_dir
     from .semantic import semantic_view
+    from .rollover import Orchestrator, MockDriver, make_driver, demo_scripts
 except ImportError:  # run directly as a script: ``python reverify/cli.py ...``
     from pe_parser import PEParser, BinaryParseError
     from disasm import Disassembler, pattern_scan, create_patch
@@ -40,6 +41,7 @@ except ImportError:  # run directly as a script: ``python reverify/cli.py ...``
     from agent import ReconstructionAgent, openai_proposer, demo_proposer
     from ledger import Ledger, context_for_directory, hook_config, list_ledgers, ledger_dir
     from semantic import semantic_view
+    from rollover import Orchestrator, MockDriver, make_driver, demo_scripts
 
 
 def load_input_bytes(input_val: str, offset: int = 0, length: int = 0) -> bytes:
@@ -346,6 +348,49 @@ def cmd_functions(args: argparse.Namespace) -> None:
         print(f"  {f['rva']:>10}  {f['name']:<40} size {f.get('size', 0):>6}  blocks {f.get('blocks', 0):>4}{flag}")
 
 
+def cmd_orchestrate(args: argparse.Namespace) -> None:
+    data = load_input_bytes(args.target)
+    if args.driver == "mock":
+        driver = MockDriver(demo_scripts(data))
+    else:
+        driver = make_driver(args.driver, model=args.model)
+    directory = None if args.no_ledger else (args.ledger or os.environ.get("REVERIFY_LEDGER_DIR") or ".reverify")
+    orch = Orchestrator(
+        data, driver, directory=directory, file_path=args.target if os.path.exists(args.target) else None,
+        session_tokens=args.session_tokens, max_sessions=args.max_sessions, max_turns=args.max_turns,
+        max_facts=args.max_facts, prompt_budget=args.prompt_budget, task_id=args.task,
+    )
+    result = orch.run(args.goal)
+    if args.json:
+        print(json.dumps(result, indent=2, ensure_ascii=False))
+    else:
+        print("=== Reverify: rollover controller (fresh context per session, verified hand-off) ===")
+        print(f"Goal: {result['goal']}")
+        for r in result["rollovers"]:
+            print(f"  session {r.get('session')}: rollover — {r.get('reason')} (~{r.get('tokens')} tokens)")
+        print(f"sessions used: {result['sessions']}  | done: {result['done']}")
+        print(f"ledger: {result['facts']} facts, {result['refuted']} refuted"
+              + (f"  ({result['ledger_path']})" if result.get("ledger_path") else ""))
+        if result["established"]:
+            print("established:")
+            for e in result["established"][:12]:
+                print(f"  - {e}")
+        if result["known_false"]:
+            print("known false:")
+            for e in result["known_false"][:6]:
+                print(f"  - {e}")
+        cp = result["checkpoint"]
+        if cp.get("decisions") or cp.get("todo"):
+            print("hand-off (unverified, model-written): "
+                  + "; ".join((cp.get("decisions") or [])[:4] + [f"todo: {t}" for t in (cp.get("todo") or [])[:4]]))
+        if result.get("checkpoint_path"):
+            print(f"checkpoint: {result['checkpoint_path']}")
+        if result["summary"]:
+            print(f"summary: {result['summary']}")
+    if not result["done"]:
+        sys.exit(2)
+
+
 def cmd_ledger(args: argparse.Namespace) -> None:
     # Hook hosts read stdout as UTF-8; a legacy Windows code page must not garble or crash the hand-off.
     reconfigure = getattr(sys.stdout, "reconfigure", None)
@@ -620,6 +665,27 @@ def main() -> None:
     p_fn.add_argument("--imports", action="store_true", help="Include import stubs")
     p_fn.add_argument("--json", action="store_true", help="Output JSON")
     p_fn.set_defaults(func=cmd_functions)
+
+    # orchestrate (rollover controller)
+    p_orc = subparsers.add_parser(
+        "orchestrate",
+        help="Run a goal across fresh-context sessions: the model asks for rollovers, the hand-off is verified from the ledger",
+    )
+    p_orc.add_argument("target", help="Binary path")
+    p_orc.add_argument("--goal", required=True, help="What to establish, in plain language")
+    p_orc.add_argument("--driver", default="mock", choices=["mock", "openai", "claude"],
+                       help="mock (offline demo), openai (OPENAI_* env), claude (Claude Agent SDK on your Claude Code login)")
+    p_orc.add_argument("--model", help="Model name for the driver")
+    p_orc.add_argument("--session-tokens", type=int, default=60000, help="Token budget per session before a forced rollover")
+    p_orc.add_argument("--max-sessions", type=int, default=6, help="Maximum fresh-context sessions")
+    p_orc.add_argument("--max-turns", type=int, default=30, help="Maximum turns per session")
+    p_orc.add_argument("--max-facts", type=int, default=40, help="Ledger facts shown per session")
+    p_orc.add_argument("--prompt-budget", type=int, default=40000, help="Opening prompt budget in characters")
+    p_orc.add_argument("--ledger", help="Ledger/session directory (default: $REVERIFY_LEDGER_DIR or .reverify)")
+    p_orc.add_argument("--no-ledger", action="store_true", help="Keep everything in memory")
+    p_orc.add_argument("--task", help="Task id to resume a previous orchestration's checkpoint")
+    p_orc.add_argument("--json", action="store_true", help="Output the full JSON result")
+    p_orc.set_defaults(func=cmd_orchestrate)
 
     # ledger
     p_led = subparsers.add_parser(

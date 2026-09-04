@@ -6,6 +6,18 @@ All notable changes to this project are documented here.
 
 ### Added
 
+- **Rollover controller** (`reverify/rollover.py`, `reverify orchestrate`): runs a goal as a
+  sequence of fresh-context sessions. The model asks for a rollover through a small JSON
+  protocol (claims / note / checkpoint / rollover / done); a rollover also fires on a
+  per-session token budget and on drift (restatements dominating the last turns). The
+  hand-off into the next session is **verified by construction**: ESTABLISHED and KNOWN FALSE
+  come from the ledger, the model's own decisions and notes travel labelled *unverified*.
+  Checkpoints persist under `.reverify/sessions/<task>/` with a history and resume with
+  `--task`. Drivers: `mock` (offline, tested), `openai` (any OpenAI-compatible endpoint),
+  `claude` (Claude Agent SDK on a Claude Code login, no API key). MCP tool **`re_checkpoint`**
+  (save / load) gives hosted agents the same hand-off before their host compacts or clears.
+  7 new tests.
+
 - **`exebench` claim kind** (PR #11 by @IMGillusion, issue #2): compile a candidate C
   program and re-run it against recorded I/O pairs — the ExeBench / LLM4Decompile
   re-executability metric; a pass is *tested, not proven* (TESTED tier, weight scales with
