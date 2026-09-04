@@ -2,6 +2,76 @@
 
 All notable changes to this project are documented here.
 
+## [0.10.0] - 2026-09-04
+
+Evidence at top spec. Numbers used to be run on the author's Windows machine and typed
+into a document; now the benchmark runs in CI on each platform's own binaries, leaves a
+record with hashes and tool versions, and fails the build on a single false VERIFIED.
+The first CI run also caught what a maintainer machine with everything installed never
+could: the pure decoder was refuting correct claims.
+
+### Added
+
+- **Benchmark as evidence**: `benchmarks/prologue_prior.py --json` writes a machine-readable
+  record (per binary: SHA-256, size, format, arch, entry, verdicts; environment: reverify,
+  Python, platform, engines; totals with a 95% Wilson upper bound on the false-VERIFIED
+  rate), `--markdown` renders it, `--fail-on-false-verified` makes it a gate. Per-platform
+  default corpora (Windows System32/SysWOW64, Linux /usr/bin + multiarch /usr/lib, macOS
+  /bin + /usr/bin), deterministic sampling. CI runs it on Linux, Windows and macOS on every
+  push and uploads the record; reference runs are committed under `benchmarks/results/`.
+- **Verdict receipts**: every `verify_all` report (CLI `--json`, MCP `re_verify_claim`)
+  carries `receipt` — binary SHA-256 and size, reverify version, Python, platform, which
+  engine judged each subsystem, timestamp, replay command.
+- **Cross-platform judges**: the differential/oracle corpus now includes Linux ELF and
+  macOS Mach-O system binaries (the pure ELF reader is header-only and is compared on
+  headers; Mach-O has no pure reader and is skipped honestly), so `objdump` judges the
+  disassembler on Linux CI and the parser differential runs on all three platforms.
+- **Nightly fuzz** (`.github/workflows/fuzz.yml`): the robustness and soundness properties
+  over 20,000 malformed inputs (`REVERIFY_FUZZ_N`).
+
+### Fixed
+
+- **Unmapped ELF sections no longer take part in address translation** (caught by the
+  Linux CI job the moment the corpus included ELF): `.debug_*`, `.comment`, `.symtab`
+  all report virtual address 0, so a file offset inside one of them round-tripped into
+  another section. `rva_to_offset` / `offset_to_rva` / `section_containing_rva` now use
+  loaded sections only; the sections stay listed for `section_present`.
+- **Pure decoder never refutes on bytes it cannot decode.** In pure mode (no capstone)
+  an `instructions` claim whose window contains bytes the fallback does not understand
+  is now `INCONCLUSIVE` with an install hint — not `REFUTED` (and never `VERIFIED`).
+- **Pure decoder understands the common x64 forms**: the REX prefix is consumed as part
+  of the instruction (`48 89 e5` is `mov rbp, rsp`, r8–r15 named), `push`/`pop` use
+  64-bit registers in long mode (`push rbp`, not `push ebp`), register-direct
+  `mov`/`add`/`sub`/`xor` decode, and **memory forms are left as `db` instead of being
+  misread as register forms** (a real mis-decode of `mov eax, [rbp-8]` before). Every byte
+  is still accounted for.
+
+### Added
+
+- **CI** (`.github/workflows/ci.yml`): Linux, Windows and macOS × Python 3.9 and 3.13 with
+  nothing installed, plus Python 3.13 with the engines, aggregated into one required check;
+  a weekly/on-demand angr job; a tag-triggered release workflow that publishes to PyPI via
+  Trusted Publishing; Dependabot for Actions pins only.
+- **Zero-ceremony contributing**: no CLA, no sign-off, no issue-first rule, no checklist;
+  squash merges; CI runs the matrix so contributors don't have to.
+
+## [0.9.1] - 2026-09-04
+
+### Fixed
+
+- **ARM64 was disassembled as x86_64** (PR #5 by @IMGillusion, found by running the
+  prologue benchmark on an aarch64 Jetson): `disasm.py` picked the x86_64 capstone decoder
+  on `"64" in arch`, which is also true for `arm64` / `aarch64`. The ARM branches now come
+  first; `benchmarks/prologue_prior.py` honors the parsed `info.arch`; the objdump oracle test
+  picks its target from the arch and skips when it is absent. Regression tests pin the
+  routing. BENCHMARK.md gains the aarch64 Linux ELF result: prior wrong 19/19, false
+  VERIFIED 0, true bytes after one feedback round 19/19 (11% before the fix).
+- **Soundness without the engines**: the pure-Python decoder and micro-emulator are
+  x86/x64 only. They used to run ARM/MIPS/... bytes anyway and produce junk a wrong claim
+  could match — a possible false VERIFIED in pure mode. `instructions` and `emulate_result`
+  on a non-x86 arch now return `INCONCLUSIVE` with an install hint when capstone / unicorn
+  are missing (`UnsupportedArch`, `EmulatorError`). 4 new tests.
+
 ## [0.9.0] - 2026-09-04
 
 The semantic layer (roadmap issue #3). Bytes, instructions, imports and emulation

@@ -1,0 +1,1444 @@
+{
+ "schema": 1,
+ "benchmark": "prologue_prior",
+ "prior": [
+  "push",
+  "mov"
+ ],
+ "generated": "2026-09-04T12:10:43Z",
+ "environment": {
+  "reverify": "0.10.0",
+  "python": "3.13.14",
+  "platform": "macOS-26.5.2-arm64-arm-64bit-Mach-O",
+  "machine": "arm64",
+  "engines": {
+   "disassembly": {
+    "engine": "capstone",
+    "version": "5.0.7"
+   },
+   "emulation": {
+    "engine": "unicorn",
+    "version": "2.1.4"
+   },
+   "binary_parsing": {
+    "engine": "lief",
+    "version": "1.0.0-d05b3499b"
+   },
+   "proof": {
+    "engine": "z3",
+    "version": "5.1.0"
+   },
+   "semantic": {
+    "engine": "pure-python",
+    "version": null,
+    "note": "function boundaries, call graph and xrefs need pip install \"reverify[angr]\""
+   },
+   "full_fidelity": true
+  }
+ },
+ "corpus": {
+  "dirs": [
+   "/bin",
+   "/usr/bin"
+  ],
+  "per_dir": 40,
+  "sampling": "sorted, fixed stride"
+ },
+ "rows": [
+  {
+   "file": "[",
+   "dir": "/bin",
+   "sha256": "1423babbd9ffe74bfcac9d0bf0b111844ff5d6c26bae4fe9ce7fc328466670dc",
+   "size": 101456,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000558",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "bash",
+   "dir": "/bin",
+   "sha256": "fde343ee184953c1fa1185abddeaa8be61c6acbebae4eb54db5d6b55b09a5755",
+   "size": 1293840,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x1000006e0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "cat",
+   "dir": "/bin",
+   "sha256": "9e4bb13f36ffcc1ff2152738e185637f5b7c97977044bb88a3708cbba2c351ec",
+   "size": 118992,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000558",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "chmod",
+   "dir": "/bin",
+   "sha256": "8146d61f2d2c100b512e8cefc190698133889317404563bfc93aba6ab5c148e1",
+   "size": 120656,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x1000018fc",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "cp",
+   "dir": "/bin",
+   "sha256": "07cdcfe6a6474d9abac66f0b1959e2e9e4877bf4629e2e400249a3e7641b09f9",
+   "size": 153360,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x1000017d4",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "csh",
+   "dir": "/bin",
+   "sha256": "684ffa8c9033be4acddd330d19412327f309632c4c425bc9f7554cf5f9317b0b",
+   "size": 1094688,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x1000006e0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "dash",
+   "dir": "/bin",
+   "sha256": "501c4a2ea3afcbf2a02d5ec81612d903e0aac3b15ab08b589a64363904cdb6e4",
+   "size": 274288,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x10000e1c4",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "cmove",
+    "lea",
+    "xor"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "date",
+   "dir": "/bin",
+   "sha256": "415457f612a7b519b5f1356785d12bfa3f30557ce221ac1f2ea30ce30d8964cd",
+   "size": 135392,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100001170",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "dd",
+   "dir": "/bin",
+   "sha256": "2371ee7ff935454a2548c4aa7bcf7b17198a65f36063cd399e324313c192f95e",
+   "size": 152576,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000cb7",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "df",
+   "dir": "/bin",
+   "sha256": "f57b43da7cc2f701db5ebad1b78ae9a30f10f9a102b2a83b0707031e69367e8a",
+   "size": 119152,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x1000006c0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "echo",
+   "dir": "/bin",
+   "sha256": "8ee6815604068a5656c6d3d05310e6b11f01d8c3f620fe54eedbaeb67a5ef2a2",
+   "size": 101136,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x1000004c0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "ed",
+   "dir": "/bin",
+   "sha256": "eb95fb7c0ccdcb572d73c4ddd2bf4d7ec90a86fb35a47b8144f3ac828330d58d",
+   "size": 202528,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100002534",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "expr",
+   "dir": "/bin",
+   "sha256": "7f0e1a5198d061feaebdebf8c2f47ffd7fb77b9e21bf2d75deeb6f0c0754bf27",
+   "size": 102000,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100001198",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "hostname",
+   "dir": "/bin",
+   "sha256": "76c0926e131d0ab1c6ddd409b049efc2a8792f7fb8554f64859d19fcb16d472f",
+   "size": 101184,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x1000004c0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "kill",
+   "dir": "/bin",
+   "sha256": "78ebcba3034b8e84d2ef02f47689cd9d38aad8832bf1d1f517c0d7e57bd1c6c8",
+   "size": 101504,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x1000004c0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "ksh",
+   "dir": "/bin",
+   "sha256": "7add40bac9ed69c08e1f96e944dbd3c3d760cc857eff56584e368d13a434d206",
+   "size": 2549552,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000710",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "launchctl",
+   "dir": "/bin",
+   "sha256": "b1f2b90f349938cc4c3c9234f11cefd05545f7b4bfe9b1751ac01f1cb27d3714",
+   "size": 364448,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100002197",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "link",
+   "dir": "/bin",
+   "sha256": "009ce961193cff0a92e8e0c73e50559bf8c8ec3cd1c9f6e1a3bf91a22519fac9",
+   "size": 102192,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000600",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "ln",
+   "dir": "/bin",
+   "sha256": "009ce961193cff0a92e8e0c73e50559bf8c8ec3cd1c9f6e1a3bf91a22519fac9",
+   "size": 102192,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000600",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "ls",
+   "dir": "/bin",
+   "sha256": "a97c50d34f912a5ada66959c231897ec2144e3c9cb922cd8150e4f2b0c9470e7",
+   "size": 154624,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000978",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "mkdir",
+   "dir": "/bin",
+   "sha256": "08a20adeeff9bea14bae05c0a7f3c77c638b2b83fc3ab37e1c646e047bac7002",
+   "size": 101472,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000600",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "mv",
+   "dir": "/bin",
+   "sha256": "962a05325a1dea705cc0953f00482099719cad204b80522d74349435098c20b9",
+   "size": 119440,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000600",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "pax",
+   "dir": "/bin",
+   "sha256": "c915923771920bd3086073f4328a49a293fa0d0a2e73a9c256153410a072dee8",
+   "size": 304704,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x10000b304",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "cld",
+    "call",
+    "mov",
+    "test"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "ps",
+   "dir": "/bin",
+   "sha256": "472992c470606d28f577590decfecd7f4a20f832fd92c671bebc6d44790b5d02",
+   "size": 170816,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x1000023f4",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "pwd",
+   "dir": "/bin",
+   "sha256": "ff2c9704307a064566ae9835ff0becf3a765481580c0abe28c8654e2a3045639",
+   "size": 101296,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x1000004c0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "realpath",
+   "dir": "/bin",
+   "sha256": "22cd7804166170874dddd490e146936b6957dbbbb93d14eacd86b8d0de3e3989",
+   "size": 101072,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x1000004c0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "rm",
+   "dir": "/bin",
+   "sha256": "0e7aa0987cecc8d8ca629e1c61857321e8e281a6c1d0711b21163a15e454dc9d",
+   "size": 119184,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000600",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "rmdir",
+   "dir": "/bin",
+   "sha256": "c85c90d99da10cfe008d8f4b5a7aabff79e1637739806a5cfdfffc8cfa864c8f",
+   "size": 101120,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000600",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "sh",
+   "dir": "/bin",
+   "sha256": "ad5c194b05f83bc5e793c1cd67b148a4b680467b5a5730ab1a31fe4e6460ee9f",
+   "size": 101232,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000510",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "sleep",
+   "dir": "/bin",
+   "sha256": "a2be9ba33f4fbf10a4f2702cd9b687ac98274ad28de509109ee86f2f4b0e2beb",
+   "size": 101168,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000558",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "stty",
+   "dir": "/bin",
+   "sha256": "5e73dd56c6312d26b040ccaae8dc226293877f5caa09abf0931542a740fe55bf",
+   "size": 135504,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100001c5c",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "sync",
+   "dir": "/bin",
+   "sha256": "9021627115cc3cc596c75d4b6b9ee02cd6ffae5833f95e142798ed72d76cf032",
+   "size": 100784,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000470",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "tcsh",
+   "dir": "/bin",
+   "sha256": "684ffa8c9033be4acddd330d19412327f309632c4c425bc9f7554cf5f9317b0b",
+   "size": 1094688,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x1000006e0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "test",
+   "dir": "/bin",
+   "sha256": "2924d53ec0c21d50544a9d8b8687479682e358c611b803f8187e1f822d0911e8",
+   "size": 101472,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000558",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "unlink",
+   "dir": "/bin",
+   "sha256": "0e7aa0987cecc8d8ca629e1c61857321e8e281a6c1d0711b21163a15e454dc9d",
+   "size": 119184,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000600",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "wait4path",
+   "dir": "/bin",
+   "sha256": "da3e07f47ca094c65a069b754b67cf847d652eb07f9791c25a456fe5a4e6a4fd",
+   "size": 101056,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x1000004c0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "zsh",
+   "dir": "/bin",
+   "sha256": "1f473d234dd65157f530b4f676686517ec97fe9aa64c76d82f2611674cc44314",
+   "size": 1361216,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000750",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "AssetCacheLocatorUtil",
+   "dir": "/usr/bin",
+   "sha256": "280a5eb3688b39df0be7aeb149a9363c92a15efd525d9630f98ce73bec19cbfd",
+   "size": 171888,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x1000035e7",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "afclip",
+   "dir": "/usr/bin",
+   "sha256": "1495894b1d511adbec851f50dc054ca7c654cb8312aaacac6a6e0a775be372e0",
+   "size": 171280,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x1000013e6",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "asa",
+   "dir": "/usr/bin",
+   "sha256": "179301dcb41ea78accc3fa0048a7e6f6710d891945a751a34addd622020c1818",
+   "size": 118928,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000680",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "avmediainfo",
+   "dir": "/usr/bin",
+   "sha256": "232ec20d89bf4d94337f4dd38204ec81d89bc86a6647177ff660b368488b62cc",
+   "size": 247872,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x1000092d9",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "call",
+    "test"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "bsdtar",
+   "dir": "/usr/bin",
+   "sha256": "9ab7f0793033dc9dc4809d83d695118801bd687cbacda59a0cbbf151ba25dc2b",
+   "size": 275184,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000de0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "cancel",
+   "dir": "/usr/bin",
+   "sha256": "c346694fefcb28e791b0b2d2c84ff9b9f52c0208f409d2f4a0afade9cd006154",
+   "size": 118992,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x1000004a8",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "codecctl",
+   "dir": "/usr/bin",
+   "sha256": "ccfb7987524dd6f3a0102387a8b60a30f63c557c76891a1c80a2680ec9d88e35",
+   "size": 192992,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100002830",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "csreq",
+   "dir": "/usr/bin",
+   "sha256": "f6f02f5a69674a3b5e65a73400062c2a318583d74ae539a9cfaee3289383aaf7",
+   "size": 174064,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x1000008e0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "db_stat",
+   "dir": "/usr/bin",
+   "sha256": "f371aca9b247588dc78f85e280646f37abf52b7dbfe5050a08c2aa16f44d15a0",
+   "size": 2058896,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x1000006a0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "dirname",
+   "dir": "/usr/bin",
+   "sha256": "043384f1825337fb638f6d13fb519ce03807135ae5a14baac634a4dfceaec3ac",
+   "size": 101168,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x1000004c0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "egrep",
+   "dir": "/usr/bin",
+   "sha256": "569588bf23c56895f046b63b029285217e442d46bec1b18498b58fefb50d8f1f",
+   "size": 153760,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000df4",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "flex++",
+   "dir": "/usr/bin",
+   "sha256": "179301dcb41ea78accc3fa0048a7e6f6710d891945a751a34addd622020c1818",
+   "size": 118928,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000680",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "git",
+   "dir": "/usr/bin",
+   "sha256": "179301dcb41ea78accc3fa0048a7e6f6710d891945a751a34addd622020c1818",
+   "size": 118928,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000680",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "hdxml2manxml",
+   "dir": "/usr/bin",
+   "sha256": "179301dcb41ea78accc3fa0048a7e6f6710d891945a751a34addd622020c1818",
+   "size": 118928,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000680",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "id",
+   "dir": "/usr/bin",
+   "sha256": "7004c34a2d408e614b1fa1b71f03f4b9ba17c57c0c31f79e5a887e7fccc3018f",
+   "size": 102160,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000558",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "javadoc",
+   "dir": "/usr/bin",
+   "sha256": "d641f84fbed5fcd611d603fe5aa364f152462d7d099e09eeaf36f046be4c3f32",
+   "size": 135664,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000818",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "jps",
+   "dir": "/usr/bin",
+   "sha256": "d641f84fbed5fcd611d603fe5aa364f152462d7d099e09eeaf36f046be4c3f32",
+   "size": 135664,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000818",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "kpasswd",
+   "dir": "/usr/bin",
+   "sha256": "67555d1f8991fc98088d0fa82bb105ae85d724ec754eee72b4818e8c4a3b731d",
+   "size": 158688,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000610",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "ldapurl",
+   "dir": "/usr/bin",
+   "sha256": "b5169e2c72b3d8b69cc59fb1f9502c5d9b97676c0c4ece7c660f1f1695ba3369",
+   "size": 651888,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000c30",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "lockf",
+   "dir": "/usr/bin",
+   "sha256": "0ec2e00997f6b6660dc74b849b00ad25c69ba9b41496248c1d8aaa96977d0071",
+   "size": 118672,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x1000005a8",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "lsm",
+   "dir": "/usr/bin",
+   "sha256": "210946db62a436511cbe4ff4d86874ce2e74337c4e1c4ed8941da4b32fd70666",
+   "size": 172352,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000b88",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "mddiagnose",
+   "dir": "/usr/bin",
+   "sha256": "e3c31a90721a5a0ba81d15c4efb262d3d51f302f60fbb989416def3d3f27cdc9",
+   "size": 418800,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000f10",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "mpsgraphtool",
+   "dir": "/usr/bin",
+   "sha256": "fe93bc915b72f4a686a98d409ee306ee054838ff9a454644eb6d4de6b16fed99",
+   "size": 559184,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100005190",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "test",
+    "je",
+    "lea",
+    "call"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "nm",
+   "dir": "/usr/bin",
+   "sha256": "179301dcb41ea78accc3fa0048a7e6f6710d891945a751a34addd622020c1818",
+   "size": 118928,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000680",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "osalang",
+   "dir": "/usr/bin",
+   "sha256": "0ba71e3943b42b8b28a2bf72d26faa891dfca2b6b73376cc3d565379f091b07c",
+   "size": 101504,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000620",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "pgrep",
+   "dir": "/usr/bin",
+   "sha256": "f36511d0be7033fc8df4c622d29df4fd36bbc64e239050a8cd7531b38587131d",
+   "size": 138224,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000630",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "pr",
+   "dir": "/usr/bin",
+   "sha256": "16035a7ee2055a47005f1b446aa67cf852d49087059f7919d3f61bb7e9604c59",
+   "size": 135616,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x10000090c",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "resolveLinks",
+   "dir": "/usr/bin",
+   "sha256": "179301dcb41ea78accc3fa0048a7e6f6710d891945a751a34addd622020c1818",
+   "size": 118928,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000680",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "screen",
+   "dir": "/usr/bin",
+   "sha256": "703a2679dae604d55c1338fff3b303801c3f6671d203ff97ebbbfc81b6b40ecc",
+   "size": 651872,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x1000293dc",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "lea",
+    "mov",
+    "movsxd",
+    "lea"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "shlock",
+   "dir": "/usr/bin",
+   "sha256": "d3b0598946ae8b7b128756a99cc527a3e695a9b4e194e1abae29ecdcef8ba752",
+   "size": 101888,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000558",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "snmptable",
+   "dir": "/usr/bin",
+   "sha256": "e97eda1934acb5a0d9a0901ed01d89072271ce5673cc3394209d4f1e87101294",
+   "size": 136608,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000a26",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "ssh-keygen",
+   "dir": "/usr/bin",
+   "sha256": "bddae9c4ea46fd903574ec6ff61eda75e133f940fa538f2adca80af474767596",
+   "size": 849024,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x1000009c0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "symbolscache",
+   "dir": "/usr/bin",
+   "sha256": "3237c672776aef618f524296d2840f2f7760b3b4b43216efb5a1175d9499fe96",
+   "size": 294944,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000c68",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "tclsh8.5",
+   "dir": "/usr/bin",
+   "sha256": "faecc74f98510566d6ae2acd39b3a9c3b88f91f03cfcc229ede839b75a1b57ae",
+   "size": 101520,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100001168",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "touch",
+   "dir": "/usr/bin",
+   "sha256": "376c703659d4607490b10b0692cd7a3e013c31b86ee9763cb579b77fad3e3505",
+   "size": 101792,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x1000005b0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "unexpand",
+   "dir": "/usr/bin",
+   "sha256": "c271abd012c9049d652ce5414df8a7eeb43b4f24154ae2ae8accb59ba3982119",
+   "size": 101600,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x100000558",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "usdextract",
+   "dir": "/usr/bin",
+   "sha256": "6b9870f3861e619396189e149be6749a99c5b11a7d955f510e843c44e530704c",
+   "size": 960000,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x10000b89f",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "add",
+    "pop",
+    "pop"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "view",
+   "dir": "/usr/bin",
+   "sha256": "0e7f7d3ff46a0ab745a3d2a987505524fa40735f36ebb7495a1764892a59df1f",
+   "size": 5651232,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x1000b4114",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "push",
+    "push",
+    "push",
+    "push"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "whois",
+   "dir": "/usr/bin",
+   "sha256": "767fd188087574cdc48ffac36f410e034ca48db292a26aa602c0644c6cb214db",
+   "size": 135312,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x1000005a8",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "xmllint",
+   "dir": "/usr/bin",
+   "sha256": "d5bc87cd40a96739fdf5b067e60c3ecfef0d895c95f325afb862774f58e41c75",
+   "size": 212064,
+   "format": "MachO",
+   "arch": "x86_64",
+   "entry": "0x1000005e0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "add",
+    "add",
+    "add"
+   ],
+   "false_verified": false,
+   "recovered": true
+  }
+ ],
+ "inconclusive": [],
+ "totals": {
+  "tested": 77,
+  "prior_wrong": 77,
+  "false_verified": 0,
+  "recovered_after_1_round": 77,
+  "inconclusive": 0,
+  "false_verified_rate_upper95": 0.047520088667220836
+ }
+}
