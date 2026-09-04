@@ -46,7 +46,7 @@ jobs:
           fi
           python benchmarks/model_loop.py --per-dir "${{ inputs.per_dir }}" --rounds "${{ inputs.rounds }}" \
             --json model-loop.json --markdown | tee -a "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: model-loop
