@@ -48,6 +48,7 @@ try:  # package import (e.g. ``from reverify import Verifier``)
     from .protocol_parser import ProtobufDissector
     from .binary import parse_binary, shannon_entropy
     from .behavior import behavioral_equiv, prove_expr_equiv
+    from .exebench import exebench_verify
     from .semantic import semantic_view, INSTALL_HINT as SEMANTIC_HINT
 except ImportError:  # flat import (CLI, MCP server, and the test suite)
     from disasm import Disassembler, pattern_scan
@@ -55,6 +56,7 @@ except ImportError:  # flat import (CLI, MCP server, and the test suite)
     from protocol_parser import ProtobufDissector
     from binary import parse_binary, shannon_entropy
     from behavior import behavioral_equiv, prove_expr_equiv
+    from exebench import exebench_verify
     from semantic import semantic_view, INSTALL_HINT as SEMANTIC_HINT
 
 VERIFIED = "VERIFIED"
@@ -164,6 +166,7 @@ class Verifier:
         "emulate_result",
         "behavior_equiv",
         "prove_equiv",
+        "exebench",
         "protobuf_field",
         "import_present",
         "export_present",
@@ -590,6 +593,35 @@ class Verifier:
             return VERIFIED, evidence, res["detail"]
         if status == "refuted":
             evidence["counterexample"] = res.get("counterexample")
+            return REFUTED, evidence, res["detail"]
+        return INCONCLUSIVE, evidence, res["detail"]
+
+    def _check_exebench(self, p: Dict[str, Any]):
+        """Claim: a candidate C source reproduces a set of recorded I/O pairs (ExeBench).
+
+        ``record`` is ``{"name": ..., "test_cases": [{"input": [...], "expected": int}]}``
+        (or a list of ``[input, expected]`` pairs); ``c_source`` is the candidate C
+        program, optionally compiled with ``cc`` (default ``gcc``). The candidate is
+        compiled (gated on a C compiler being present) and re-run against every test
+        case; a pass is tested-not-proven, a single mismatch is a definite
+        refutation with the failing case as witness. Complements the Unicorn
+        ``behavior_equiv`` path for source-level reconstructions.
+        """
+        if "c_source" not in p:
+            raise ClaimError("exebench requires 'c_source' (candidate C program)")
+        record = p.get("record") or p.get("test_cases") or {}
+        cc = str(p.get("cc", "gcc"))
+        res = exebench_verify(record, str(p["c_source"]), cc=cc)
+        evidence: Dict[str, Any] = {
+            "candidate": "c_source",
+            "cc": cc,
+            "passed": res["passed"],
+            "total": res["total"],
+        }
+        if res["status"] == "pass":
+            return VERIFIED, evidence, res["detail"]
+        if res["status"] == "fail":
+            evidence["failing_cases"] = res["failures"]
             return REFUTED, evidence, res["detail"]
         return INCONCLUSIVE, evidence, res["detail"]
 
