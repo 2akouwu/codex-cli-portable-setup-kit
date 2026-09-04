@@ -364,6 +364,107 @@ class OpenCodeAdapter(Base):
         self.assertEqual(rh.OpenCodeHarness().launch_args([], "OPEN"), ["--prompt", "OPEN"])
 
 
+class WindowSafeguard(Base):
+    def test_threshold_is_capped_by_the_model_window(self):
+        self.assertEqual(rh.effective_threshold(200_000, None), 200_000)
+        self.assertEqual(rh.effective_threshold(200_000, 258_400), 193_800)
+        self.assertEqual(rh.effective_threshold(200_000, 1_000_000), 200_000)
+        self.assertEqual(rh.effective_threshold(50_000, 128_000), 50_000)
+
+    def test_codex_small_window_triggers_below_the_configured_threshold(self):
+        day = self.home / ".codex" / "sessions" / "2026" / "09" / "01"
+        day.mkdir(parents=True)
+        path = day / "rollout-2026-09-01T22-11-53-sess-small.jsonl"
+
+        def tokens(total):
+            usage = {"input_tokens": total - 100, "cached_input_tokens": 0, "cache_write_input_tokens": 0,
+                     "output_tokens": 100, "reasoning_output_tokens": 0, "total_tokens": total}
+            return codex_line("event_msg", {"type": "token_count", "info": {"total_token_usage": usage, "last_token_usage": usage,
+                                                                              "model_context_window": 128000}})
+
+        path.write_text("\n".join([codex_user("go"), tokens(97_000)]) + "\n", encoding="utf-8")
+        self.assertEqual(rh.codex_context_window(path), 128000)
+        harness = rh.CodexHarness()
+        payload = {"session_id": "sess-small", "transcript_path": str(path), "cwd": str(self.cwd)}
+        blocked = self.hook(harness, "stop", payload)          # 97k >= 75% of 128k, though < 200k
+        self.assertEqual(blocked["decision"], "block")
+        self.assertIn("threshold 96k", blocked["reason"])
+        self.assertIsNone(self.hook(harness, "stop", dict(payload, stop_hook_active=True)))
+        state = rh.load_state("sess-small", rh.DEFAULT_THRESHOLD)
+        self.assertEqual(state["context_window"], 128000)
+        self.assertEqual(state["next_trigger"], 97_000 + 12_800)   # re-arm step shrinks with the window
+
+
+class RunAlias(Base):
+    def test_cli_name_can_lead_the_arguments(self):
+        harness, rest = rh.resolve_run_harness([], ["codex", "--full-auto"])
+        self.assertEqual((harness.name, rest), ("codex", ["--full-auto"]))
+        harness, rest = rh.resolve_run_harness(["--harness", "gemini"], ["codex", "x"])
+        self.assertEqual((harness.name, rest), ("gemini", ["codex", "x"]))
+        original = shutil.which
+        try:
+            shutil.which = lambda name: "/bin/" + name if name == "opencode" else None
+            harness, rest = rh.resolve_run_harness([], ["--model", "m"])
+            self.assertEqual((harness.name, rest), ("opencode", ["--model", "m"]))
+            shutil.which = lambda name: None
+            with self.assertRaises(FileNotFoundError):
+                rh.resolve_run_harness([], [])
+            shutil.which = lambda name: "/bin/" + name if name in ("codex", "gemini") else None
+            with self.assertRaises(ValueError):
+                rh.resolve_run_harness([], [])
+            shutil.which = lambda name: "/bin/" + name
+            harness, _ = rh.resolve_run_harness([], [])
+            self.assertEqual(harness.name, "claude")
+        finally:
+            shutil.which = original
+
+
+class DoctorAndInstructions(Base):
+    def test_doctor_reports_install_state_and_broken_commands(self):
+        os.environ[rh.ENV_SETTINGS] = str(self.root / "settings.json")
+        with redirect_stdout(io.StringIO()):
+            rh.run_install(["--harness", "claude,gemini"])
+        rows = {r["harness"]: r for r in rh.doctor_report()}
+        self.assertTrue(rows["claude"]["compaction_off"])
+        self.assertTrue(all(rows["claude"]["hooks"].values()))
+        self.assertEqual(rows["claude"]["problems"], [])
+        self.assertTrue(rows["gemini"]["compaction_off"])
+        self.assertIn("Stop: not installed", rows["codex"]["problems"])
+        self.assertFalse(rows["opencode"]["compaction_off"])
+        # break the interpreter path -> doctor notices
+        data = json.loads((self.root / "settings.json").read_text(encoding="utf-8"))
+        data["hooks"]["Stop"][0]["hooks"][0]["command"] = '"/nonexistent/python" "/nonexistent/rollover_harness.py" hook claude stop'
+        (self.root / "settings.json").write_text(json.dumps(data), encoding="utf-8")
+        rows = {r["harness"]: r for r in rh.doctor_report()}
+        self.assertTrue(any("missing" in p for p in rows["claude"]["problems"]))
+        out = io.StringIO()
+        with redirect_stdout(out):
+            code = rh.run_doctor([])
+        self.assertIn("threshold  :", out.getvalue())
+        self.assertIn("claude", out.getvalue())
+
+    def test_instructions_snippet_prints_and_appends_once(self):
+        out = io.StringIO()
+        with redirect_stdout(out):
+            self.assertEqual(rh.run_instructions([]), 0)
+        self.assertIn("reverify rollover request", out.getvalue())
+        target = self.cwd / "AGENTS.md"
+        target.write_text("# Agents\nexisting", encoding="utf-8")
+        with redirect_stdout(io.StringIO()):
+            self.assertEqual(rh.run_instructions(["--write", str(target)]), 0)
+            self.assertEqual(rh.run_instructions(["--write", str(target)]), 0)
+        text = target.read_text(encoding="utf-8")
+        self.assertEqual(text.count("## Context rollover (reverify)"), 1)
+        self.assertTrue(text.startswith("# Agents\nexisting\n\n"))
+
+    def test_main_routes_cli_name_and_doctor(self):
+        out = io.StringIO()
+        with redirect_stdout(out):
+            self.assertEqual(rh.main(["doctor"]), 1)      # nothing installed in this temp home -> problems
+            self.assertEqual(rh.main(["instructions"]), 0)
+        self.assertIn("hooks: no", out.getvalue())
+
+
 class Selection(Base):
     def test_detect_and_select(self):
         original = shutil.which

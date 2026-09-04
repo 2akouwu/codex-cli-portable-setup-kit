@@ -233,10 +233,24 @@ OpenCode. Built-in compaction is turned off, and instead of a model-written summ
 session is *replaced*:
 
 ```bash
-reverify rollover install                        # every CLI found on PATH; or --harness claude,codex,gemini,opencode
-reverify rollover run --harness codex -- --full-auto   # start the CLI through the launcher (anything after -- goes to it)
+pip install reverify
+reverify rollover install          # every CLI found on PATH (or --harness claude,codex,gemini,opencode); backups kept
+reverify rollover doctor           # what is wired, whether the hook commands still resolve, recent events
 ```
 
+Then use your CLI exactly as before. The hooks do the hand-off; Gemini CLI and OpenCode also
+open the fresh session themselves. For Claude Code and Codex, or whenever you want the fresh
+session to open automatically, start the CLI through the launcher instead:
+
+```bash
+reverify rollover claude                    # same arguments as the CLI itself, e.g.
+reverify rollover codex --full-auto
+reverify rollover instructions --write AGENTS.md   # optional: the protocol paragraph for the model
+```
+
+- **Small windows stay safe.** Native compaction is off, so when the harness records the
+  model's context window (Codex does) the threshold is capped at 75% of it and the hand-off is
+  refreshed more often.
 - **Guard.** At the harness's "turn finished" hook (Claude Code / Codex `Stop`, Gemini
   `AfterAgent`, OpenCode `session.idle` via a plugin) the guard measures the live context from
   the harness's own transcript. At the threshold (`REVERIFY_ROLLOVER_TOKENS`, default 200k),

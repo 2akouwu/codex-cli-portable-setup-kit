@@ -23,7 +23,12 @@ All notable changes to this project are documented here.
   `uninstall` manage each CLI's own config with backups (Claude `settings.json`, Codex
   `hooks.json` + `config.toml`, Gemini `settings.json`, OpenCode plugin + `opencode.json`)
   and turn built-in compaction off. `claude_rollover.py` stays as a compatibility shim.
-  Append-only `events.jsonl` audit trail. 43 tests, zero dependencies.
+  `reverify rollover doctor` reports what is wired and whether the hook commands still resolve;
+  `reverify rollover <cli> [args]` is the short form of the launcher; `instructions --write`
+  appends the protocol paragraph to an instruction file; the threshold is capped at 75% of the
+  model's context window when the harness records it (Codex), so a small-window model never
+  runs into the wall with native compaction off. Append-only `events.jsonl` audit trail.
+  63 tests, zero dependencies.
 
 - **Rollover controller** (`reverify/rollover.py`, `reverify orchestrate`): runs a goal as a
   sequence of fresh-context sessions. The model asks for a rollover through a small JSON

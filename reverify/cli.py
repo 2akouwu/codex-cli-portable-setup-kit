@@ -734,7 +734,8 @@ def main() -> None:
         help="Rollover for Claude Code / Codex / Gemini CLI / OpenCode: hooks that hand off to files "
              "instead of compacting, and a launcher that replaces the session with a fresh one",
     )
-    p_roll.add_argument("action", choices=["install", "uninstall", "run", "request", "status", "hook", "stop", "session-start", "help"],
+    p_roll.add_argument("action", choices=["install", "uninstall", "doctor", "run", "claude", "codex", "gemini", "opencode",
+                                           "request", "status", "instructions", "hook", "stop", "session-start", "help"],
                         help="install/uninstall the hooks, run the launcher, request a rollover (from inside a session), status")
     p_roll.add_argument("rest", nargs=argparse.REMAINDER, help="options for the action; for run, arguments after -- go to claude")
     p_roll.set_defaults(func=cmd_rollover)

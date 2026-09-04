@@ -384,6 +384,25 @@ def codex_context_tokens(transcript_path: Any) -> Optional[int]:
     return None
 
 
+def codex_context_window(transcript_path: Any) -> Optional[int]:
+    """Codex rollout: ``model_context_window`` from the last ``token_count`` event."""
+    if not transcript_path:
+        return None
+    path = Path(transcript_path)
+    if not path.is_file():
+        return None
+    for record in _records(_tail_lines(path), b"token_count"):
+        payload = record.get("payload")
+        if not isinstance(payload, dict) or payload.get("type") != "token_count":
+            continue
+        info = payload.get("info")
+        if isinstance(info, dict):
+            window = info.get("model_context_window")
+            if isinstance(window, (int, float)) and window > 0:
+                return int(window)
+    return None
+
+
 def _codex_user_text(record: Dict[str, Any]) -> Optional[str]:
     payload = record.get("payload")
     if not isinstance(payload, dict):
@@ -716,15 +735,33 @@ def opening_prompt(receipt: Dict[str, Any]) -> str:
 # --------------------------------------------------------------------------- the guard (harness-agnostic)
 
 
+WINDOW_FRACTION = 0.75
+
+
+def effective_threshold(threshold: int, window: Optional[int]) -> int:
+    """Never let the configured threshold sit above the model's real window.
+
+    Native compaction is off, so on a small-window model the guard is the only net: when
+    the harness tells us the window, the threshold is capped at 75% of it.
+    """
+    if window and window > 0:
+        return min(threshold, int(window * WINDOW_FRACTION))
+    return threshold
+
+
 def run_guard(harness: "Harness", session_id: str, transcript: Any, cwd: Any, tokens: Optional[int],
-              anchors_fn, env: Optional[Dict[str, str]] = None) -> Dict[str, Any]:
+              anchors_fn, env: Optional[Dict[str, str]] = None, window: Optional[int] = None) -> Dict[str, Any]:
     """One step of the state machine. Returns {"action": "allow"|"block"|"receipt", ...}."""
     env = os.environ if env is None else env
     threshold = threshold_tokens()
     if threshold <= 0:
         return {"action": "allow", "why": "disabled"}
+    threshold = effective_threshold(threshold, window)
     state = load_state(session_id, threshold)
     step = step_tokens()
+    if window and window > 0:
+        state["context_window"] = int(window)
+        step = max(5_000, min(step, int(window * 0.1)))   # small window: refresh the hand-off more often
     request = pop_request(session_id, cwd)
 
     if state.get("pending"):
@@ -793,6 +830,10 @@ class Harness:
 
     def context_tokens(self, transcript: Any, session_id: str) -> Optional[int]:
         return context_tokens(transcript)
+
+    def context_window(self, transcript: Any, session_id: str) -> Optional[int]:
+        """The model's context window when the harness records it; None otherwise."""
+        return None
 
     def anchors(self, transcript: Any, session_id: str) -> Dict[str, Any]:
         return transcript_anchors(transcript)
@@ -988,6 +1029,9 @@ class CodexHarness(Harness):
 
     def context_tokens(self, transcript, session_id):
         return codex_context_tokens(transcript)
+
+    def context_window(self, transcript, session_id):
+        return codex_context_window(transcript)
 
     def anchors(self, transcript, session_id):
         return codex_anchors(transcript)
@@ -1200,6 +1244,7 @@ class OpenCodeHarness(Harness):
     def parse_payload(self, payload):
         fields = super().parse_payload(payload)
         fields["tokens"] = payload.get("tokens")
+        fields["context_window"] = payload.get("context_window")
         fields["anchors"] = {"first_user_message": payload.get("first_user_message"),
                              "last_user_message": payload.get("last_user_message")}
         return fields
@@ -1329,6 +1374,9 @@ def run_hook(harness: Harness, event: str, payload: Dict[str, Any], env: Optiona
         tokens = fields.get("tokens")
         if tokens is None:
             tokens = harness.context_tokens(transcript, session_id)
+        window = fields.get("context_window")
+        if not window:
+            window = harness.context_window(transcript, session_id)
 
         def anchors_fn() -> Dict[str, Any]:
             base = harness.anchors(transcript, session_id)
@@ -1338,7 +1386,7 @@ def run_hook(harness: Harness, event: str, payload: Dict[str, Any], env: Optiona
                     base[key] = str(value)[:ANCHOR_MAX_CHARS]
             return base
 
-        result = run_guard(harness, session_id, transcript, cwd, tokens, anchors_fn, env)
+        result = run_guard(harness, session_id, transcript, cwd, tokens, anchors_fn, env, window=window)
         if event == "idle":
             # OpenCode plugin protocol: tell the plugin what to do.
             if result["action"] == "block":
@@ -1736,8 +1784,31 @@ def split_launcher_args(argv: List[str]) -> Tuple[List[str], List[str]]:
     return own, passthrough
 
 
+def resolve_run_harness(own: List[str], passthrough: List[str]) -> Tuple[Harness, List[str]]:
+    """Which CLI to launch: --harness, else a leading CLI name, else the obvious one on PATH."""
+    name = _flag_value(own, "--harness")
+    if not name and passthrough and passthrough[0] in HARNESSES:
+        name, passthrough = passthrough[0], passthrough[1:]
+    if not name:
+        found = detect_harnesses()
+        if "claude" in found:
+            name = "claude"
+        elif len(found) == 1:
+            name = found[0]
+        elif not found:
+            raise FileNotFoundError("no agent CLI on PATH (claude, codex, gemini, opencode)")
+        else:
+            raise ValueError(f"several CLIs on PATH ({', '.join(found)}); say which: reverify rollover run {found[0]} ...")
+    return get_harness(name), passthrough
+
+
 def run_launcher(argv: List[str]) -> int:
     own, passthrough = split_launcher_args(list(argv))
+    try:
+        harness, passthrough = resolve_run_harness(own, passthrough)
+    except (FileNotFoundError, ValueError) as exc:
+        print(str(exc))
+        return 2
     max_rollovers = _flag_value(own, "--max-rollovers")
     launcher = Launcher(
         passthrough,
@@ -1748,9 +1819,137 @@ def run_launcher(argv: List[str]) -> int:
         max_rollovers=int(max_rollovers) if max_rollovers else None,
         min_interval=float(_flag_value(own, "--min-interval") or DEFAULT_MIN_INTERVAL),
         quiet="--quiet" in own,
-        harness=_harness_from(own),
+        harness=harness,
     )
     return launcher.run()
+
+
+# --------------------------------------------------------------------------- doctor / instructions
+
+
+def _command_resolves(command: str) -> Tuple[bool, str]:
+    """A hook command we wrote: does its interpreter and module still exist?"""
+    quoted = re.findall(r'"([^"]+)"', command)
+    if len(quoted) < 2:
+        return False, "unexpected command shape"
+    for part in quoted[:2]:
+        if not Path(part).exists():
+            return False, f"missing: {part}"
+    return True, "ok"
+
+
+def _hooks_of(container: Any, events: Iterable[str]) -> Dict[str, Optional[str]]:
+    found: Dict[str, Optional[str]] = {}
+    hooks = container if isinstance(container, dict) else {}
+    for event in events:
+        command = None
+        for entry in hooks.get(event, []) or []:
+            if isinstance(entry, dict) and _is_ours(entry):
+                for h in entry.get("hooks", []):
+                    if isinstance(h, dict) and any(m in str(h.get("command", "")) for m in HOOK_MARKERS):
+                        command = str(h.get("command"))
+        found[event] = command
+    return found
+
+
+def doctor_report() -> List[Dict[str, Any]]:
+    """Per harness: on PATH, hooks wired, commands resolvable, native compaction off."""
+    rows: List[Dict[str, Any]] = []
+    for name in HARNESSES:
+        harness = get_harness(name)
+        row: Dict[str, Any] = {"harness": name, "on_path": bool(shutil.which(harness.exe)), "hooks": {},
+                               "compaction_off": None, "problems": []}
+        try:
+            if name == "claude":
+                data = _load_json_file(settings_path())
+                row["hooks"] = _hooks_of(data.get("hooks"), ("Stop", "SessionStart"))
+                row["compaction_off"] = data.get("autoCompactEnabled") is False
+            elif name == "codex":
+                data = _load_json_file(CodexHarness.hooks_path())
+                row["hooks"] = _hooks_of(data.get("hooks"), ("Stop", "SessionStart"))
+                config = CodexHarness.config_path()
+                text = config.read_text(encoding="utf-8") if config.is_file() else ""
+                row["compaction_off"] = "model_auto_compact_token_limit" in text
+                if not re.search(r"^\s*hooks\s*=\s*true", text, re.M):
+                    row["problems"].append("[features] hooks is not true in config.toml")
+            elif name == "gemini":
+                data = _load_json_file(GeminiHarness.settings_file())
+                row["hooks"] = _hooks_of(data.get("hooks"), ("AfterAgent", "BeforeAgent", "SessionStart"))
+                model = data.get("model") if isinstance(data.get("model"), dict) else {}
+                row["compaction_off"] = isinstance(model.get("compressionThreshold"), (int, float)) and model["compressionThreshold"] > 1
+            else:
+                harness_oc = OpenCodeHarness()
+                plugin = harness_oc.plugin_file()
+                row["hooks"] = {"plugin": str(plugin) if plugin.is_file() else None}
+                data = _load_json_file(harness_oc.config_file())
+                compaction = data.get("compaction") if isinstance(data.get("compaction"), dict) else {}
+                row["compaction_off"] = compaction.get("auto") is False
+        except Exception as exc:  # unreadable config is a finding, not a crash
+            row["problems"].append(f"cannot read config: {exc}")
+        for event, command in row["hooks"].items():
+            if command is None:
+                row["problems"].append(f"{event}: not installed")
+            elif event != "plugin":
+                ok, why = _command_resolves(command)
+                if not ok:
+                    row["problems"].append(f"{event}: {why}")
+        rows.append(row)
+    return rows
+
+
+def run_doctor(argv: List[str]) -> int:
+    rows = doctor_report()
+    threshold = threshold_tokens()
+    print(f"threshold  : {threshold} tokens (step {step_tokens()}); state dir {state_dir()}")
+    for row in rows:
+        installed = row["hooks"] and all(v for v in row["hooks"].values())
+        mark = "ok" if installed and not row["problems"] else ("--" if not row["on_path"] and not installed else "!!")
+        print(f"{mark:2} {row['harness']:<9} on PATH: {'yes' if row['on_path'] else 'no ':<3}  hooks: {'yes' if installed else 'no ':<3}  "
+              f"native compaction off: {'yes' if row['compaction_off'] else 'no'}")
+        for problem in row["problems"]:
+            print(f"     - {problem}")
+    events = state_dir() / "events.jsonl"
+    if events.is_file():
+        tail = events.read_text(encoding="utf-8").splitlines()[-3:]
+        print("recent     : " + " | ".join(t[:110] for t in tail))
+    missing = [r["harness"] for r in rows if r["on_path"] and (not r["hooks"] or not all(r["hooks"].values()))]
+    if missing:
+        print(f"to install : reverify rollover install --harness {','.join(missing)}")
+    return 0 if not any(r["problems"] for r in rows if r["on_path"]) else 1
+
+
+INSTRUCTIONS_SNIPPET = """## Context rollover (reverify)
+
+State lives in files; the conversation is a cache. Built-in compaction is off.
+- At the start of a session, if a line says "rollover hand-off pending", read that file first,
+  then pull details on demand from the memory index it points to.
+- Write conclusions into memory/notes files as you reach milestones; do not wait to be asked.
+- When a large task is done and the next one is unrelated, run
+  `reverify rollover request --reason "<why>"` and finish your reply; the hand-off happens at
+  the end of that turn.
+- Never tell the user to clear or compact anything; that is handled for them.
+"""
+
+
+def run_instructions(argv: List[str]) -> int:
+    target = _flag_value(argv, "--write")
+    if not target:
+        print(INSTRUCTIONS_SNIPPET, end="")
+        return 0
+    path = Path(target)
+    existing = path.read_text(encoding="utf-8") if path.is_file() else ""
+    if "## Context rollover (reverify)" in existing:
+        print(f"{path}: already has the snippet")
+        return 0
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as handle:
+        if existing and not existing.endswith("\n"):
+            handle.write("\n")
+        if existing:
+            handle.write("\n")
+        handle.write(INSTRUCTIONS_SNIPPET)
+    print(f"{path}: snippet appended")
+    return 0
 
 
 # --------------------------------------------------------------------------- entry point
@@ -1761,12 +1960,17 @@ USAGE = """reverify rollover <action> [options]
                        wire the hooks (default: every CLI found on PATH) and turn built-in compaction off; backups kept
   uninstall [--harness ...]
                        remove the hooks, restore compaction
-  run [--harness X] [--max-rollovers N] [--settle S] [--min-interval S] [--force-kill] [--quiet] -- <cli args>
-                       start the CLI and replace the session with a fresh one on every receipt
+  doctor               what is installed, whether the hook commands still resolve, recent events
+  claude|codex|gemini|opencode [cli args]
+                       start that CLI through the launcher (fresh session on every receipt)
+  run [--harness X] [--max-rollovers N] [--settle S] [--min-interval S] [--force-kill] [--quiet] [--] <cli args>
+                       same, long form; without --harness the CLI is the first argument or the obvious one on PATH
   request [--reason ...] [--session <id>]
                        (run by the model, inside a session) roll over at the end of this turn
   status [--harness X] [<transcript | project dir>] [--session <id>]
                        tokens, threshold, guard state, hand-off
+  instructions [--write AGENTS.md|CLAUDE.md|GEMINI.md]
+                       the short protocol paragraph for the model's instruction file
   hook <harness> <stop|session-start|before-agent|idle>
                        hook entry points (read the hook JSON on stdin)
 """
@@ -1797,6 +2001,12 @@ def main(argv: Optional[List[str]] = None) -> int:
         return run_uninstall(rest)
     if action == "run":
         return run_launcher(rest)
+    if action in HARNESSES:
+        return run_launcher(["--harness", action] + rest)
+    if action == "doctor":
+        return run_doctor(rest)
+    if action == "instructions":
+        return run_instructions(rest)
     print(USAGE)
     return 0 if action in ("help", "-h", "--help") else 2
 
