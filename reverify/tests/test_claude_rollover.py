@@ -62,7 +62,7 @@ HANDOFF_OK = textwrap.dedent("""\
 class Base(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
-        self.root = Path(self.tmp.name)
+        self.root = Path(self.tmp.name).resolve()   # macOS: /var -> /private/var
         self.project = self.root / "projects" / "C------"
         (self.project / "memory").mkdir(parents=True)
         self.transcript = self.project / "sess-1.jsonl"
