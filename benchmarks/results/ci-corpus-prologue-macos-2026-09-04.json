@@ -1,0 +1,742 @@
+{
+ "schema": 1,
+ "benchmark": "prologue_prior",
+ "prior": [
+  "push",
+  "mov"
+ ],
+ "generated": "2026-09-04T12:43:12Z",
+ "environment": {
+  "reverify": "0.10.0",
+  "python": "3.13.15",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "machine": "arm64",
+  "engines": {
+   "disassembly": {
+    "engine": "capstone",
+    "version": "5.0.7"
+   },
+   "emulation": {
+    "engine": "unicorn",
+    "version": "2.1.4"
+   },
+   "binary_parsing": {
+    "engine": "lief",
+    "version": "1.0.0-d05b3499b"
+   },
+   "proof": {
+    "engine": "z3",
+    "version": "5.1.0"
+   },
+   "semantic": {
+    "engine": "pure-python",
+    "version": null,
+    "note": "function boundaries, call graph and xrefs need pip install \"reverify[angr]\""
+   },
+   "full_fidelity": true
+  }
+ },
+ "corpus": {
+  "dirs": [
+   "benchmarks/corpus/build"
+  ],
+  "per_dir": 60,
+  "sampling": "sorted, fixed stride",
+  "probe": "exports"
+ },
+ "rows": [
+  {
+   "file": "clang-O0-frames.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "8c20c1025dec47aa4d40d7081dcd9a169140df5ca10120939ea58a3c115c8c15",
+   "size": 33592,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_frame_calls",
+   "entry": "0x4f0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "sub",
+    "stp",
+    "add",
+    "stur"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O0-frames.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "8c20c1025dec47aa4d40d7081dcd9a169140df5ca10120939ea58a3c115c8c15",
+   "size": 33592,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_frame_sum",
+   "entry": "0x564",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "sub",
+    "str",
+    "str",
+    "str"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O0-frames.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "8c20c1025dec47aa4d40d7081dcd9a169140df5ca10120939ea58a3c115c8c15",
+   "size": 33592,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_frame_xor",
+   "entry": "0x400",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "sub",
+    "stp",
+    "add",
+    "adrp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O0-mathlib.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "9d9e2d44fb67ffc74a127de95beb91fc44a258386c56c0d0ff87a582f20c8406",
+   "size": 17016,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_add",
+   "entry": "0x368",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "sub",
+    "str",
+    "str",
+    "ldr"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O0-mathlib.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "9d9e2d44fb67ffc74a127de95beb91fc44a258386c56c0d0ff87a582f20c8406",
+   "size": 17016,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_banner",
+   "entry": "0x4dc",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "adrp",
+    "add",
+    "ret",
+    "fnmls"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O0-mathlib.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "9d9e2d44fb67ffc74a127de95beb91fc44a258386c56c0d0ff87a582f20c8406",
+   "size": 17016,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_fnv1a",
+   "entry": "0x40c",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "sub",
+    "str",
+    "str",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O0-mathlib.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "9d9e2d44fb67ffc74a127de95beb91fc44a258386c56c0d0ff87a582f20c8406",
+   "size": 17016,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_mba_add",
+   "entry": "0x388",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "sub",
+    "str",
+    "str",
+    "ldr"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O0-mathlib.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "9d9e2d44fb67ffc74a127de95beb91fc44a258386c56c0d0ff87a582f20c8406",
+   "size": 17016,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_popcount",
+   "entry": "0x3c0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "sub",
+    "str",
+    "str",
+    "b"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O0-mathlib.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "9d9e2d44fb67ffc74a127de95beb91fc44a258386c56c0d0ff87a582f20c8406",
+   "size": 17016,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_strlen",
+   "entry": "0x498",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "sub",
+    "str",
+    "str",
+    "b"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O2-frames.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "64245a18935d8d149a5dd2436ac16540bc77827e0b15f08c7fd95db7a110c00a",
+   "size": 16888,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_frame_calls",
+   "entry": "0x420",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "lsl",
+    "sub",
+    "eor",
+    "lsl"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O2-frames.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "64245a18935d8d149a5dd2436ac16540bc77827e0b15f08c7fd95db7a110c00a",
+   "size": 16888,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_frame_sum",
+   "entry": "0x448",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "cmp",
+    "b.lt",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O2-frames.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "64245a18935d8d149a5dd2436ac16540bc77827e0b15f08c7fd95db7a110c00a",
+   "size": 16888,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_frame_xor",
+   "entry": "0x318",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "sub",
+    "str",
+    "lsl",
+    "str"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O2-mathlib.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "7d68a32e1e9edfd5cdf031793061d7446a15b3f6a8a339e41166a61c73a4a36e",
+   "size": 33592,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_add",
+   "entry": "0x4a0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "ret",
+    "eor",
+    "and"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O2-mathlib.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "7d68a32e1e9edfd5cdf031793061d7446a15b3f6a8a339e41166a61c73a4a36e",
+   "size": 33592,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_banner",
+   "entry": "0x514",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "adrp",
+    "add",
+    "ret",
+    "adrp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O2-mathlib.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "7d68a32e1e9edfd5cdf031793061d7446a15b3f6a8a339e41166a61c73a4a36e",
+   "size": 33592,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_fnv1a",
+   "entry": "0x4cc",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "movk",
+    "movk"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O2-mathlib.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "7d68a32e1e9edfd5cdf031793061d7446a15b3f6a8a339e41166a61c73a4a36e",
+   "size": 33592,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_mba_add",
+   "entry": "0x4a8",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "eor",
+    "and",
+    "add",
+    "ret"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O2-mathlib.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "7d68a32e1e9edfd5cdf031793061d7446a15b3f6a8a339e41166a61c73a4a36e",
+   "size": 33592,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_popcount",
+   "entry": "0x4b8",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "fmov",
+    "cnt",
+    "addv",
+    "fmov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "clang-O2-mathlib.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "7d68a32e1e9edfd5cdf031793061d7446a15b3f6a8a339e41166a61c73a4a36e",
+   "size": 33592,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_strlen",
+   "entry": "0x504",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "stp",
+    "bl",
+    "ldp",
+    "ret"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O0-frames.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "5d5215b9805274809389b85ef7f0dd49639d100ecca060d6c397dbf0bd95fe75",
+   "size": 33584,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_frame_calls",
+   "entry": "0x4f0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "sub",
+    "stp",
+    "add",
+    "stur"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O0-frames.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "5d5215b9805274809389b85ef7f0dd49639d100ecca060d6c397dbf0bd95fe75",
+   "size": 33584,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_frame_sum",
+   "entry": "0x564",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "sub",
+    "str",
+    "str",
+    "str"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O0-frames.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "5d5215b9805274809389b85ef7f0dd49639d100ecca060d6c397dbf0bd95fe75",
+   "size": 33584,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_frame_xor",
+   "entry": "0x400",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "sub",
+    "stp",
+    "add",
+    "adrp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O0-mathlib.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "50d87c5d64610a520cf5724ce52308979291459ac3ea8ff82834f3829ca3bd84",
+   "size": 17016,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_add",
+   "entry": "0x368",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "sub",
+    "str",
+    "str",
+    "ldr"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O0-mathlib.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "50d87c5d64610a520cf5724ce52308979291459ac3ea8ff82834f3829ca3bd84",
+   "size": 17016,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_banner",
+   "entry": "0x4dc",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "adrp",
+    "add",
+    "ret",
+    "fnmls"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O0-mathlib.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "50d87c5d64610a520cf5724ce52308979291459ac3ea8ff82834f3829ca3bd84",
+   "size": 17016,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_fnv1a",
+   "entry": "0x40c",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "sub",
+    "str",
+    "str",
+    "mov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O0-mathlib.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "50d87c5d64610a520cf5724ce52308979291459ac3ea8ff82834f3829ca3bd84",
+   "size": 17016,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_mba_add",
+   "entry": "0x388",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "sub",
+    "str",
+    "str",
+    "ldr"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O0-mathlib.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "50d87c5d64610a520cf5724ce52308979291459ac3ea8ff82834f3829ca3bd84",
+   "size": 17016,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_popcount",
+   "entry": "0x3c0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "sub",
+    "str",
+    "str",
+    "b"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O0-mathlib.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "50d87c5d64610a520cf5724ce52308979291459ac3ea8ff82834f3829ca3bd84",
+   "size": 17016,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_strlen",
+   "entry": "0x498",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "sub",
+    "str",
+    "str",
+    "b"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O2-frames.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "71117c9eefbc347bd8c51572c5eec92f236a42f75637e9c4095b1778664d3622",
+   "size": 16880,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_frame_calls",
+   "entry": "0x420",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "lsl",
+    "sub",
+    "eor",
+    "lsl"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O2-frames.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "71117c9eefbc347bd8c51572c5eec92f236a42f75637e9c4095b1778664d3622",
+   "size": 16880,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_frame_sum",
+   "entry": "0x448",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "cmp",
+    "b.lt",
+    "mov",
+    "cmp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O2-frames.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "71117c9eefbc347bd8c51572c5eec92f236a42f75637e9c4095b1778664d3622",
+   "size": 16880,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_frame_xor",
+   "entry": "0x318",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "sub",
+    "str",
+    "lsl",
+    "str"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O2-mathlib.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "95f853cfa3ee77ab9b598c5227a5fbcad873b7bf78f3ab309c00b13799a8fe24",
+   "size": 33592,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_add",
+   "entry": "0x4a0",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "add",
+    "ret",
+    "eor",
+    "and"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O2-mathlib.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "95f853cfa3ee77ab9b598c5227a5fbcad873b7bf78f3ab309c00b13799a8fe24",
+   "size": 33592,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_banner",
+   "entry": "0x514",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "adrp",
+    "add",
+    "ret",
+    "adrp"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O2-mathlib.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "95f853cfa3ee77ab9b598c5227a5fbcad873b7bf78f3ab309c00b13799a8fe24",
+   "size": 33592,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_fnv1a",
+   "entry": "0x4cc",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "mov",
+    "mov",
+    "movk",
+    "movk"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O2-mathlib.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "95f853cfa3ee77ab9b598c5227a5fbcad873b7bf78f3ab309c00b13799a8fe24",
+   "size": 33592,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_mba_add",
+   "entry": "0x4a8",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "eor",
+    "and",
+    "add",
+    "ret"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O2-mathlib.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "95f853cfa3ee77ab9b598c5227a5fbcad873b7bf78f3ab309c00b13799a8fe24",
+   "size": 33592,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_popcount",
+   "entry": "0x4b8",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "fmov",
+    "cnt",
+    "addv",
+    "fmov"
+   ],
+   "false_verified": false,
+   "recovered": true
+  },
+  {
+   "file": "gcc-O2-mathlib.dylib",
+   "dir": "benchmarks/corpus/build",
+   "sha256": "95f853cfa3ee77ab9b598c5227a5fbcad873b7bf78f3ab309c00b13799a8fe24",
+   "size": 33592,
+   "format": "MachO",
+   "arch": "arm64",
+   "symbol": "_rv_strlen",
+   "entry": "0x504",
+   "prior_verdict": "REFUTED",
+   "actual_entry": [
+    "stp",
+    "bl",
+    "ldp",
+    "ret"
+   ],
+   "false_verified": false,
+   "recovered": true
+  }
+ ],
+ "inconclusive": [],
+ "totals": {
+  "tested": 36,
+  "prior_wrong": 36,
+  "false_verified": 0,
+  "recovered_after_1_round": 36,
+  "inconclusive": 0,
+  "false_verified_rate_upper95": 0.09642183044857634
+ }
+}

@@ -1,0 +1,3482 @@
+{
+ "schema": 1,
+ "benchmark": "verifier_matrix",
+ "generated": "2026-09-04T12:43:18Z",
+ "environment": {
+  "reverify": "0.10.0",
+  "python": "3.13.15",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "machine": "arm64",
+  "engines": {
+   "disassembly": {
+    "engine": "capstone",
+    "version": "5.0.7"
+   },
+   "emulation": {
+    "engine": "unicorn",
+    "version": "2.1.4"
+   },
+   "binary_parsing": {
+    "engine": "lief",
+    "version": "1.0.0-d05b3499b"
+   },
+   "proof": {
+    "engine": "z3",
+    "version": "5.1.0"
+   },
+   "semantic": {
+    "engine": "pure-python",
+    "version": null,
+    "note": "function boundaries, call graph and xrefs need pip install \"reverify[angr]\""
+   },
+   "full_fidelity": true
+  }
+ },
+ "corpus": {
+  "dirs": [
+   "/bin",
+   "/usr/bin"
+  ],
+  "per_dir": 25,
+  "binaries": 46
+ },
+ "per_kind": {
+  "bytes_at": {
+   "n": 50,
+   "TP": 50,
+   "FN": 0,
+   "UNK_true": 0,
+   "FP": 0,
+   "TN": 50,
+   "UNK_false": 0
+  },
+  "u32_at": {
+   "n": 50,
+   "TP": 50,
+   "FN": 0,
+   "UNK_true": 0,
+   "FP": 0,
+   "TN": 50,
+   "UNK_false": 0
+  },
+  "u64_at": {
+   "n": 50,
+   "TP": 50,
+   "FN": 0,
+   "UNK_true": 0,
+   "FP": 0,
+   "TN": 50,
+   "UNK_false": 0
+  },
+  "string_present": {
+   "n": 50,
+   "TP": 50,
+   "FN": 0,
+   "UNK_true": 0,
+   "FP": 0,
+   "TN": 50,
+   "UNK_false": 0
+  },
+  "pattern_present": {
+   "n": 15,
+   "TP": 15,
+   "FN": 0,
+   "UNK_true": 0,
+   "FP": 0,
+   "TN": 15,
+   "UNK_false": 0
+  },
+  "section_present": {
+   "n": 50,
+   "TP": 50,
+   "FN": 0,
+   "UNK_true": 0,
+   "FP": 0,
+   "TN": 50,
+   "UNK_false": 0
+  },
+  "import_present": {
+   "n": 50,
+   "TP": 50,
+   "FN": 0,
+   "UNK_true": 0,
+   "FP": 0,
+   "TN": 50,
+   "UNK_false": 0
+  },
+  "export_present": {
+   "n": 50,
+   "TP": 50,
+   "FN": 0,
+   "UNK_true": 0,
+   "FP": 0,
+   "TN": 50,
+   "UNK_false": 0
+  },
+  "instructions": {
+   "n": 49,
+   "TP": 49,
+   "FN": 0,
+   "UNK_true": 0,
+   "FP": 0,
+   "TN": 49,
+   "UNK_false": 0
+  },
+  "function_at": {
+   "n": 3,
+   "TP": 0,
+   "FN": 0,
+   "UNK_true": 3,
+   "FP": 0,
+   "TN": 0,
+   "UNK_false": 3
+  }
+ },
+ "totals": {
+  "claims_true": 417,
+  "claims_false": 417,
+  "false_verified": 0,
+  "false_verified_rate_upper95": 0.00912837514162098,
+  "missed_true_byte_level": 0
+ },
+ "false_verified": [],
+ "missed_true": [],
+ "rows": [
+  {
+   "file": "[",
+   "sha256": "abf9c4d6bdccbab1f540629a1048fd8884cb72beb25a254f0adee9e1cfa3758d",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "[",
+   "sha256": "abf9c4d6bdccbab1f540629a1048fd8884cb72beb25a254f0adee9e1cfa3758d",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "[",
+   "sha256": "abf9c4d6bdccbab1f540629a1048fd8884cb72beb25a254f0adee9e1cfa3758d",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "[",
+   "sha256": "abf9c4d6bdccbab1f540629a1048fd8884cb72beb25a254f0adee9e1cfa3758d",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "[",
+   "sha256": "abf9c4d6bdccbab1f540629a1048fd8884cb72beb25a254f0adee9e1cfa3758d",
+   "format": "MachO",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "[",
+   "sha256": "abf9c4d6bdccbab1f540629a1048fd8884cb72beb25a254f0adee9e1cfa3758d",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "[",
+   "sha256": "abf9c4d6bdccbab1f540629a1048fd8884cb72beb25a254f0adee9e1cfa3758d",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "[",
+   "sha256": "abf9c4d6bdccbab1f540629a1048fd8884cb72beb25a254f0adee9e1cfa3758d",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "[",
+   "sha256": "abf9c4d6bdccbab1f540629a1048fd8884cb72beb25a254f0adee9e1cfa3758d",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "bash",
+   "sha256": "16303dedab719ddb63efd9dd68092a0da37b397bfd4fcb856d5f1c86c5ee414b",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "bash",
+   "sha256": "16303dedab719ddb63efd9dd68092a0da37b397bfd4fcb856d5f1c86c5ee414b",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "bash",
+   "sha256": "16303dedab719ddb63efd9dd68092a0da37b397bfd4fcb856d5f1c86c5ee414b",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "bash",
+   "sha256": "16303dedab719ddb63efd9dd68092a0da37b397bfd4fcb856d5f1c86c5ee414b",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "bash",
+   "sha256": "16303dedab719ddb63efd9dd68092a0da37b397bfd4fcb856d5f1c86c5ee414b",
+   "format": "MachO",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "bash",
+   "sha256": "16303dedab719ddb63efd9dd68092a0da37b397bfd4fcb856d5f1c86c5ee414b",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "bash",
+   "sha256": "16303dedab719ddb63efd9dd68092a0da37b397bfd4fcb856d5f1c86c5ee414b",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "bash",
+   "sha256": "16303dedab719ddb63efd9dd68092a0da37b397bfd4fcb856d5f1c86c5ee414b",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "bash",
+   "sha256": "16303dedab719ddb63efd9dd68092a0da37b397bfd4fcb856d5f1c86c5ee414b",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "cat",
+   "sha256": "2b6e8f3f90c42a9d8d1e5471efb4173ad3499fc8ca4039b39327b394616cf39e",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "cat",
+   "sha256": "2b6e8f3f90c42a9d8d1e5471efb4173ad3499fc8ca4039b39327b394616cf39e",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "cat",
+   "sha256": "2b6e8f3f90c42a9d8d1e5471efb4173ad3499fc8ca4039b39327b394616cf39e",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "cat",
+   "sha256": "2b6e8f3f90c42a9d8d1e5471efb4173ad3499fc8ca4039b39327b394616cf39e",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "cat",
+   "sha256": "2b6e8f3f90c42a9d8d1e5471efb4173ad3499fc8ca4039b39327b394616cf39e",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "cat",
+   "sha256": "2b6e8f3f90c42a9d8d1e5471efb4173ad3499fc8ca4039b39327b394616cf39e",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "cat",
+   "sha256": "2b6e8f3f90c42a9d8d1e5471efb4173ad3499fc8ca4039b39327b394616cf39e",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "cat",
+   "sha256": "2b6e8f3f90c42a9d8d1e5471efb4173ad3499fc8ca4039b39327b394616cf39e",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "cp",
+   "sha256": "f0629f462c6535f7b1a19f559b7093638e714961bea9228cfb2ae7896f8557f4",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "cp",
+   "sha256": "f0629f462c6535f7b1a19f559b7093638e714961bea9228cfb2ae7896f8557f4",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "cp",
+   "sha256": "f0629f462c6535f7b1a19f559b7093638e714961bea9228cfb2ae7896f8557f4",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "cp",
+   "sha256": "f0629f462c6535f7b1a19f559b7093638e714961bea9228cfb2ae7896f8557f4",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "cp",
+   "sha256": "f0629f462c6535f7b1a19f559b7093638e714961bea9228cfb2ae7896f8557f4",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "cp",
+   "sha256": "f0629f462c6535f7b1a19f559b7093638e714961bea9228cfb2ae7896f8557f4",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "cp",
+   "sha256": "f0629f462c6535f7b1a19f559b7093638e714961bea9228cfb2ae7896f8557f4",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "cp",
+   "sha256": "f0629f462c6535f7b1a19f559b7093638e714961bea9228cfb2ae7896f8557f4",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "csh",
+   "sha256": "4a5682139bbf33379ea9b0e8b5b42cb4fc02183bc544187dd6ca9c6ec53c2b4e",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "csh",
+   "sha256": "4a5682139bbf33379ea9b0e8b5b42cb4fc02183bc544187dd6ca9c6ec53c2b4e",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "csh",
+   "sha256": "4a5682139bbf33379ea9b0e8b5b42cb4fc02183bc544187dd6ca9c6ec53c2b4e",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "csh",
+   "sha256": "4a5682139bbf33379ea9b0e8b5b42cb4fc02183bc544187dd6ca9c6ec53c2b4e",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "csh",
+   "sha256": "4a5682139bbf33379ea9b0e8b5b42cb4fc02183bc544187dd6ca9c6ec53c2b4e",
+   "format": "MachO",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "csh",
+   "sha256": "4a5682139bbf33379ea9b0e8b5b42cb4fc02183bc544187dd6ca9c6ec53c2b4e",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "csh",
+   "sha256": "4a5682139bbf33379ea9b0e8b5b42cb4fc02183bc544187dd6ca9c6ec53c2b4e",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "csh",
+   "sha256": "4a5682139bbf33379ea9b0e8b5b42cb4fc02183bc544187dd6ca9c6ec53c2b4e",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "csh",
+   "sha256": "4a5682139bbf33379ea9b0e8b5b42cb4fc02183bc544187dd6ca9c6ec53c2b4e",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "csh",
+   "sha256": "4a5682139bbf33379ea9b0e8b5b42cb4fc02183bc544187dd6ca9c6ec53c2b4e",
+   "format": "MachO",
+   "kind": "function_at",
+   "true_claim": "INCONCLUSIVE",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "date",
+   "sha256": "0c7f77e19bc79013bc5bc4e67beea3b9d546d6d09a36799c2eed2693967af8c6",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "date",
+   "sha256": "0c7f77e19bc79013bc5bc4e67beea3b9d546d6d09a36799c2eed2693967af8c6",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "date",
+   "sha256": "0c7f77e19bc79013bc5bc4e67beea3b9d546d6d09a36799c2eed2693967af8c6",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "date",
+   "sha256": "0c7f77e19bc79013bc5bc4e67beea3b9d546d6d09a36799c2eed2693967af8c6",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "date",
+   "sha256": "0c7f77e19bc79013bc5bc4e67beea3b9d546d6d09a36799c2eed2693967af8c6",
+   "format": "MachO",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "date",
+   "sha256": "0c7f77e19bc79013bc5bc4e67beea3b9d546d6d09a36799c2eed2693967af8c6",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "date",
+   "sha256": "0c7f77e19bc79013bc5bc4e67beea3b9d546d6d09a36799c2eed2693967af8c6",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "date",
+   "sha256": "0c7f77e19bc79013bc5bc4e67beea3b9d546d6d09a36799c2eed2693967af8c6",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "date",
+   "sha256": "0c7f77e19bc79013bc5bc4e67beea3b9d546d6d09a36799c2eed2693967af8c6",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dd",
+   "sha256": "bc5a8a14642f2c6ecafab357144532d2455fe388130be3f5d846a333ec4beb9d",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dd",
+   "sha256": "bc5a8a14642f2c6ecafab357144532d2455fe388130be3f5d846a333ec4beb9d",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dd",
+   "sha256": "bc5a8a14642f2c6ecafab357144532d2455fe388130be3f5d846a333ec4beb9d",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dd",
+   "sha256": "bc5a8a14642f2c6ecafab357144532d2455fe388130be3f5d846a333ec4beb9d",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dd",
+   "sha256": "bc5a8a14642f2c6ecafab357144532d2455fe388130be3f5d846a333ec4beb9d",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dd",
+   "sha256": "bc5a8a14642f2c6ecafab357144532d2455fe388130be3f5d846a333ec4beb9d",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dd",
+   "sha256": "bc5a8a14642f2c6ecafab357144532d2455fe388130be3f5d846a333ec4beb9d",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dd",
+   "sha256": "bc5a8a14642f2c6ecafab357144532d2455fe388130be3f5d846a333ec4beb9d",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "echo",
+   "sha256": "d2d4d70e62f249417d70cd1cee1a9c623213ccfb6445c82d9de6b9021edacc27",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "echo",
+   "sha256": "d2d4d70e62f249417d70cd1cee1a9c623213ccfb6445c82d9de6b9021edacc27",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "echo",
+   "sha256": "d2d4d70e62f249417d70cd1cee1a9c623213ccfb6445c82d9de6b9021edacc27",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "echo",
+   "sha256": "d2d4d70e62f249417d70cd1cee1a9c623213ccfb6445c82d9de6b9021edacc27",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "echo",
+   "sha256": "d2d4d70e62f249417d70cd1cee1a9c623213ccfb6445c82d9de6b9021edacc27",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "echo",
+   "sha256": "d2d4d70e62f249417d70cd1cee1a9c623213ccfb6445c82d9de6b9021edacc27",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "echo",
+   "sha256": "d2d4d70e62f249417d70cd1cee1a9c623213ccfb6445c82d9de6b9021edacc27",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "echo",
+   "sha256": "d2d4d70e62f249417d70cd1cee1a9c623213ccfb6445c82d9de6b9021edacc27",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ed",
+   "sha256": "3de400f9828d8c733fbd9c9291a1109e7789b345d8ef8856ac31c71fbf1c2985",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ed",
+   "sha256": "3de400f9828d8c733fbd9c9291a1109e7789b345d8ef8856ac31c71fbf1c2985",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ed",
+   "sha256": "3de400f9828d8c733fbd9c9291a1109e7789b345d8ef8856ac31c71fbf1c2985",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ed",
+   "sha256": "3de400f9828d8c733fbd9c9291a1109e7789b345d8ef8856ac31c71fbf1c2985",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ed",
+   "sha256": "3de400f9828d8c733fbd9c9291a1109e7789b345d8ef8856ac31c71fbf1c2985",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ed",
+   "sha256": "3de400f9828d8c733fbd9c9291a1109e7789b345d8ef8856ac31c71fbf1c2985",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ed",
+   "sha256": "3de400f9828d8c733fbd9c9291a1109e7789b345d8ef8856ac31c71fbf1c2985",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ed",
+   "sha256": "3de400f9828d8c733fbd9c9291a1109e7789b345d8ef8856ac31c71fbf1c2985",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "hostname",
+   "sha256": "69ca02396963ad506b57ea62a247e6fdf91048bb4ba1920dd159347f42d9867e",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "hostname",
+   "sha256": "69ca02396963ad506b57ea62a247e6fdf91048bb4ba1920dd159347f42d9867e",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "hostname",
+   "sha256": "69ca02396963ad506b57ea62a247e6fdf91048bb4ba1920dd159347f42d9867e",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "hostname",
+   "sha256": "69ca02396963ad506b57ea62a247e6fdf91048bb4ba1920dd159347f42d9867e",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "hostname",
+   "sha256": "69ca02396963ad506b57ea62a247e6fdf91048bb4ba1920dd159347f42d9867e",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "hostname",
+   "sha256": "69ca02396963ad506b57ea62a247e6fdf91048bb4ba1920dd159347f42d9867e",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "hostname",
+   "sha256": "69ca02396963ad506b57ea62a247e6fdf91048bb4ba1920dd159347f42d9867e",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "hostname",
+   "sha256": "69ca02396963ad506b57ea62a247e6fdf91048bb4ba1920dd159347f42d9867e",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "kill",
+   "sha256": "9354b1505290ffea73ddf52ca46fd9333466569a921f228df41b0346a1c8d592",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "kill",
+   "sha256": "9354b1505290ffea73ddf52ca46fd9333466569a921f228df41b0346a1c8d592",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "kill",
+   "sha256": "9354b1505290ffea73ddf52ca46fd9333466569a921f228df41b0346a1c8d592",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "kill",
+   "sha256": "9354b1505290ffea73ddf52ca46fd9333466569a921f228df41b0346a1c8d592",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "kill",
+   "sha256": "9354b1505290ffea73ddf52ca46fd9333466569a921f228df41b0346a1c8d592",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "kill",
+   "sha256": "9354b1505290ffea73ddf52ca46fd9333466569a921f228df41b0346a1c8d592",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "kill",
+   "sha256": "9354b1505290ffea73ddf52ca46fd9333466569a921f228df41b0346a1c8d592",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "kill",
+   "sha256": "9354b1505290ffea73ddf52ca46fd9333466569a921f228df41b0346a1c8d592",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "launchctl",
+   "sha256": "b4dbf509754d8e1117f7851baa93ede75bc75218c48d6ddf19fbb1505d261be7",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "launchctl",
+   "sha256": "b4dbf509754d8e1117f7851baa93ede75bc75218c48d6ddf19fbb1505d261be7",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "launchctl",
+   "sha256": "b4dbf509754d8e1117f7851baa93ede75bc75218c48d6ddf19fbb1505d261be7",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "launchctl",
+   "sha256": "b4dbf509754d8e1117f7851baa93ede75bc75218c48d6ddf19fbb1505d261be7",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "launchctl",
+   "sha256": "b4dbf509754d8e1117f7851baa93ede75bc75218c48d6ddf19fbb1505d261be7",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "launchctl",
+   "sha256": "b4dbf509754d8e1117f7851baa93ede75bc75218c48d6ddf19fbb1505d261be7",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "launchctl",
+   "sha256": "b4dbf509754d8e1117f7851baa93ede75bc75218c48d6ddf19fbb1505d261be7",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "launchctl",
+   "sha256": "b4dbf509754d8e1117f7851baa93ede75bc75218c48d6ddf19fbb1505d261be7",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "link",
+   "sha256": "f2d62321fa81f2cea627a53f73ff65d14aae04cdfa93d5a5622207d88ef0ceec",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "link",
+   "sha256": "f2d62321fa81f2cea627a53f73ff65d14aae04cdfa93d5a5622207d88ef0ceec",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "link",
+   "sha256": "f2d62321fa81f2cea627a53f73ff65d14aae04cdfa93d5a5622207d88ef0ceec",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "link",
+   "sha256": "f2d62321fa81f2cea627a53f73ff65d14aae04cdfa93d5a5622207d88ef0ceec",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "link",
+   "sha256": "f2d62321fa81f2cea627a53f73ff65d14aae04cdfa93d5a5622207d88ef0ceec",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "link",
+   "sha256": "f2d62321fa81f2cea627a53f73ff65d14aae04cdfa93d5a5622207d88ef0ceec",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "link",
+   "sha256": "f2d62321fa81f2cea627a53f73ff65d14aae04cdfa93d5a5622207d88ef0ceec",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "link",
+   "sha256": "f2d62321fa81f2cea627a53f73ff65d14aae04cdfa93d5a5622207d88ef0ceec",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ls",
+   "sha256": "24752389e1d97c9555dd153b644902fadd460dfbe1a166251876c67bbacb0810",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ls",
+   "sha256": "24752389e1d97c9555dd153b644902fadd460dfbe1a166251876c67bbacb0810",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ls",
+   "sha256": "24752389e1d97c9555dd153b644902fadd460dfbe1a166251876c67bbacb0810",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ls",
+   "sha256": "24752389e1d97c9555dd153b644902fadd460dfbe1a166251876c67bbacb0810",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ls",
+   "sha256": "24752389e1d97c9555dd153b644902fadd460dfbe1a166251876c67bbacb0810",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ls",
+   "sha256": "24752389e1d97c9555dd153b644902fadd460dfbe1a166251876c67bbacb0810",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ls",
+   "sha256": "24752389e1d97c9555dd153b644902fadd460dfbe1a166251876c67bbacb0810",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ls",
+   "sha256": "24752389e1d97c9555dd153b644902fadd460dfbe1a166251876c67bbacb0810",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mkdir",
+   "sha256": "a84382b7827e7bfb285321413f9a89b7d2805fa6afd0369a8f32f4f0241e18cd",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mkdir",
+   "sha256": "a84382b7827e7bfb285321413f9a89b7d2805fa6afd0369a8f32f4f0241e18cd",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mkdir",
+   "sha256": "a84382b7827e7bfb285321413f9a89b7d2805fa6afd0369a8f32f4f0241e18cd",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mkdir",
+   "sha256": "a84382b7827e7bfb285321413f9a89b7d2805fa6afd0369a8f32f4f0241e18cd",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mkdir",
+   "sha256": "a84382b7827e7bfb285321413f9a89b7d2805fa6afd0369a8f32f4f0241e18cd",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mkdir",
+   "sha256": "a84382b7827e7bfb285321413f9a89b7d2805fa6afd0369a8f32f4f0241e18cd",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mkdir",
+   "sha256": "a84382b7827e7bfb285321413f9a89b7d2805fa6afd0369a8f32f4f0241e18cd",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mkdir",
+   "sha256": "a84382b7827e7bfb285321413f9a89b7d2805fa6afd0369a8f32f4f0241e18cd",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "pax",
+   "sha256": "5820b10d360eb500e63324e8d27588f806d9688d4087640b09dd61085f081ba9",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "pax",
+   "sha256": "5820b10d360eb500e63324e8d27588f806d9688d4087640b09dd61085f081ba9",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "pax",
+   "sha256": "5820b10d360eb500e63324e8d27588f806d9688d4087640b09dd61085f081ba9",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "pax",
+   "sha256": "5820b10d360eb500e63324e8d27588f806d9688d4087640b09dd61085f081ba9",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "pax",
+   "sha256": "5820b10d360eb500e63324e8d27588f806d9688d4087640b09dd61085f081ba9",
+   "format": "MachO",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "pax",
+   "sha256": "5820b10d360eb500e63324e8d27588f806d9688d4087640b09dd61085f081ba9",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "pax",
+   "sha256": "5820b10d360eb500e63324e8d27588f806d9688d4087640b09dd61085f081ba9",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "pax",
+   "sha256": "5820b10d360eb500e63324e8d27588f806d9688d4087640b09dd61085f081ba9",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "pax",
+   "sha256": "5820b10d360eb500e63324e8d27588f806d9688d4087640b09dd61085f081ba9",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ps",
+   "sha256": "3bbba882e30d91fc4ff6e6844ca7c59fef4351b9a3fea35dca55708d6d487d1c",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ps",
+   "sha256": "3bbba882e30d91fc4ff6e6844ca7c59fef4351b9a3fea35dca55708d6d487d1c",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ps",
+   "sha256": "3bbba882e30d91fc4ff6e6844ca7c59fef4351b9a3fea35dca55708d6d487d1c",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ps",
+   "sha256": "3bbba882e30d91fc4ff6e6844ca7c59fef4351b9a3fea35dca55708d6d487d1c",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ps",
+   "sha256": "3bbba882e30d91fc4ff6e6844ca7c59fef4351b9a3fea35dca55708d6d487d1c",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ps",
+   "sha256": "3bbba882e30d91fc4ff6e6844ca7c59fef4351b9a3fea35dca55708d6d487d1c",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ps",
+   "sha256": "3bbba882e30d91fc4ff6e6844ca7c59fef4351b9a3fea35dca55708d6d487d1c",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ps",
+   "sha256": "3bbba882e30d91fc4ff6e6844ca7c59fef4351b9a3fea35dca55708d6d487d1c",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "realpath",
+   "sha256": "c1b3d87678192d84fcc24d7d27331c51bee3517a63ed1ebfb97d70ca6f49e535",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "realpath",
+   "sha256": "c1b3d87678192d84fcc24d7d27331c51bee3517a63ed1ebfb97d70ca6f49e535",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "realpath",
+   "sha256": "c1b3d87678192d84fcc24d7d27331c51bee3517a63ed1ebfb97d70ca6f49e535",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "realpath",
+   "sha256": "c1b3d87678192d84fcc24d7d27331c51bee3517a63ed1ebfb97d70ca6f49e535",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "realpath",
+   "sha256": "c1b3d87678192d84fcc24d7d27331c51bee3517a63ed1ebfb97d70ca6f49e535",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "realpath",
+   "sha256": "c1b3d87678192d84fcc24d7d27331c51bee3517a63ed1ebfb97d70ca6f49e535",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "realpath",
+   "sha256": "c1b3d87678192d84fcc24d7d27331c51bee3517a63ed1ebfb97d70ca6f49e535",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "realpath",
+   "sha256": "c1b3d87678192d84fcc24d7d27331c51bee3517a63ed1ebfb97d70ca6f49e535",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "rm",
+   "sha256": "4faf0408bb0c5dcb8ea47c08ff03cb44aedfe2712220111586b71cb93cd1d43f",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "rm",
+   "sha256": "4faf0408bb0c5dcb8ea47c08ff03cb44aedfe2712220111586b71cb93cd1d43f",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "rm",
+   "sha256": "4faf0408bb0c5dcb8ea47c08ff03cb44aedfe2712220111586b71cb93cd1d43f",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "rm",
+   "sha256": "4faf0408bb0c5dcb8ea47c08ff03cb44aedfe2712220111586b71cb93cd1d43f",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "rm",
+   "sha256": "4faf0408bb0c5dcb8ea47c08ff03cb44aedfe2712220111586b71cb93cd1d43f",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "rm",
+   "sha256": "4faf0408bb0c5dcb8ea47c08ff03cb44aedfe2712220111586b71cb93cd1d43f",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "rm",
+   "sha256": "4faf0408bb0c5dcb8ea47c08ff03cb44aedfe2712220111586b71cb93cd1d43f",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "rm",
+   "sha256": "4faf0408bb0c5dcb8ea47c08ff03cb44aedfe2712220111586b71cb93cd1d43f",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sh",
+   "sha256": "c0eaf44f9242d5bbc2e14f4e8b7dccc1eff7f2976d64dc18914d5ef9f373e100",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sh",
+   "sha256": "c0eaf44f9242d5bbc2e14f4e8b7dccc1eff7f2976d64dc18914d5ef9f373e100",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sh",
+   "sha256": "c0eaf44f9242d5bbc2e14f4e8b7dccc1eff7f2976d64dc18914d5ef9f373e100",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sh",
+   "sha256": "c0eaf44f9242d5bbc2e14f4e8b7dccc1eff7f2976d64dc18914d5ef9f373e100",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sh",
+   "sha256": "c0eaf44f9242d5bbc2e14f4e8b7dccc1eff7f2976d64dc18914d5ef9f373e100",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sh",
+   "sha256": "c0eaf44f9242d5bbc2e14f4e8b7dccc1eff7f2976d64dc18914d5ef9f373e100",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sh",
+   "sha256": "c0eaf44f9242d5bbc2e14f4e8b7dccc1eff7f2976d64dc18914d5ef9f373e100",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sh",
+   "sha256": "c0eaf44f9242d5bbc2e14f4e8b7dccc1eff7f2976d64dc18914d5ef9f373e100",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sleep",
+   "sha256": "c30e72b2e2d6a4eb32b6f38f07815346bc734d031d3c712d9123f28d8b237051",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sleep",
+   "sha256": "c30e72b2e2d6a4eb32b6f38f07815346bc734d031d3c712d9123f28d8b237051",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sleep",
+   "sha256": "c30e72b2e2d6a4eb32b6f38f07815346bc734d031d3c712d9123f28d8b237051",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sleep",
+   "sha256": "c30e72b2e2d6a4eb32b6f38f07815346bc734d031d3c712d9123f28d8b237051",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sleep",
+   "sha256": "c30e72b2e2d6a4eb32b6f38f07815346bc734d031d3c712d9123f28d8b237051",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sleep",
+   "sha256": "c30e72b2e2d6a4eb32b6f38f07815346bc734d031d3c712d9123f28d8b237051",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sleep",
+   "sha256": "c30e72b2e2d6a4eb32b6f38f07815346bc734d031d3c712d9123f28d8b237051",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sleep",
+   "sha256": "c30e72b2e2d6a4eb32b6f38f07815346bc734d031d3c712d9123f28d8b237051",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sync",
+   "sha256": "2ccf9bd4641d2db238b1f0fd55e558b5ac809ed7e3e1e455b4352452965e9c5f",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sync",
+   "sha256": "2ccf9bd4641d2db238b1f0fd55e558b5ac809ed7e3e1e455b4352452965e9c5f",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sync",
+   "sha256": "2ccf9bd4641d2db238b1f0fd55e558b5ac809ed7e3e1e455b4352452965e9c5f",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sync",
+   "sha256": "2ccf9bd4641d2db238b1f0fd55e558b5ac809ed7e3e1e455b4352452965e9c5f",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sync",
+   "sha256": "2ccf9bd4641d2db238b1f0fd55e558b5ac809ed7e3e1e455b4352452965e9c5f",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sync",
+   "sha256": "2ccf9bd4641d2db238b1f0fd55e558b5ac809ed7e3e1e455b4352452965e9c5f",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sync",
+   "sha256": "2ccf9bd4641d2db238b1f0fd55e558b5ac809ed7e3e1e455b4352452965e9c5f",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sync",
+   "sha256": "2ccf9bd4641d2db238b1f0fd55e558b5ac809ed7e3e1e455b4352452965e9c5f",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "tcsh",
+   "sha256": "4a5682139bbf33379ea9b0e8b5b42cb4fc02183bc544187dd6ca9c6ec53c2b4e",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "tcsh",
+   "sha256": "4a5682139bbf33379ea9b0e8b5b42cb4fc02183bc544187dd6ca9c6ec53c2b4e",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "tcsh",
+   "sha256": "4a5682139bbf33379ea9b0e8b5b42cb4fc02183bc544187dd6ca9c6ec53c2b4e",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "tcsh",
+   "sha256": "4a5682139bbf33379ea9b0e8b5b42cb4fc02183bc544187dd6ca9c6ec53c2b4e",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "tcsh",
+   "sha256": "4a5682139bbf33379ea9b0e8b5b42cb4fc02183bc544187dd6ca9c6ec53c2b4e",
+   "format": "MachO",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "tcsh",
+   "sha256": "4a5682139bbf33379ea9b0e8b5b42cb4fc02183bc544187dd6ca9c6ec53c2b4e",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "tcsh",
+   "sha256": "4a5682139bbf33379ea9b0e8b5b42cb4fc02183bc544187dd6ca9c6ec53c2b4e",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "tcsh",
+   "sha256": "4a5682139bbf33379ea9b0e8b5b42cb4fc02183bc544187dd6ca9c6ec53c2b4e",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "tcsh",
+   "sha256": "4a5682139bbf33379ea9b0e8b5b42cb4fc02183bc544187dd6ca9c6ec53c2b4e",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "tcsh",
+   "sha256": "4a5682139bbf33379ea9b0e8b5b42cb4fc02183bc544187dd6ca9c6ec53c2b4e",
+   "format": "MachO",
+   "kind": "function_at",
+   "true_claim": "INCONCLUSIVE",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "unlink",
+   "sha256": "4faf0408bb0c5dcb8ea47c08ff03cb44aedfe2712220111586b71cb93cd1d43f",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "unlink",
+   "sha256": "4faf0408bb0c5dcb8ea47c08ff03cb44aedfe2712220111586b71cb93cd1d43f",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "unlink",
+   "sha256": "4faf0408bb0c5dcb8ea47c08ff03cb44aedfe2712220111586b71cb93cd1d43f",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "unlink",
+   "sha256": "4faf0408bb0c5dcb8ea47c08ff03cb44aedfe2712220111586b71cb93cd1d43f",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "unlink",
+   "sha256": "4faf0408bb0c5dcb8ea47c08ff03cb44aedfe2712220111586b71cb93cd1d43f",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "unlink",
+   "sha256": "4faf0408bb0c5dcb8ea47c08ff03cb44aedfe2712220111586b71cb93cd1d43f",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "unlink",
+   "sha256": "4faf0408bb0c5dcb8ea47c08ff03cb44aedfe2712220111586b71cb93cd1d43f",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "unlink",
+   "sha256": "4faf0408bb0c5dcb8ea47c08ff03cb44aedfe2712220111586b71cb93cd1d43f",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "wait4path",
+   "sha256": "e4cd7dbb72736d9fb1f2ba7d7f77c501beefc914871fdd2741b82e36082e0c8a",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "wait4path",
+   "sha256": "e4cd7dbb72736d9fb1f2ba7d7f77c501beefc914871fdd2741b82e36082e0c8a",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "wait4path",
+   "sha256": "e4cd7dbb72736d9fb1f2ba7d7f77c501beefc914871fdd2741b82e36082e0c8a",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "wait4path",
+   "sha256": "e4cd7dbb72736d9fb1f2ba7d7f77c501beefc914871fdd2741b82e36082e0c8a",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "wait4path",
+   "sha256": "e4cd7dbb72736d9fb1f2ba7d7f77c501beefc914871fdd2741b82e36082e0c8a",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "wait4path",
+   "sha256": "e4cd7dbb72736d9fb1f2ba7d7f77c501beefc914871fdd2741b82e36082e0c8a",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "wait4path",
+   "sha256": "e4cd7dbb72736d9fb1f2ba7d7f77c501beefc914871fdd2741b82e36082e0c8a",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "wait4path",
+   "sha256": "e4cd7dbb72736d9fb1f2ba7d7f77c501beefc914871fdd2741b82e36082e0c8a",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "AssetCacheLocatorUtil",
+   "sha256": "10c78e012e214cf2420cb367f07f16a0860051c709199603a14d85a6c0934feb",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "AssetCacheLocatorUtil",
+   "sha256": "10c78e012e214cf2420cb367f07f16a0860051c709199603a14d85a6c0934feb",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "AssetCacheLocatorUtil",
+   "sha256": "10c78e012e214cf2420cb367f07f16a0860051c709199603a14d85a6c0934feb",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "AssetCacheLocatorUtil",
+   "sha256": "10c78e012e214cf2420cb367f07f16a0860051c709199603a14d85a6c0934feb",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "AssetCacheLocatorUtil",
+   "sha256": "10c78e012e214cf2420cb367f07f16a0860051c709199603a14d85a6c0934feb",
+   "format": "MachO",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "AssetCacheLocatorUtil",
+   "sha256": "10c78e012e214cf2420cb367f07f16a0860051c709199603a14d85a6c0934feb",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "AssetCacheLocatorUtil",
+   "sha256": "10c78e012e214cf2420cb367f07f16a0860051c709199603a14d85a6c0934feb",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "AssetCacheLocatorUtil",
+   "sha256": "10c78e012e214cf2420cb367f07f16a0860051c709199603a14d85a6c0934feb",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "AssetCacheLocatorUtil",
+   "sha256": "10c78e012e214cf2420cb367f07f16a0860051c709199603a14d85a6c0934feb",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "app-sso",
+   "sha256": "9f9c5608a4658a9ea2c9f300cced177adbcdf38b598bfa9f5cbd0aa971a4e397",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "app-sso",
+   "sha256": "9f9c5608a4658a9ea2c9f300cced177adbcdf38b598bfa9f5cbd0aa971a4e397",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "app-sso",
+   "sha256": "9f9c5608a4658a9ea2c9f300cced177adbcdf38b598bfa9f5cbd0aa971a4e397",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "app-sso",
+   "sha256": "9f9c5608a4658a9ea2c9f300cced177adbcdf38b598bfa9f5cbd0aa971a4e397",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "app-sso",
+   "sha256": "9f9c5608a4658a9ea2c9f300cced177adbcdf38b598bfa9f5cbd0aa971a4e397",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "app-sso",
+   "sha256": "9f9c5608a4658a9ea2c9f300cced177adbcdf38b598bfa9f5cbd0aa971a4e397",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "app-sso",
+   "sha256": "9f9c5608a4658a9ea2c9f300cced177adbcdf38b598bfa9f5cbd0aa971a4e397",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "app-sso",
+   "sha256": "9f9c5608a4658a9ea2c9f300cced177adbcdf38b598bfa9f5cbd0aa971a4e397",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "b64decode",
+   "sha256": "06b54c7e2c2bf69d16812b99c0bda71398412b3a036720e15e89039b4a1e2dfd",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "b64decode",
+   "sha256": "06b54c7e2c2bf69d16812b99c0bda71398412b3a036720e15e89039b4a1e2dfd",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "b64decode",
+   "sha256": "06b54c7e2c2bf69d16812b99c0bda71398412b3a036720e15e89039b4a1e2dfd",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "b64decode",
+   "sha256": "06b54c7e2c2bf69d16812b99c0bda71398412b3a036720e15e89039b4a1e2dfd",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "b64decode",
+   "sha256": "06b54c7e2c2bf69d16812b99c0bda71398412b3a036720e15e89039b4a1e2dfd",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "b64decode",
+   "sha256": "06b54c7e2c2bf69d16812b99c0bda71398412b3a036720e15e89039b4a1e2dfd",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "b64decode",
+   "sha256": "06b54c7e2c2bf69d16812b99c0bda71398412b3a036720e15e89039b4a1e2dfd",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "b64decode",
+   "sha256": "06b54c7e2c2bf69d16812b99c0bda71398412b3a036720e15e89039b4a1e2dfd",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "caffeinate",
+   "sha256": "fdd1c163779f87d667b6a4049293e165f2d30b716ca8bff9bed3fe54bc6d1d07",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "caffeinate",
+   "sha256": "fdd1c163779f87d667b6a4049293e165f2d30b716ca8bff9bed3fe54bc6d1d07",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "caffeinate",
+   "sha256": "fdd1c163779f87d667b6a4049293e165f2d30b716ca8bff9bed3fe54bc6d1d07",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "caffeinate",
+   "sha256": "fdd1c163779f87d667b6a4049293e165f2d30b716ca8bff9bed3fe54bc6d1d07",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "caffeinate",
+   "sha256": "fdd1c163779f87d667b6a4049293e165f2d30b716ca8bff9bed3fe54bc6d1d07",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "caffeinate",
+   "sha256": "fdd1c163779f87d667b6a4049293e165f2d30b716ca8bff9bed3fe54bc6d1d07",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "caffeinate",
+   "sha256": "fdd1c163779f87d667b6a4049293e165f2d30b716ca8bff9bed3fe54bc6d1d07",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "caffeinate",
+   "sha256": "fdd1c163779f87d667b6a4049293e165f2d30b716ca8bff9bed3fe54bc6d1d07",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "comm",
+   "sha256": "8b83580ae6a0a5c50b2a96880451ffddab0dc51ed9b51e807d6c5c2b4c929511",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "comm",
+   "sha256": "8b83580ae6a0a5c50b2a96880451ffddab0dc51ed9b51e807d6c5c2b4c929511",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "comm",
+   "sha256": "8b83580ae6a0a5c50b2a96880451ffddab0dc51ed9b51e807d6c5c2b4c929511",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "comm",
+   "sha256": "8b83580ae6a0a5c50b2a96880451ffddab0dc51ed9b51e807d6c5c2b4c929511",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "comm",
+   "sha256": "8b83580ae6a0a5c50b2a96880451ffddab0dc51ed9b51e807d6c5c2b4c929511",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "comm",
+   "sha256": "8b83580ae6a0a5c50b2a96880451ffddab0dc51ed9b51e807d6c5c2b4c929511",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "comm",
+   "sha256": "8b83580ae6a0a5c50b2a96880451ffddab0dc51ed9b51e807d6c5c2b4c929511",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "comm",
+   "sha256": "8b83580ae6a0a5c50b2a96880451ffddab0dc51ed9b51e807d6c5c2b4c929511",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "db_stat",
+   "sha256": "e121ea4b1d662cdc29131aeca2c912ea4e18e8ce9f06e93610c47211199f9192",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "db_stat",
+   "sha256": "e121ea4b1d662cdc29131aeca2c912ea4e18e8ce9f06e93610c47211199f9192",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "db_stat",
+   "sha256": "e121ea4b1d662cdc29131aeca2c912ea4e18e8ce9f06e93610c47211199f9192",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "db_stat",
+   "sha256": "e121ea4b1d662cdc29131aeca2c912ea4e18e8ce9f06e93610c47211199f9192",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "db_stat",
+   "sha256": "e121ea4b1d662cdc29131aeca2c912ea4e18e8ce9f06e93610c47211199f9192",
+   "format": "MachO",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "db_stat",
+   "sha256": "e121ea4b1d662cdc29131aeca2c912ea4e18e8ce9f06e93610c47211199f9192",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "db_stat",
+   "sha256": "e121ea4b1d662cdc29131aeca2c912ea4e18e8ce9f06e93610c47211199f9192",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "db_stat",
+   "sha256": "e121ea4b1d662cdc29131aeca2c912ea4e18e8ce9f06e93610c47211199f9192",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "db_stat",
+   "sha256": "e121ea4b1d662cdc29131aeca2c912ea4e18e8ce9f06e93610c47211199f9192",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dsimport",
+   "sha256": "806424056f9ddbb17c5760de7707d32551ab9e9c09d823025d2573d33b3a6e04",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dsimport",
+   "sha256": "806424056f9ddbb17c5760de7707d32551ab9e9c09d823025d2573d33b3a6e04",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dsimport",
+   "sha256": "806424056f9ddbb17c5760de7707d32551ab9e9c09d823025d2573d33b3a6e04",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dsimport",
+   "sha256": "806424056f9ddbb17c5760de7707d32551ab9e9c09d823025d2573d33b3a6e04",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dsimport",
+   "sha256": "806424056f9ddbb17c5760de7707d32551ab9e9c09d823025d2573d33b3a6e04",
+   "format": "MachO",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dsimport",
+   "sha256": "806424056f9ddbb17c5760de7707d32551ab9e9c09d823025d2573d33b3a6e04",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dsimport",
+   "sha256": "806424056f9ddbb17c5760de7707d32551ab9e9c09d823025d2573d33b3a6e04",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dsimport",
+   "sha256": "806424056f9ddbb17c5760de7707d32551ab9e9c09d823025d2573d33b3a6e04",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "fontrestore",
+   "sha256": "135ec36cc0706210a6e401c3872faa93d2a2fa32030056811219a146e3eb7dea",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "fontrestore",
+   "sha256": "135ec36cc0706210a6e401c3872faa93d2a2fa32030056811219a146e3eb7dea",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "fontrestore",
+   "sha256": "135ec36cc0706210a6e401c3872faa93d2a2fa32030056811219a146e3eb7dea",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "fontrestore",
+   "sha256": "135ec36cc0706210a6e401c3872faa93d2a2fa32030056811219a146e3eb7dea",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "fontrestore",
+   "sha256": "135ec36cc0706210a6e401c3872faa93d2a2fa32030056811219a146e3eb7dea",
+   "format": "MachO",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "fontrestore",
+   "sha256": "135ec36cc0706210a6e401c3872faa93d2a2fa32030056811219a146e3eb7dea",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "fontrestore",
+   "sha256": "135ec36cc0706210a6e401c3872faa93d2a2fa32030056811219a146e3eb7dea",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "fontrestore",
+   "sha256": "135ec36cc0706210a6e401c3872faa93d2a2fa32030056811219a146e3eb7dea",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "fontrestore",
+   "sha256": "135ec36cc0706210a6e401c3872faa93d2a2fa32030056811219a146e3eb7dea",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "gzip",
+   "sha256": "0f655a20639414497cd4ec5f614c41ee8bf329c2daa0ade0d6ae5e549b9c6f9e",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "gzip",
+   "sha256": "0f655a20639414497cd4ec5f614c41ee8bf329c2daa0ade0d6ae5e549b9c6f9e",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "gzip",
+   "sha256": "0f655a20639414497cd4ec5f614c41ee8bf329c2daa0ade0d6ae5e549b9c6f9e",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "gzip",
+   "sha256": "0f655a20639414497cd4ec5f614c41ee8bf329c2daa0ade0d6ae5e549b9c6f9e",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "gzip",
+   "sha256": "0f655a20639414497cd4ec5f614c41ee8bf329c2daa0ade0d6ae5e549b9c6f9e",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "gzip",
+   "sha256": "0f655a20639414497cd4ec5f614c41ee8bf329c2daa0ade0d6ae5e549b9c6f9e",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "gzip",
+   "sha256": "0f655a20639414497cd4ec5f614c41ee8bf329c2daa0ade0d6ae5e549b9c6f9e",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "gzip",
+   "sha256": "0f655a20639414497cd4ec5f614c41ee8bf329c2daa0ade0d6ae5e549b9c6f9e",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ipcrm",
+   "sha256": "c31fc1a3820b87a765b3e267fa64b3fed0fbcd7fd4c8ce651b5a625207fdb6c5",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ipcrm",
+   "sha256": "c31fc1a3820b87a765b3e267fa64b3fed0fbcd7fd4c8ce651b5a625207fdb6c5",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ipcrm",
+   "sha256": "c31fc1a3820b87a765b3e267fa64b3fed0fbcd7fd4c8ce651b5a625207fdb6c5",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ipcrm",
+   "sha256": "c31fc1a3820b87a765b3e267fa64b3fed0fbcd7fd4c8ce651b5a625207fdb6c5",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ipcrm",
+   "sha256": "c31fc1a3820b87a765b3e267fa64b3fed0fbcd7fd4c8ce651b5a625207fdb6c5",
+   "format": "MachO",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ipcrm",
+   "sha256": "c31fc1a3820b87a765b3e267fa64b3fed0fbcd7fd4c8ce651b5a625207fdb6c5",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ipcrm",
+   "sha256": "c31fc1a3820b87a765b3e267fa64b3fed0fbcd7fd4c8ce651b5a625207fdb6c5",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ipcrm",
+   "sha256": "c31fc1a3820b87a765b3e267fa64b3fed0fbcd7fd4c8ce651b5a625207fdb6c5",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ipcrm",
+   "sha256": "c31fc1a3820b87a765b3e267fa64b3fed0fbcd7fd4c8ce651b5a625207fdb6c5",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "jps",
+   "sha256": "88a575aa4376513cc174b65ad3dfbfb4d5819b24d0ed6288c010b15286b7b639",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "jps",
+   "sha256": "88a575aa4376513cc174b65ad3dfbfb4d5819b24d0ed6288c010b15286b7b639",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "jps",
+   "sha256": "88a575aa4376513cc174b65ad3dfbfb4d5819b24d0ed6288c010b15286b7b639",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "jps",
+   "sha256": "88a575aa4376513cc174b65ad3dfbfb4d5819b24d0ed6288c010b15286b7b639",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "jps",
+   "sha256": "88a575aa4376513cc174b65ad3dfbfb4d5819b24d0ed6288c010b15286b7b639",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "jps",
+   "sha256": "88a575aa4376513cc174b65ad3dfbfb4d5819b24d0ed6288c010b15286b7b639",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "jps",
+   "sha256": "88a575aa4376513cc174b65ad3dfbfb4d5819b24d0ed6288c010b15286b7b639",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "jps",
+   "sha256": "88a575aa4376513cc174b65ad3dfbfb4d5819b24d0ed6288c010b15286b7b639",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ldapcompare",
+   "sha256": "a08e7c93f5e7d7d4e2fda46e7cdb0df18964a91cfaf0b25fb4c074f00fbf3b4d",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ldapcompare",
+   "sha256": "a08e7c93f5e7d7d4e2fda46e7cdb0df18964a91cfaf0b25fb4c074f00fbf3b4d",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ldapcompare",
+   "sha256": "a08e7c93f5e7d7d4e2fda46e7cdb0df18964a91cfaf0b25fb4c074f00fbf3b4d",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ldapcompare",
+   "sha256": "a08e7c93f5e7d7d4e2fda46e7cdb0df18964a91cfaf0b25fb4c074f00fbf3b4d",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ldapcompare",
+   "sha256": "a08e7c93f5e7d7d4e2fda46e7cdb0df18964a91cfaf0b25fb4c074f00fbf3b4d",
+   "format": "MachO",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ldapcompare",
+   "sha256": "a08e7c93f5e7d7d4e2fda46e7cdb0df18964a91cfaf0b25fb4c074f00fbf3b4d",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ldapcompare",
+   "sha256": "a08e7c93f5e7d7d4e2fda46e7cdb0df18964a91cfaf0b25fb4c074f00fbf3b4d",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ldapcompare",
+   "sha256": "a08e7c93f5e7d7d4e2fda46e7cdb0df18964a91cfaf0b25fb4c074f00fbf3b4d",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ldapcompare",
+   "sha256": "a08e7c93f5e7d7d4e2fda46e7cdb0df18964a91cfaf0b25fb4c074f00fbf3b4d",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "logger",
+   "sha256": "b08566359481bdd1800cbe36fbcfc63f7296f83c7fa421401253fc22f84a1c02",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "logger",
+   "sha256": "b08566359481bdd1800cbe36fbcfc63f7296f83c7fa421401253fc22f84a1c02",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "logger",
+   "sha256": "b08566359481bdd1800cbe36fbcfc63f7296f83c7fa421401253fc22f84a1c02",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "logger",
+   "sha256": "b08566359481bdd1800cbe36fbcfc63f7296f83c7fa421401253fc22f84a1c02",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "logger",
+   "sha256": "b08566359481bdd1800cbe36fbcfc63f7296f83c7fa421401253fc22f84a1c02",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "logger",
+   "sha256": "b08566359481bdd1800cbe36fbcfc63f7296f83c7fa421401253fc22f84a1c02",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "logger",
+   "sha256": "b08566359481bdd1800cbe36fbcfc63f7296f83c7fa421401253fc22f84a1c02",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "logger",
+   "sha256": "b08566359481bdd1800cbe36fbcfc63f7296f83c7fa421401253fc22f84a1c02",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mandoc_soelim",
+   "sha256": "2082c0f51a700b2c7626fd00c08663471cb827b4f06b36ee1d38aa634af13ce2",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mandoc_soelim",
+   "sha256": "2082c0f51a700b2c7626fd00c08663471cb827b4f06b36ee1d38aa634af13ce2",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mandoc_soelim",
+   "sha256": "2082c0f51a700b2c7626fd00c08663471cb827b4f06b36ee1d38aa634af13ce2",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mandoc_soelim",
+   "sha256": "2082c0f51a700b2c7626fd00c08663471cb827b4f06b36ee1d38aa634af13ce2",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mandoc_soelim",
+   "sha256": "2082c0f51a700b2c7626fd00c08663471cb827b4f06b36ee1d38aa634af13ce2",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mandoc_soelim",
+   "sha256": "2082c0f51a700b2c7626fd00c08663471cb827b4f06b36ee1d38aa634af13ce2",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mandoc_soelim",
+   "sha256": "2082c0f51a700b2c7626fd00c08663471cb827b4f06b36ee1d38aa634af13ce2",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mandoc_soelim",
+   "sha256": "2082c0f51a700b2c7626fd00c08663471cb827b4f06b36ee1d38aa634af13ce2",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mandoc_soelim",
+   "sha256": "2082c0f51a700b2c7626fd00c08663471cb827b4f06b36ee1d38aa634af13ce2",
+   "format": "MachO",
+   "kind": "function_at",
+   "true_claim": "INCONCLUSIVE",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "ncdestroy",
+   "sha256": "f546c57f0fb764379aae0b2406049b6b155b260b2da40bcf96b996603dd75235",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ncdestroy",
+   "sha256": "f546c57f0fb764379aae0b2406049b6b155b260b2da40bcf96b996603dd75235",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ncdestroy",
+   "sha256": "f546c57f0fb764379aae0b2406049b6b155b260b2da40bcf96b996603dd75235",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ncdestroy",
+   "sha256": "f546c57f0fb764379aae0b2406049b6b155b260b2da40bcf96b996603dd75235",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ncdestroy",
+   "sha256": "f546c57f0fb764379aae0b2406049b6b155b260b2da40bcf96b996603dd75235",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ncdestroy",
+   "sha256": "f546c57f0fb764379aae0b2406049b6b155b260b2da40bcf96b996603dd75235",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ncdestroy",
+   "sha256": "f546c57f0fb764379aae0b2406049b6b155b260b2da40bcf96b996603dd75235",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ncdestroy",
+   "sha256": "f546c57f0fb764379aae0b2406049b6b155b260b2da40bcf96b996603dd75235",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "osalang",
+   "sha256": "77c5c0eded5d82fe9e68e29803ccdc48e9611baf3b3af7a85ee47979ffb2337a",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "osalang",
+   "sha256": "77c5c0eded5d82fe9e68e29803ccdc48e9611baf3b3af7a85ee47979ffb2337a",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "osalang",
+   "sha256": "77c5c0eded5d82fe9e68e29803ccdc48e9611baf3b3af7a85ee47979ffb2337a",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "osalang",
+   "sha256": "77c5c0eded5d82fe9e68e29803ccdc48e9611baf3b3af7a85ee47979ffb2337a",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "osalang",
+   "sha256": "77c5c0eded5d82fe9e68e29803ccdc48e9611baf3b3af7a85ee47979ffb2337a",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "osalang",
+   "sha256": "77c5c0eded5d82fe9e68e29803ccdc48e9611baf3b3af7a85ee47979ffb2337a",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "osalang",
+   "sha256": "77c5c0eded5d82fe9e68e29803ccdc48e9611baf3b3af7a85ee47979ffb2337a",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "osalang",
+   "sha256": "77c5c0eded5d82fe9e68e29803ccdc48e9611baf3b3af7a85ee47979ffb2337a",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "policytool",
+   "sha256": "88a575aa4376513cc174b65ad3dfbfb4d5819b24d0ed6288c010b15286b7b639",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "policytool",
+   "sha256": "88a575aa4376513cc174b65ad3dfbfb4d5819b24d0ed6288c010b15286b7b639",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "policytool",
+   "sha256": "88a575aa4376513cc174b65ad3dfbfb4d5819b24d0ed6288c010b15286b7b639",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "policytool",
+   "sha256": "88a575aa4376513cc174b65ad3dfbfb4d5819b24d0ed6288c010b15286b7b639",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "policytool",
+   "sha256": "88a575aa4376513cc174b65ad3dfbfb4d5819b24d0ed6288c010b15286b7b639",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "policytool",
+   "sha256": "88a575aa4376513cc174b65ad3dfbfb4d5819b24d0ed6288c010b15286b7b639",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "policytool",
+   "sha256": "88a575aa4376513cc174b65ad3dfbfb4d5819b24d0ed6288c010b15286b7b639",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "policytool",
+   "sha256": "88a575aa4376513cc174b65ad3dfbfb4d5819b24d0ed6288c010b15286b7b639",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "rmid",
+   "sha256": "88a575aa4376513cc174b65ad3dfbfb4d5819b24d0ed6288c010b15286b7b639",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "rmid",
+   "sha256": "88a575aa4376513cc174b65ad3dfbfb4d5819b24d0ed6288c010b15286b7b639",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "rmid",
+   "sha256": "88a575aa4376513cc174b65ad3dfbfb4d5819b24d0ed6288c010b15286b7b639",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "rmid",
+   "sha256": "88a575aa4376513cc174b65ad3dfbfb4d5819b24d0ed6288c010b15286b7b639",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "rmid",
+   "sha256": "88a575aa4376513cc174b65ad3dfbfb4d5819b24d0ed6288c010b15286b7b639",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "rmid",
+   "sha256": "88a575aa4376513cc174b65ad3dfbfb4d5819b24d0ed6288c010b15286b7b639",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "rmid",
+   "sha256": "88a575aa4376513cc174b65ad3dfbfb4d5819b24d0ed6288c010b15286b7b639",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "rmid",
+   "sha256": "88a575aa4376513cc174b65ad3dfbfb4d5819b24d0ed6288c010b15286b7b639",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sfltool",
+   "sha256": "fee0b8fb7d9e711a0ea52ab23b612952b430b31dd3d5f781db6c03120a4fb2c1",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sfltool",
+   "sha256": "fee0b8fb7d9e711a0ea52ab23b612952b430b31dd3d5f781db6c03120a4fb2c1",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sfltool",
+   "sha256": "fee0b8fb7d9e711a0ea52ab23b612952b430b31dd3d5f781db6c03120a4fb2c1",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sfltool",
+   "sha256": "fee0b8fb7d9e711a0ea52ab23b612952b430b31dd3d5f781db6c03120a4fb2c1",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sfltool",
+   "sha256": "fee0b8fb7d9e711a0ea52ab23b612952b430b31dd3d5f781db6c03120a4fb2c1",
+   "format": "MachO",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sfltool",
+   "sha256": "fee0b8fb7d9e711a0ea52ab23b612952b430b31dd3d5f781db6c03120a4fb2c1",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sfltool",
+   "sha256": "fee0b8fb7d9e711a0ea52ab23b612952b430b31dd3d5f781db6c03120a4fb2c1",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sfltool",
+   "sha256": "fee0b8fb7d9e711a0ea52ab23b612952b430b31dd3d5f781db6c03120a4fb2c1",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sfltool",
+   "sha256": "fee0b8fb7d9e711a0ea52ab23b612952b430b31dd3d5f781db6c03120a4fb2c1",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "snmpwalk",
+   "sha256": "54e108ed9546b5be60a4f4b4235140d1310028dd115ff80a0c8e7dfdee8bdfa3",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "snmpwalk",
+   "sha256": "54e108ed9546b5be60a4f4b4235140d1310028dd115ff80a0c8e7dfdee8bdfa3",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "snmpwalk",
+   "sha256": "54e108ed9546b5be60a4f4b4235140d1310028dd115ff80a0c8e7dfdee8bdfa3",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "snmpwalk",
+   "sha256": "54e108ed9546b5be60a4f4b4235140d1310028dd115ff80a0c8e7dfdee8bdfa3",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "snmpwalk",
+   "sha256": "54e108ed9546b5be60a4f4b4235140d1310028dd115ff80a0c8e7dfdee8bdfa3",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "snmpwalk",
+   "sha256": "54e108ed9546b5be60a4f4b4235140d1310028dd115ff80a0c8e7dfdee8bdfa3",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "snmpwalk",
+   "sha256": "54e108ed9546b5be60a4f4b4235140d1310028dd115ff80a0c8e7dfdee8bdfa3",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "snmpwalk",
+   "sha256": "54e108ed9546b5be60a4f4b4235140d1310028dd115ff80a0c8e7dfdee8bdfa3",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "symbolscache",
+   "sha256": "cff83003d765a47853cfda0944d4b619ec1fc26ffaab3a1a4bad5491a5a1e9be",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "symbolscache",
+   "sha256": "cff83003d765a47853cfda0944d4b619ec1fc26ffaab3a1a4bad5491a5a1e9be",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "symbolscache",
+   "sha256": "cff83003d765a47853cfda0944d4b619ec1fc26ffaab3a1a4bad5491a5a1e9be",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "symbolscache",
+   "sha256": "cff83003d765a47853cfda0944d4b619ec1fc26ffaab3a1a4bad5491a5a1e9be",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "symbolscache",
+   "sha256": "cff83003d765a47853cfda0944d4b619ec1fc26ffaab3a1a4bad5491a5a1e9be",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "symbolscache",
+   "sha256": "cff83003d765a47853cfda0944d4b619ec1fc26ffaab3a1a4bad5491a5a1e9be",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "symbolscache",
+   "sha256": "cff83003d765a47853cfda0944d4b619ec1fc26ffaab3a1a4bad5491a5a1e9be",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "symbolscache",
+   "sha256": "cff83003d765a47853cfda0944d4b619ec1fc26ffaab3a1a4bad5491a5a1e9be",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "timesyncanalyse",
+   "sha256": "25b72007255bcedab0f8b912984c6c1339b596251be1edccb04d07bed6a966ad",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "timesyncanalyse",
+   "sha256": "25b72007255bcedab0f8b912984c6c1339b596251be1edccb04d07bed6a966ad",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "timesyncanalyse",
+   "sha256": "25b72007255bcedab0f8b912984c6c1339b596251be1edccb04d07bed6a966ad",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "timesyncanalyse",
+   "sha256": "25b72007255bcedab0f8b912984c6c1339b596251be1edccb04d07bed6a966ad",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "timesyncanalyse",
+   "sha256": "25b72007255bcedab0f8b912984c6c1339b596251be1edccb04d07bed6a966ad",
+   "format": "MachO",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "timesyncanalyse",
+   "sha256": "25b72007255bcedab0f8b912984c6c1339b596251be1edccb04d07bed6a966ad",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "timesyncanalyse",
+   "sha256": "25b72007255bcedab0f8b912984c6c1339b596251be1edccb04d07bed6a966ad",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "timesyncanalyse",
+   "sha256": "25b72007255bcedab0f8b912984c6c1339b596251be1edccb04d07bed6a966ad",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "timesyncanalyse",
+   "sha256": "25b72007255bcedab0f8b912984c6c1339b596251be1edccb04d07bed6a966ad",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "uniq",
+   "sha256": "da8cfa67b0c4e64c0c4377cd3ce38a0fd867c7b4461030e345d5f149a8bb2c97",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "uniq",
+   "sha256": "da8cfa67b0c4e64c0c4377cd3ce38a0fd867c7b4461030e345d5f149a8bb2c97",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "uniq",
+   "sha256": "da8cfa67b0c4e64c0c4377cd3ce38a0fd867c7b4461030e345d5f149a8bb2c97",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "uniq",
+   "sha256": "da8cfa67b0c4e64c0c4377cd3ce38a0fd867c7b4461030e345d5f149a8bb2c97",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "uniq",
+   "sha256": "da8cfa67b0c4e64c0c4377cd3ce38a0fd867c7b4461030e345d5f149a8bb2c97",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "uniq",
+   "sha256": "da8cfa67b0c4e64c0c4377cd3ce38a0fd867c7b4461030e345d5f149a8bb2c97",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "uniq",
+   "sha256": "da8cfa67b0c4e64c0c4377cd3ce38a0fd867c7b4461030e345d5f149a8bb2c97",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "uniq",
+   "sha256": "da8cfa67b0c4e64c0c4377cd3ce38a0fd867c7b4461030e345d5f149a8bb2c97",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "uustat",
+   "sha256": "ad9c7107887aa8301ff04cb6cf8d84fb8dbbf884ab07315ff154d478b617a785",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "uustat",
+   "sha256": "ad9c7107887aa8301ff04cb6cf8d84fb8dbbf884ab07315ff154d478b617a785",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "uustat",
+   "sha256": "ad9c7107887aa8301ff04cb6cf8d84fb8dbbf884ab07315ff154d478b617a785",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "uustat",
+   "sha256": "ad9c7107887aa8301ff04cb6cf8d84fb8dbbf884ab07315ff154d478b617a785",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "uustat",
+   "sha256": "ad9c7107887aa8301ff04cb6cf8d84fb8dbbf884ab07315ff154d478b617a785",
+   "format": "MachO",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "uustat",
+   "sha256": "ad9c7107887aa8301ff04cb6cf8d84fb8dbbf884ab07315ff154d478b617a785",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "uustat",
+   "sha256": "ad9c7107887aa8301ff04cb6cf8d84fb8dbbf884ab07315ff154d478b617a785",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "uustat",
+   "sha256": "ad9c7107887aa8301ff04cb6cf8d84fb8dbbf884ab07315ff154d478b617a785",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "uustat",
+   "sha256": "ad9c7107887aa8301ff04cb6cf8d84fb8dbbf884ab07315ff154d478b617a785",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "xcode-select",
+   "sha256": "e7c2963f798dca1b7fc2fd6fce9639d1fd25d914c85d17ea0c79eb693112b006",
+   "format": "MachO",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "xcode-select",
+   "sha256": "e7c2963f798dca1b7fc2fd6fce9639d1fd25d914c85d17ea0c79eb693112b006",
+   "format": "MachO",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "xcode-select",
+   "sha256": "e7c2963f798dca1b7fc2fd6fce9639d1fd25d914c85d17ea0c79eb693112b006",
+   "format": "MachO",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "xcode-select",
+   "sha256": "e7c2963f798dca1b7fc2fd6fce9639d1fd25d914c85d17ea0c79eb693112b006",
+   "format": "MachO",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "xcode-select",
+   "sha256": "e7c2963f798dca1b7fc2fd6fce9639d1fd25d914c85d17ea0c79eb693112b006",
+   "format": "MachO",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "xcode-select",
+   "sha256": "e7c2963f798dca1b7fc2fd6fce9639d1fd25d914c85d17ea0c79eb693112b006",
+   "format": "MachO",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "xcode-select",
+   "sha256": "e7c2963f798dca1b7fc2fd6fce9639d1fd25d914c85d17ea0c79eb693112b006",
+   "format": "MachO",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "xcode-select",
+   "sha256": "e7c2963f798dca1b7fc2fd6fce9639d1fd25d914c85d17ea0c79eb693112b006",
+   "format": "MachO",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  }
+ ]
+}

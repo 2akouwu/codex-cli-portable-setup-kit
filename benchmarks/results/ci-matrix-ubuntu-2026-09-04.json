@@ -1,0 +1,5379 @@
+{
+ "schema": 1,
+ "benchmark": "verifier_matrix",
+ "generated": "2026-09-04T12:43:18Z",
+ "environment": {
+  "reverify": "0.10.0",
+  "python": "3.13.15",
+  "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+  "machine": "x86_64",
+  "engines": {
+   "disassembly": {
+    "engine": "capstone",
+    "version": "5.0.7"
+   },
+   "emulation": {
+    "engine": "unicorn",
+    "version": "2.1.4"
+   },
+   "binary_parsing": {
+    "engine": "lief",
+    "version": "1.0.0-d05b3499b"
+   },
+   "proof": {
+    "engine": "z3",
+    "version": "5.1.0"
+   },
+   "semantic": {
+    "engine": "pure-python",
+    "version": null,
+    "note": "function boundaries, call graph and xrefs need pip install \"reverify[angr]\""
+   },
+   "full_fidelity": true
+  }
+ },
+ "corpus": {
+  "dirs": [
+   "/usr/bin",
+   "/usr/lib/x86_64-linux-gnu",
+   "/lib/x86_64-linux-gnu"
+  ],
+  "per_dir": 25,
+  "binaries": 50
+ },
+ "per_kind": {
+  "bytes_at": {
+   "n": 75,
+   "TP": 75,
+   "FN": 0,
+   "UNK_true": 0,
+   "FP": 0,
+   "TN": 75,
+   "UNK_false": 0
+  },
+  "u32_at": {
+   "n": 75,
+   "TP": 75,
+   "FN": 0,
+   "UNK_true": 0,
+   "FP": 0,
+   "TN": 75,
+   "UNK_false": 0
+  },
+  "u64_at": {
+   "n": 75,
+   "TP": 75,
+   "FN": 0,
+   "UNK_true": 0,
+   "FP": 0,
+   "TN": 75,
+   "UNK_false": 0
+  },
+  "string_present": {
+   "n": 75,
+   "TP": 75,
+   "FN": 0,
+   "UNK_true": 0,
+   "FP": 0,
+   "TN": 75,
+   "UNK_false": 0
+  },
+  "pattern_present": {
+   "n": 69,
+   "TP": 69,
+   "FN": 0,
+   "UNK_true": 0,
+   "FP": 0,
+   "TN": 69,
+   "UNK_false": 0
+  },
+  "section_present": {
+   "n": 73,
+   "TP": 73,
+   "FN": 0,
+   "UNK_true": 0,
+   "FP": 0,
+   "TN": 73,
+   "UNK_false": 0
+  },
+  "import_present": {
+   "n": 73,
+   "TP": 73,
+   "FN": 0,
+   "UNK_true": 0,
+   "FP": 0,
+   "TN": 73,
+   "UNK_false": 0
+  },
+  "export_present": {
+   "n": 57,
+   "TP": 57,
+   "FN": 0,
+   "UNK_true": 0,
+   "FP": 0,
+   "TN": 57,
+   "UNK_false": 0
+  },
+  "instructions": {
+   "n": 25,
+   "TP": 25,
+   "FN": 0,
+   "UNK_true": 0,
+   "FP": 0,
+   "TN": 25,
+   "UNK_false": 0
+  },
+  "function_at": {
+   "n": 57,
+   "TP": 55,
+   "FN": 0,
+   "UNK_true": 2,
+   "FP": 0,
+   "TN": 0,
+   "UNK_false": 57
+  }
+ },
+ "totals": {
+  "claims_true": 654,
+  "claims_false": 654,
+  "false_verified": 0,
+  "false_verified_rate_upper95": 0.005839703661185306,
+  "missed_true_byte_level": 0
+ },
+ "false_verified": [],
+ "missed_true": [],
+ "rows": [
+  {
+   "file": "FileCheck-16",
+   "sha256": "3d3fc9368cad00e5510e5737fd67ad346aa801511d4a5537b4e2a5e2eefc6d8b",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "FileCheck-16",
+   "sha256": "3d3fc9368cad00e5510e5737fd67ad346aa801511d4a5537b4e2a5e2eefc6d8b",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "FileCheck-16",
+   "sha256": "3d3fc9368cad00e5510e5737fd67ad346aa801511d4a5537b4e2a5e2eefc6d8b",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "FileCheck-16",
+   "sha256": "3d3fc9368cad00e5510e5737fd67ad346aa801511d4a5537b4e2a5e2eefc6d8b",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "FileCheck-16",
+   "sha256": "3d3fc9368cad00e5510e5737fd67ad346aa801511d4a5537b4e2a5e2eefc6d8b",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "FileCheck-16",
+   "sha256": "3d3fc9368cad00e5510e5737fd67ad346aa801511d4a5537b4e2a5e2eefc6d8b",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "FileCheck-16",
+   "sha256": "3d3fc9368cad00e5510e5737fd67ad346aa801511d4a5537b4e2a5e2eefc6d8b",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "FileCheck-16",
+   "sha256": "3d3fc9368cad00e5510e5737fd67ad346aa801511d4a5537b4e2a5e2eefc6d8b",
+   "format": "ELF",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "bunzip2",
+   "sha256": "909769e6f36ab54e52f1099d59aec0e8d2f27b8c53f95c63429f5c571e027ada",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "bunzip2",
+   "sha256": "909769e6f36ab54e52f1099d59aec0e8d2f27b8c53f95c63429f5c571e027ada",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "bunzip2",
+   "sha256": "909769e6f36ab54e52f1099d59aec0e8d2f27b8c53f95c63429f5c571e027ada",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "bunzip2",
+   "sha256": "909769e6f36ab54e52f1099d59aec0e8d2f27b8c53f95c63429f5c571e027ada",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "bunzip2",
+   "sha256": "909769e6f36ab54e52f1099d59aec0e8d2f27b8c53f95c63429f5c571e027ada",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "bunzip2",
+   "sha256": "909769e6f36ab54e52f1099d59aec0e8d2f27b8c53f95c63429f5c571e027ada",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "bunzip2",
+   "sha256": "909769e6f36ab54e52f1099d59aec0e8d2f27b8c53f95c63429f5c571e027ada",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "bunzip2",
+   "sha256": "909769e6f36ab54e52f1099d59aec0e8d2f27b8c53f95c63429f5c571e027ada",
+   "format": "ELF",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "clang-doc-17",
+   "sha256": "02bb8358e22d0048a48f797896ae19996a87de97bd0cfae3567bfad186d1063c",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "clang-doc-17",
+   "sha256": "02bb8358e22d0048a48f797896ae19996a87de97bd0cfae3567bfad186d1063c",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "clang-doc-17",
+   "sha256": "02bb8358e22d0048a48f797896ae19996a87de97bd0cfae3567bfad186d1063c",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "clang-doc-17",
+   "sha256": "02bb8358e22d0048a48f797896ae19996a87de97bd0cfae3567bfad186d1063c",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "clang-doc-17",
+   "sha256": "02bb8358e22d0048a48f797896ae19996a87de97bd0cfae3567bfad186d1063c",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "clang-doc-17",
+   "sha256": "02bb8358e22d0048a48f797896ae19996a87de97bd0cfae3567bfad186d1063c",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "clang-doc-17",
+   "sha256": "02bb8358e22d0048a48f797896ae19996a87de97bd0cfae3567bfad186d1063c",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "clang-doc-17",
+   "sha256": "02bb8358e22d0048a48f797896ae19996a87de97bd0cfae3567bfad186d1063c",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "clang-doc-17",
+   "sha256": "02bb8358e22d0048a48f797896ae19996a87de97bd0cfae3567bfad186d1063c",
+   "format": "ELF",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "clang-doc-17",
+   "sha256": "02bb8358e22d0048a48f797896ae19996a87de97bd0cfae3567bfad186d1063c",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "colrm",
+   "sha256": "8fde91250e189bb9b810744e2adb7c578c74375d50a152edb2b87821aaee633d",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "colrm",
+   "sha256": "8fde91250e189bb9b810744e2adb7c578c74375d50a152edb2b87821aaee633d",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "colrm",
+   "sha256": "8fde91250e189bb9b810744e2adb7c578c74375d50a152edb2b87821aaee633d",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "colrm",
+   "sha256": "8fde91250e189bb9b810744e2adb7c578c74375d50a152edb2b87821aaee633d",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "colrm",
+   "sha256": "8fde91250e189bb9b810744e2adb7c578c74375d50a152edb2b87821aaee633d",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "colrm",
+   "sha256": "8fde91250e189bb9b810744e2adb7c578c74375d50a152edb2b87821aaee633d",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "colrm",
+   "sha256": "8fde91250e189bb9b810744e2adb7c578c74375d50a152edb2b87821aaee633d",
+   "format": "ELF",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dpkg-divert",
+   "sha256": "2895ba92403c074bb1e3025bcb2b3c963eee9e4318a06933c256a0e099d1b178",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dpkg-divert",
+   "sha256": "2895ba92403c074bb1e3025bcb2b3c963eee9e4318a06933c256a0e099d1b178",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dpkg-divert",
+   "sha256": "2895ba92403c074bb1e3025bcb2b3c963eee9e4318a06933c256a0e099d1b178",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dpkg-divert",
+   "sha256": "2895ba92403c074bb1e3025bcb2b3c963eee9e4318a06933c256a0e099d1b178",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dpkg-divert",
+   "sha256": "2895ba92403c074bb1e3025bcb2b3c963eee9e4318a06933c256a0e099d1b178",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dpkg-divert",
+   "sha256": "2895ba92403c074bb1e3025bcb2b3c963eee9e4318a06933c256a0e099d1b178",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dpkg-divert",
+   "sha256": "2895ba92403c074bb1e3025bcb2b3c963eee9e4318a06933c256a0e099d1b178",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dpkg-divert",
+   "sha256": "2895ba92403c074bb1e3025bcb2b3c963eee9e4318a06933c256a0e099d1b178",
+   "format": "ELF",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "funzip",
+   "sha256": "998cd15aa4244b1a7bb31b0e7e84b9ae0f09f0c07efc37d9fb2330eddefbdb37",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "funzip",
+   "sha256": "998cd15aa4244b1a7bb31b0e7e84b9ae0f09f0c07efc37d9fb2330eddefbdb37",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "funzip",
+   "sha256": "998cd15aa4244b1a7bb31b0e7e84b9ae0f09f0c07efc37d9fb2330eddefbdb37",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "funzip",
+   "sha256": "998cd15aa4244b1a7bb31b0e7e84b9ae0f09f0c07efc37d9fb2330eddefbdb37",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "funzip",
+   "sha256": "998cd15aa4244b1a7bb31b0e7e84b9ae0f09f0c07efc37d9fb2330eddefbdb37",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "funzip",
+   "sha256": "998cd15aa4244b1a7bb31b0e7e84b9ae0f09f0c07efc37d9fb2330eddefbdb37",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "funzip",
+   "sha256": "998cd15aa4244b1a7bb31b0e7e84b9ae0f09f0c07efc37d9fb2330eddefbdb37",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "funzip",
+   "sha256": "998cd15aa4244b1a7bb31b0e7e84b9ae0f09f0c07efc37d9fb2330eddefbdb37",
+   "format": "ELF",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "gfortran-12",
+   "sha256": "107ea1ea2b506beaef80b385a284d55ef24079864d91b0802f27791fa6c2d04e",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "gfortran-12",
+   "sha256": "107ea1ea2b506beaef80b385a284d55ef24079864d91b0802f27791fa6c2d04e",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "gfortran-12",
+   "sha256": "107ea1ea2b506beaef80b385a284d55ef24079864d91b0802f27791fa6c2d04e",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "gfortran-12",
+   "sha256": "107ea1ea2b506beaef80b385a284d55ef24079864d91b0802f27791fa6c2d04e",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "gfortran-12",
+   "sha256": "107ea1ea2b506beaef80b385a284d55ef24079864d91b0802f27791fa6c2d04e",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "gfortran-12",
+   "sha256": "107ea1ea2b506beaef80b385a284d55ef24079864d91b0802f27791fa6c2d04e",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "gfortran-12",
+   "sha256": "107ea1ea2b506beaef80b385a284d55ef24079864d91b0802f27791fa6c2d04e",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "gfortran-12",
+   "sha256": "107ea1ea2b506beaef80b385a284d55ef24079864d91b0802f27791fa6c2d04e",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "gfortran-12",
+   "sha256": "107ea1ea2b506beaef80b385a284d55ef24079864d91b0802f27791fa6c2d04e",
+   "format": "ELF",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "gfortran-12",
+   "sha256": "107ea1ea2b506beaef80b385a284d55ef24079864d91b0802f27791fa6c2d04e",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "INCONCLUSIVE",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "gtbl",
+   "sha256": "9b53dc556df85d2c2e0cc563322a308a8fb8da8d5f3ad98120d19b0adf355a07",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "gtbl",
+   "sha256": "9b53dc556df85d2c2e0cc563322a308a8fb8da8d5f3ad98120d19b0adf355a07",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "gtbl",
+   "sha256": "9b53dc556df85d2c2e0cc563322a308a8fb8da8d5f3ad98120d19b0adf355a07",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "gtbl",
+   "sha256": "9b53dc556df85d2c2e0cc563322a308a8fb8da8d5f3ad98120d19b0adf355a07",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "gtbl",
+   "sha256": "9b53dc556df85d2c2e0cc563322a308a8fb8da8d5f3ad98120d19b0adf355a07",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "gtbl",
+   "sha256": "9b53dc556df85d2c2e0cc563322a308a8fb8da8d5f3ad98120d19b0adf355a07",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "gtbl",
+   "sha256": "9b53dc556df85d2c2e0cc563322a308a8fb8da8d5f3ad98120d19b0adf355a07",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "gtbl",
+   "sha256": "9b53dc556df85d2c2e0cc563322a308a8fb8da8d5f3ad98120d19b0adf355a07",
+   "format": "ELF",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "jhsdb",
+   "sha256": "33869625cd4f18c0093e2b1d5cade868ed80241bffa0f303e3757e3c18973432",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "jhsdb",
+   "sha256": "33869625cd4f18c0093e2b1d5cade868ed80241bffa0f303e3757e3c18973432",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "jhsdb",
+   "sha256": "33869625cd4f18c0093e2b1d5cade868ed80241bffa0f303e3757e3c18973432",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "jhsdb",
+   "sha256": "33869625cd4f18c0093e2b1d5cade868ed80241bffa0f303e3757e3c18973432",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "jhsdb",
+   "sha256": "33869625cd4f18c0093e2b1d5cade868ed80241bffa0f303e3757e3c18973432",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "jhsdb",
+   "sha256": "33869625cd4f18c0093e2b1d5cade868ed80241bffa0f303e3757e3c18973432",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "jhsdb",
+   "sha256": "33869625cd4f18c0093e2b1d5cade868ed80241bffa0f303e3757e3c18973432",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "jhsdb",
+   "sha256": "33869625cd4f18c0093e2b1d5cade868ed80241bffa0f303e3757e3c18973432",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "jhsdb",
+   "sha256": "33869625cd4f18c0093e2b1d5cade868ed80241bffa0f303e3757e3c18973432",
+   "format": "ELF",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "jhsdb",
+   "sha256": "33869625cd4f18c0093e2b1d5cade868ed80241bffa0f303e3757e3c18973432",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "lld-link-17",
+   "sha256": "4379d66509f61190ebeb1661666609464cb51f995e4ae8d0423b1f547ae39ed4",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "lld-link-17",
+   "sha256": "4379d66509f61190ebeb1661666609464cb51f995e4ae8d0423b1f547ae39ed4",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "lld-link-17",
+   "sha256": "4379d66509f61190ebeb1661666609464cb51f995e4ae8d0423b1f547ae39ed4",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "lld-link-17",
+   "sha256": "4379d66509f61190ebeb1661666609464cb51f995e4ae8d0423b1f547ae39ed4",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "lld-link-17",
+   "sha256": "4379d66509f61190ebeb1661666609464cb51f995e4ae8d0423b1f547ae39ed4",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "lld-link-17",
+   "sha256": "4379d66509f61190ebeb1661666609464cb51f995e4ae8d0423b1f547ae39ed4",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "lld-link-17",
+   "sha256": "4379d66509f61190ebeb1661666609464cb51f995e4ae8d0423b1f547ae39ed4",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "lld-link-17",
+   "sha256": "4379d66509f61190ebeb1661666609464cb51f995e4ae8d0423b1f547ae39ed4",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "lld-link-17",
+   "sha256": "4379d66509f61190ebeb1661666609464cb51f995e4ae8d0423b1f547ae39ed4",
+   "format": "ELF",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "lld-link-17",
+   "sha256": "4379d66509f61190ebeb1661666609464cb51f995e4ae8d0423b1f547ae39ed4",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "llvm-debuginfo-analyzer-18",
+   "sha256": "99c0397910c15b4b2b14b93f9f319e50792f14dae333f506580c019f85de10b6",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "llvm-debuginfo-analyzer-18",
+   "sha256": "99c0397910c15b4b2b14b93f9f319e50792f14dae333f506580c019f85de10b6",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "llvm-debuginfo-analyzer-18",
+   "sha256": "99c0397910c15b4b2b14b93f9f319e50792f14dae333f506580c019f85de10b6",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "llvm-debuginfo-analyzer-18",
+   "sha256": "99c0397910c15b4b2b14b93f9f319e50792f14dae333f506580c019f85de10b6",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "llvm-debuginfo-analyzer-18",
+   "sha256": "99c0397910c15b4b2b14b93f9f319e50792f14dae333f506580c019f85de10b6",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "llvm-debuginfo-analyzer-18",
+   "sha256": "99c0397910c15b4b2b14b93f9f319e50792f14dae333f506580c019f85de10b6",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "llvm-debuginfo-analyzer-18",
+   "sha256": "99c0397910c15b4b2b14b93f9f319e50792f14dae333f506580c019f85de10b6",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "llvm-debuginfo-analyzer-18",
+   "sha256": "99c0397910c15b4b2b14b93f9f319e50792f14dae333f506580c019f85de10b6",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "llvm-debuginfo-analyzer-18",
+   "sha256": "99c0397910c15b4b2b14b93f9f319e50792f14dae333f506580c019f85de10b6",
+   "format": "ELF",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "llvm-debuginfo-analyzer-18",
+   "sha256": "99c0397910c15b4b2b14b93f9f319e50792f14dae333f506580c019f85de10b6",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "llvm-lto2-17",
+   "sha256": "ade016c4e39237d9b87e3f60ac2577d09d7e542ec0ff621981286d76428fa3c5",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "llvm-lto2-17",
+   "sha256": "ade016c4e39237d9b87e3f60ac2577d09d7e542ec0ff621981286d76428fa3c5",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "llvm-lto2-17",
+   "sha256": "ade016c4e39237d9b87e3f60ac2577d09d7e542ec0ff621981286d76428fa3c5",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "llvm-lto2-17",
+   "sha256": "ade016c4e39237d9b87e3f60ac2577d09d7e542ec0ff621981286d76428fa3c5",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "llvm-lto2-17",
+   "sha256": "ade016c4e39237d9b87e3f60ac2577d09d7e542ec0ff621981286d76428fa3c5",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "llvm-lto2-17",
+   "sha256": "ade016c4e39237d9b87e3f60ac2577d09d7e542ec0ff621981286d76428fa3c5",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "llvm-lto2-17",
+   "sha256": "ade016c4e39237d9b87e3f60ac2577d09d7e542ec0ff621981286d76428fa3c5",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "llvm-lto2-17",
+   "sha256": "ade016c4e39237d9b87e3f60ac2577d09d7e542ec0ff621981286d76428fa3c5",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "llvm-lto2-17",
+   "sha256": "ade016c4e39237d9b87e3f60ac2577d09d7e542ec0ff621981286d76428fa3c5",
+   "format": "ELF",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "llvm-lto2-17",
+   "sha256": "ade016c4e39237d9b87e3f60ac2577d09d7e542ec0ff621981286d76428fa3c5",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "llvm-remarkutil-17",
+   "sha256": "03a5a13e8b1e31516c775ab768bb2bd4961a6c8e6270f3e4741cd850d814a56d",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "llvm-remarkutil-17",
+   "sha256": "03a5a13e8b1e31516c775ab768bb2bd4961a6c8e6270f3e4741cd850d814a56d",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "llvm-remarkutil-17",
+   "sha256": "03a5a13e8b1e31516c775ab768bb2bd4961a6c8e6270f3e4741cd850d814a56d",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "llvm-remarkutil-17",
+   "sha256": "03a5a13e8b1e31516c775ab768bb2bd4961a6c8e6270f3e4741cd850d814a56d",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "llvm-remarkutil-17",
+   "sha256": "03a5a13e8b1e31516c775ab768bb2bd4961a6c8e6270f3e4741cd850d814a56d",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "llvm-remarkutil-17",
+   "sha256": "03a5a13e8b1e31516c775ab768bb2bd4961a6c8e6270f3e4741cd850d814a56d",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "llvm-remarkutil-17",
+   "sha256": "03a5a13e8b1e31516c775ab768bb2bd4961a6c8e6270f3e4741cd850d814a56d",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "llvm-remarkutil-17",
+   "sha256": "03a5a13e8b1e31516c775ab768bb2bd4961a6c8e6270f3e4741cd850d814a56d",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "llvm-remarkutil-17",
+   "sha256": "03a5a13e8b1e31516c775ab768bb2bd4961a6c8e6270f3e4741cd850d814a56d",
+   "format": "ELF",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "llvm-remarkutil-17",
+   "sha256": "03a5a13e8b1e31516c775ab768bb2bd4961a6c8e6270f3e4741cd850d814a56d",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "lsattr",
+   "sha256": "905fb991f13223a83a062036ae4522ae570d7ac9a4ea5bdfaa372f7d08e3e575",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "lsattr",
+   "sha256": "905fb991f13223a83a062036ae4522ae570d7ac9a4ea5bdfaa372f7d08e3e575",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "lsattr",
+   "sha256": "905fb991f13223a83a062036ae4522ae570d7ac9a4ea5bdfaa372f7d08e3e575",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "lsattr",
+   "sha256": "905fb991f13223a83a062036ae4522ae570d7ac9a4ea5bdfaa372f7d08e3e575",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "lsattr",
+   "sha256": "905fb991f13223a83a062036ae4522ae570d7ac9a4ea5bdfaa372f7d08e3e575",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "lsattr",
+   "sha256": "905fb991f13223a83a062036ae4522ae570d7ac9a4ea5bdfaa372f7d08e3e575",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "lsattr",
+   "sha256": "905fb991f13223a83a062036ae4522ae570d7ac9a4ea5bdfaa372f7d08e3e575",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "lsattr",
+   "sha256": "905fb991f13223a83a062036ae4522ae570d7ac9a4ea5bdfaa372f7d08e3e575",
+   "format": "ELF",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "my_print_defaults",
+   "sha256": "e81dbc8c78f8e8c4d6ce2015d83fd0502650256d4f83b143ed47b99196e7c3c8",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "my_print_defaults",
+   "sha256": "e81dbc8c78f8e8c4d6ce2015d83fd0502650256d4f83b143ed47b99196e7c3c8",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "my_print_defaults",
+   "sha256": "e81dbc8c78f8e8c4d6ce2015d83fd0502650256d4f83b143ed47b99196e7c3c8",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "my_print_defaults",
+   "sha256": "e81dbc8c78f8e8c4d6ce2015d83fd0502650256d4f83b143ed47b99196e7c3c8",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "my_print_defaults",
+   "sha256": "e81dbc8c78f8e8c4d6ce2015d83fd0502650256d4f83b143ed47b99196e7c3c8",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "my_print_defaults",
+   "sha256": "e81dbc8c78f8e8c4d6ce2015d83fd0502650256d4f83b143ed47b99196e7c3c8",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "my_print_defaults",
+   "sha256": "e81dbc8c78f8e8c4d6ce2015d83fd0502650256d4f83b143ed47b99196e7c3c8",
+   "format": "ELF",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ntfsfix",
+   "sha256": "b95b70ef5fd5d9e9ce31b18d8af4889a6404e02b929767e8377ff3e042c35a97",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ntfsfix",
+   "sha256": "b95b70ef5fd5d9e9ce31b18d8af4889a6404e02b929767e8377ff3e042c35a97",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ntfsfix",
+   "sha256": "b95b70ef5fd5d9e9ce31b18d8af4889a6404e02b929767e8377ff3e042c35a97",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ntfsfix",
+   "sha256": "b95b70ef5fd5d9e9ce31b18d8af4889a6404e02b929767e8377ff3e042c35a97",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ntfsfix",
+   "sha256": "b95b70ef5fd5d9e9ce31b18d8af4889a6404e02b929767e8377ff3e042c35a97",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ntfsfix",
+   "sha256": "b95b70ef5fd5d9e9ce31b18d8af4889a6404e02b929767e8377ff3e042c35a97",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ntfsfix",
+   "sha256": "b95b70ef5fd5d9e9ce31b18d8af4889a6404e02b929767e8377ff3e042c35a97",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ntfsfix",
+   "sha256": "b95b70ef5fd5d9e9ce31b18d8af4889a6404e02b929767e8377ff3e042c35a97",
+   "format": "ELF",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "pidstat",
+   "sha256": "371e58fb833b0fd3a98e103b36748dc5672e6b91fe8982e873df8e6658e81a12",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "pidstat",
+   "sha256": "371e58fb833b0fd3a98e103b36748dc5672e6b91fe8982e873df8e6658e81a12",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "pidstat",
+   "sha256": "371e58fb833b0fd3a98e103b36748dc5672e6b91fe8982e873df8e6658e81a12",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "pidstat",
+   "sha256": "371e58fb833b0fd3a98e103b36748dc5672e6b91fe8982e873df8e6658e81a12",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "pidstat",
+   "sha256": "371e58fb833b0fd3a98e103b36748dc5672e6b91fe8982e873df8e6658e81a12",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "pidstat",
+   "sha256": "371e58fb833b0fd3a98e103b36748dc5672e6b91fe8982e873df8e6658e81a12",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "pidstat",
+   "sha256": "371e58fb833b0fd3a98e103b36748dc5672e6b91fe8982e873df8e6658e81a12",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "pidstat",
+   "sha256": "371e58fb833b0fd3a98e103b36748dc5672e6b91fe8982e873df8e6658e81a12",
+   "format": "ELF",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "rename.ul",
+   "sha256": "4f685682658b5aa8ab2268770c6eef24f6f127a8016c3c7dc3431189f49c7f41",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "rename.ul",
+   "sha256": "4f685682658b5aa8ab2268770c6eef24f6f127a8016c3c7dc3431189f49c7f41",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "rename.ul",
+   "sha256": "4f685682658b5aa8ab2268770c6eef24f6f127a8016c3c7dc3431189f49c7f41",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "rename.ul",
+   "sha256": "4f685682658b5aa8ab2268770c6eef24f6f127a8016c3c7dc3431189f49c7f41",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "rename.ul",
+   "sha256": "4f685682658b5aa8ab2268770c6eef24f6f127a8016c3c7dc3431189f49c7f41",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "rename.ul",
+   "sha256": "4f685682658b5aa8ab2268770c6eef24f6f127a8016c3c7dc3431189f49c7f41",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "rename.ul",
+   "sha256": "4f685682658b5aa8ab2268770c6eef24f6f127a8016c3c7dc3431189f49c7f41",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "rename.ul",
+   "sha256": "4f685682658b5aa8ab2268770c6eef24f6f127a8016c3c7dc3431189f49c7f41",
+   "format": "ELF",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "searchd",
+   "sha256": "94bc7c5ad13dc6a9af1bb7b46c1a528b212846f802bdefc050483bc040ed9e08",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "searchd",
+   "sha256": "94bc7c5ad13dc6a9af1bb7b46c1a528b212846f802bdefc050483bc040ed9e08",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "searchd",
+   "sha256": "94bc7c5ad13dc6a9af1bb7b46c1a528b212846f802bdefc050483bc040ed9e08",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "searchd",
+   "sha256": "94bc7c5ad13dc6a9af1bb7b46c1a528b212846f802bdefc050483bc040ed9e08",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "searchd",
+   "sha256": "94bc7c5ad13dc6a9af1bb7b46c1a528b212846f802bdefc050483bc040ed9e08",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "searchd",
+   "sha256": "94bc7c5ad13dc6a9af1bb7b46c1a528b212846f802bdefc050483bc040ed9e08",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "searchd",
+   "sha256": "94bc7c5ad13dc6a9af1bb7b46c1a528b212846f802bdefc050483bc040ed9e08",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "searchd",
+   "sha256": "94bc7c5ad13dc6a9af1bb7b46c1a528b212846f802bdefc050483bc040ed9e08",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "searchd",
+   "sha256": "94bc7c5ad13dc6a9af1bb7b46c1a528b212846f802bdefc050483bc040ed9e08",
+   "format": "ELF",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "searchd",
+   "sha256": "94bc7c5ad13dc6a9af1bb7b46c1a528b212846f802bdefc050483bc040ed9e08",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "sg_rtpg",
+   "sha256": "2ce9e562ddeddb0d2d2db8ca6e56d9f399bab6c2a3c9c1b338a11bc862f6a073",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sg_rtpg",
+   "sha256": "2ce9e562ddeddb0d2d2db8ca6e56d9f399bab6c2a3c9c1b338a11bc862f6a073",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sg_rtpg",
+   "sha256": "2ce9e562ddeddb0d2d2db8ca6e56d9f399bab6c2a3c9c1b338a11bc862f6a073",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sg_rtpg",
+   "sha256": "2ce9e562ddeddb0d2d2db8ca6e56d9f399bab6c2a3c9c1b338a11bc862f6a073",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sg_rtpg",
+   "sha256": "2ce9e562ddeddb0d2d2db8ca6e56d9f399bab6c2a3c9c1b338a11bc862f6a073",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sg_rtpg",
+   "sha256": "2ce9e562ddeddb0d2d2db8ca6e56d9f399bab6c2a3c9c1b338a11bc862f6a073",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "sg_rtpg",
+   "sha256": "2ce9e562ddeddb0d2d2db8ca6e56d9f399bab6c2a3c9c1b338a11bc862f6a073",
+   "format": "ELF",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "snmpgetnext",
+   "sha256": "3d597991403a8a98c42bdcd2286b1ebbfa899419ff4c0b6b52b8f2ba79b688b3",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "snmpgetnext",
+   "sha256": "3d597991403a8a98c42bdcd2286b1ebbfa899419ff4c0b6b52b8f2ba79b688b3",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "snmpgetnext",
+   "sha256": "3d597991403a8a98c42bdcd2286b1ebbfa899419ff4c0b6b52b8f2ba79b688b3",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "snmpgetnext",
+   "sha256": "3d597991403a8a98c42bdcd2286b1ebbfa899419ff4c0b6b52b8f2ba79b688b3",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "snmpgetnext",
+   "sha256": "3d597991403a8a98c42bdcd2286b1ebbfa899419ff4c0b6b52b8f2ba79b688b3",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "snmpgetnext",
+   "sha256": "3d597991403a8a98c42bdcd2286b1ebbfa899419ff4c0b6b52b8f2ba79b688b3",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "snmpgetnext",
+   "sha256": "3d597991403a8a98c42bdcd2286b1ebbfa899419ff4c0b6b52b8f2ba79b688b3",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "snmpgetnext",
+   "sha256": "3d597991403a8a98c42bdcd2286b1ebbfa899419ff4c0b6b52b8f2ba79b688b3",
+   "format": "ELF",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "systemd-confext",
+   "sha256": "b4a57df2801c4fd00c408434b361e120de23426103eb41735481354081582e74",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "systemd-confext",
+   "sha256": "b4a57df2801c4fd00c408434b361e120de23426103eb41735481354081582e74",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "systemd-confext",
+   "sha256": "b4a57df2801c4fd00c408434b361e120de23426103eb41735481354081582e74",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "systemd-confext",
+   "sha256": "b4a57df2801c4fd00c408434b361e120de23426103eb41735481354081582e74",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "systemd-confext",
+   "sha256": "b4a57df2801c4fd00c408434b361e120de23426103eb41735481354081582e74",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "systemd-confext",
+   "sha256": "b4a57df2801c4fd00c408434b361e120de23426103eb41735481354081582e74",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "systemd-confext",
+   "sha256": "b4a57df2801c4fd00c408434b361e120de23426103eb41735481354081582e74",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "systemd-confext",
+   "sha256": "b4a57df2801c4fd00c408434b361e120de23426103eb41735481354081582e74",
+   "format": "ELF",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "tstclnt",
+   "sha256": "ec4df42d99847754888c5dd28ef9f483aad231bb4af04820213c9314e1a08319",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "tstclnt",
+   "sha256": "ec4df42d99847754888c5dd28ef9f483aad231bb4af04820213c9314e1a08319",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "tstclnt",
+   "sha256": "ec4df42d99847754888c5dd28ef9f483aad231bb4af04820213c9314e1a08319",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "tstclnt",
+   "sha256": "ec4df42d99847754888c5dd28ef9f483aad231bb4af04820213c9314e1a08319",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "tstclnt",
+   "sha256": "ec4df42d99847754888c5dd28ef9f483aad231bb4af04820213c9314e1a08319",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "tstclnt",
+   "sha256": "ec4df42d99847754888c5dd28ef9f483aad231bb4af04820213c9314e1a08319",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "tstclnt",
+   "sha256": "ec4df42d99847754888c5dd28ef9f483aad231bb4af04820213c9314e1a08319",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "tstclnt",
+   "sha256": "ec4df42d99847754888c5dd28ef9f483aad231bb4af04820213c9314e1a08319",
+   "format": "ELF",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "w",
+   "sha256": "0eaae827a227749b3c724897d0d9e2b7272a20dbe51b983b7403df50d6528413",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "w",
+   "sha256": "0eaae827a227749b3c724897d0d9e2b7272a20dbe51b983b7403df50d6528413",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "w",
+   "sha256": "0eaae827a227749b3c724897d0d9e2b7272a20dbe51b983b7403df50d6528413",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "w",
+   "sha256": "0eaae827a227749b3c724897d0d9e2b7272a20dbe51b983b7403df50d6528413",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "w",
+   "sha256": "0eaae827a227749b3c724897d0d9e2b7272a20dbe51b983b7403df50d6528413",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "w",
+   "sha256": "0eaae827a227749b3c724897d0d9e2b7272a20dbe51b983b7403df50d6528413",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "w",
+   "sha256": "0eaae827a227749b3c724897d0d9e2b7272a20dbe51b983b7403df50d6528413",
+   "format": "ELF",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "x86_64-linux-gnu-gcov-tool",
+   "sha256": "6b85d6f4b85ed0de1db931e73b957cd79cd95076357d957018d6906306fb213b",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "x86_64-linux-gnu-gcov-tool",
+   "sha256": "6b85d6f4b85ed0de1db931e73b957cd79cd95076357d957018d6906306fb213b",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "x86_64-linux-gnu-gcov-tool",
+   "sha256": "6b85d6f4b85ed0de1db931e73b957cd79cd95076357d957018d6906306fb213b",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "x86_64-linux-gnu-gcov-tool",
+   "sha256": "6b85d6f4b85ed0de1db931e73b957cd79cd95076357d957018d6906306fb213b",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "x86_64-linux-gnu-gcov-tool",
+   "sha256": "6b85d6f4b85ed0de1db931e73b957cd79cd95076357d957018d6906306fb213b",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "x86_64-linux-gnu-gcov-tool",
+   "sha256": "6b85d6f4b85ed0de1db931e73b957cd79cd95076357d957018d6906306fb213b",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "x86_64-linux-gnu-gcov-tool",
+   "sha256": "6b85d6f4b85ed0de1db931e73b957cd79cd95076357d957018d6906306fb213b",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "x86_64-linux-gnu-gcov-tool",
+   "sha256": "6b85d6f4b85ed0de1db931e73b957cd79cd95076357d957018d6906306fb213b",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "x86_64-linux-gnu-gcov-tool",
+   "sha256": "6b85d6f4b85ed0de1db931e73b957cd79cd95076357d957018d6906306fb213b",
+   "format": "ELF",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "x86_64-linux-gnu-gcov-tool",
+   "sha256": "6b85d6f4b85ed0de1db931e73b957cd79cd95076357d957018d6906306fb213b",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "INCONCLUSIVE",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "Mcrt1.o",
+   "sha256": "1b165117d5d8c017d10f018ab553052946385361b3130067adbedc2b04cfa900",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Mcrt1.o",
+   "sha256": "1b165117d5d8c017d10f018ab553052946385361b3130067adbedc2b04cfa900",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Mcrt1.o",
+   "sha256": "1b165117d5d8c017d10f018ab553052946385361b3130067adbedc2b04cfa900",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Mcrt1.o",
+   "sha256": "1b165117d5d8c017d10f018ab553052946385361b3130067adbedc2b04cfa900",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Mcrt1.o",
+   "sha256": "1b165117d5d8c017d10f018ab553052946385361b3130067adbedc2b04cfa900",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libXcomposite.so.1.0.0",
+   "sha256": "675c78d8d5b088a59ad4f8eb15419d0842b17caca3317a5e9f68573171ec5d61",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libXcomposite.so.1.0.0",
+   "sha256": "675c78d8d5b088a59ad4f8eb15419d0842b17caca3317a5e9f68573171ec5d61",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libXcomposite.so.1.0.0",
+   "sha256": "675c78d8d5b088a59ad4f8eb15419d0842b17caca3317a5e9f68573171ec5d61",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libXcomposite.so.1.0.0",
+   "sha256": "675c78d8d5b088a59ad4f8eb15419d0842b17caca3317a5e9f68573171ec5d61",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libXcomposite.so.1.0.0",
+   "sha256": "675c78d8d5b088a59ad4f8eb15419d0842b17caca3317a5e9f68573171ec5d61",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libXcomposite.so.1.0.0",
+   "sha256": "675c78d8d5b088a59ad4f8eb15419d0842b17caca3317a5e9f68573171ec5d61",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libXcomposite.so.1.0.0",
+   "sha256": "675c78d8d5b088a59ad4f8eb15419d0842b17caca3317a5e9f68573171ec5d61",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libXcomposite.so.1.0.0",
+   "sha256": "675c78d8d5b088a59ad4f8eb15419d0842b17caca3317a5e9f68573171ec5d61",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libXcomposite.so.1.0.0",
+   "sha256": "675c78d8d5b088a59ad4f8eb15419d0842b17caca3317a5e9f68573171ec5d61",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libanl.so",
+   "sha256": "3e39dbcdd4a1cd2c0cbac5037c593d2b91083a064339e9cf34a788766cf3a1b9",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libanl.so",
+   "sha256": "3e39dbcdd4a1cd2c0cbac5037c593d2b91083a064339e9cf34a788766cf3a1b9",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libanl.so",
+   "sha256": "3e39dbcdd4a1cd2c0cbac5037c593d2b91083a064339e9cf34a788766cf3a1b9",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libanl.so",
+   "sha256": "3e39dbcdd4a1cd2c0cbac5037c593d2b91083a064339e9cf34a788766cf3a1b9",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libanl.so",
+   "sha256": "3e39dbcdd4a1cd2c0cbac5037c593d2b91083a064339e9cf34a788766cf3a1b9",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libanl.so",
+   "sha256": "3e39dbcdd4a1cd2c0cbac5037c593d2b91083a064339e9cf34a788766cf3a1b9",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libanl.so",
+   "sha256": "3e39dbcdd4a1cd2c0cbac5037c593d2b91083a064339e9cf34a788766cf3a1b9",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libanl.so",
+   "sha256": "3e39dbcdd4a1cd2c0cbac5037c593d2b91083a064339e9cf34a788766cf3a1b9",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libanl.so",
+   "sha256": "3e39dbcdd4a1cd2c0cbac5037c593d2b91083a064339e9cf34a788766cf3a1b9",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libaudit.so.1",
+   "sha256": "8a4ca5eda7607f2e65da7cb32a780cc0dcfbf202037482ef4261a3c1ec339083",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libaudit.so.1",
+   "sha256": "8a4ca5eda7607f2e65da7cb32a780cc0dcfbf202037482ef4261a3c1ec339083",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libaudit.so.1",
+   "sha256": "8a4ca5eda7607f2e65da7cb32a780cc0dcfbf202037482ef4261a3c1ec339083",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libaudit.so.1",
+   "sha256": "8a4ca5eda7607f2e65da7cb32a780cc0dcfbf202037482ef4261a3c1ec339083",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libaudit.so.1",
+   "sha256": "8a4ca5eda7607f2e65da7cb32a780cc0dcfbf202037482ef4261a3c1ec339083",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libaudit.so.1",
+   "sha256": "8a4ca5eda7607f2e65da7cb32a780cc0dcfbf202037482ef4261a3c1ec339083",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libaudit.so.1",
+   "sha256": "8a4ca5eda7607f2e65da7cb32a780cc0dcfbf202037482ef4261a3c1ec339083",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libaudit.so.1",
+   "sha256": "8a4ca5eda7607f2e65da7cb32a780cc0dcfbf202037482ef4261a3c1ec339083",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libaudit.so.1",
+   "sha256": "8a4ca5eda7607f2e65da7cb32a780cc0dcfbf202037482ef4261a3c1ec339083",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libbsd.so.0.12.1",
+   "sha256": "e86cd4f0019f42c2ba5e60602e0edc8694d2948377d98c3654d0f6bddb5254bb",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libbsd.so.0.12.1",
+   "sha256": "e86cd4f0019f42c2ba5e60602e0edc8694d2948377d98c3654d0f6bddb5254bb",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libbsd.so.0.12.1",
+   "sha256": "e86cd4f0019f42c2ba5e60602e0edc8694d2948377d98c3654d0f6bddb5254bb",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libbsd.so.0.12.1",
+   "sha256": "e86cd4f0019f42c2ba5e60602e0edc8694d2948377d98c3654d0f6bddb5254bb",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libbsd.so.0.12.1",
+   "sha256": "e86cd4f0019f42c2ba5e60602e0edc8694d2948377d98c3654d0f6bddb5254bb",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libbsd.so.0.12.1",
+   "sha256": "e86cd4f0019f42c2ba5e60602e0edc8694d2948377d98c3654d0f6bddb5254bb",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libbsd.so.0.12.1",
+   "sha256": "e86cd4f0019f42c2ba5e60602e0edc8694d2948377d98c3654d0f6bddb5254bb",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libbsd.so.0.12.1",
+   "sha256": "e86cd4f0019f42c2ba5e60602e0edc8694d2948377d98c3654d0f6bddb5254bb",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libctf.so.0.0.0",
+   "sha256": "25c8f765c259d05b59a3dc3634d711912a7f5ce9be8a28ace081507b925b3ad1",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libctf.so.0.0.0",
+   "sha256": "25c8f765c259d05b59a3dc3634d711912a7f5ce9be8a28ace081507b925b3ad1",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libctf.so.0.0.0",
+   "sha256": "25c8f765c259d05b59a3dc3634d711912a7f5ce9be8a28ace081507b925b3ad1",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libctf.so.0.0.0",
+   "sha256": "25c8f765c259d05b59a3dc3634d711912a7f5ce9be8a28ace081507b925b3ad1",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libctf.so.0.0.0",
+   "sha256": "25c8f765c259d05b59a3dc3634d711912a7f5ce9be8a28ace081507b925b3ad1",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libctf.so.0.0.0",
+   "sha256": "25c8f765c259d05b59a3dc3634d711912a7f5ce9be8a28ace081507b925b3ad1",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libctf.so.0.0.0",
+   "sha256": "25c8f765c259d05b59a3dc3634d711912a7f5ce9be8a28ace081507b925b3ad1",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libctf.so.0.0.0",
+   "sha256": "25c8f765c259d05b59a3dc3634d711912a7f5ce9be8a28ace081507b925b3ad1",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libctf.so.0.0.0",
+   "sha256": "25c8f765c259d05b59a3dc3634d711912a7f5ce9be8a28ace081507b925b3ad1",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libdw-0.190.so",
+   "sha256": "989dc9873f358a5af7d18d6100cf5fd66531d7990dc47d69068b3c6c96588867",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libdw-0.190.so",
+   "sha256": "989dc9873f358a5af7d18d6100cf5fd66531d7990dc47d69068b3c6c96588867",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libdw-0.190.so",
+   "sha256": "989dc9873f358a5af7d18d6100cf5fd66531d7990dc47d69068b3c6c96588867",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libdw-0.190.so",
+   "sha256": "989dc9873f358a5af7d18d6100cf5fd66531d7990dc47d69068b3c6c96588867",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libdw-0.190.so",
+   "sha256": "989dc9873f358a5af7d18d6100cf5fd66531d7990dc47d69068b3c6c96588867",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libdw-0.190.so",
+   "sha256": "989dc9873f358a5af7d18d6100cf5fd66531d7990dc47d69068b3c6c96588867",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libdw-0.190.so",
+   "sha256": "989dc9873f358a5af7d18d6100cf5fd66531d7990dc47d69068b3c6c96588867",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libdw-0.190.so",
+   "sha256": "989dc9873f358a5af7d18d6100cf5fd66531d7990dc47d69068b3c6c96588867",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libdw-0.190.so",
+   "sha256": "989dc9873f358a5af7d18d6100cf5fd66531d7990dc47d69068b3c6c96588867",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libfbclient.so.2",
+   "sha256": "c9bd955812bc56c562b2f213110396811706470fa54d9013cf237a79a75e86f6",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfbclient.so.2",
+   "sha256": "c9bd955812bc56c562b2f213110396811706470fa54d9013cf237a79a75e86f6",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfbclient.so.2",
+   "sha256": "c9bd955812bc56c562b2f213110396811706470fa54d9013cf237a79a75e86f6",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfbclient.so.2",
+   "sha256": "c9bd955812bc56c562b2f213110396811706470fa54d9013cf237a79a75e86f6",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfbclient.so.2",
+   "sha256": "c9bd955812bc56c562b2f213110396811706470fa54d9013cf237a79a75e86f6",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfbclient.so.2",
+   "sha256": "c9bd955812bc56c562b2f213110396811706470fa54d9013cf237a79a75e86f6",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfbclient.so.2",
+   "sha256": "c9bd955812bc56c562b2f213110396811706470fa54d9013cf237a79a75e86f6",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfbclient.so.2",
+   "sha256": "c9bd955812bc56c562b2f213110396811706470fa54d9013cf237a79a75e86f6",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfbclient.so.2",
+   "sha256": "c9bd955812bc56c562b2f213110396811706470fa54d9013cf237a79a75e86f6",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libfuse3.so.3.14.0",
+   "sha256": "f1e75247f42d414df611ee554c8399bfe74565f89eed7c4501e2d97c48f21eab",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfuse3.so.3.14.0",
+   "sha256": "f1e75247f42d414df611ee554c8399bfe74565f89eed7c4501e2d97c48f21eab",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfuse3.so.3.14.0",
+   "sha256": "f1e75247f42d414df611ee554c8399bfe74565f89eed7c4501e2d97c48f21eab",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfuse3.so.3.14.0",
+   "sha256": "f1e75247f42d414df611ee554c8399bfe74565f89eed7c4501e2d97c48f21eab",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfuse3.so.3.14.0",
+   "sha256": "f1e75247f42d414df611ee554c8399bfe74565f89eed7c4501e2d97c48f21eab",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfuse3.so.3.14.0",
+   "sha256": "f1e75247f42d414df611ee554c8399bfe74565f89eed7c4501e2d97c48f21eab",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfuse3.so.3.14.0",
+   "sha256": "f1e75247f42d414df611ee554c8399bfe74565f89eed7c4501e2d97c48f21eab",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfuse3.so.3.14.0",
+   "sha256": "f1e75247f42d414df611ee554c8399bfe74565f89eed7c4501e2d97c48f21eab",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfuse3.so.3.14.0",
+   "sha256": "f1e75247f42d414df611ee554c8399bfe74565f89eed7c4501e2d97c48f21eab",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libgnutls.so.30.37.1",
+   "sha256": "ddbae2995750875c07bc218d12a062d73f8250678f54dedda7e9be5068781c98",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libgnutls.so.30.37.1",
+   "sha256": "ddbae2995750875c07bc218d12a062d73f8250678f54dedda7e9be5068781c98",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libgnutls.so.30.37.1",
+   "sha256": "ddbae2995750875c07bc218d12a062d73f8250678f54dedda7e9be5068781c98",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libgnutls.so.30.37.1",
+   "sha256": "ddbae2995750875c07bc218d12a062d73f8250678f54dedda7e9be5068781c98",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libgnutls.so.30.37.1",
+   "sha256": "ddbae2995750875c07bc218d12a062d73f8250678f54dedda7e9be5068781c98",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libgnutls.so.30.37.1",
+   "sha256": "ddbae2995750875c07bc218d12a062d73f8250678f54dedda7e9be5068781c98",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libgnutls.so.30.37.1",
+   "sha256": "ddbae2995750875c07bc218d12a062d73f8250678f54dedda7e9be5068781c98",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libgnutls.so.30.37.1",
+   "sha256": "ddbae2995750875c07bc218d12a062d73f8250678f54dedda7e9be5068781c98",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libgnutls.so.30.37.1",
+   "sha256": "ddbae2995750875c07bc218d12a062d73f8250678f54dedda7e9be5068781c98",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libharfbuzz.so.0.60830.0",
+   "sha256": "4562cfcfd18935324ba3ac74a944898b867ab87a56e925ab3e351ba773f1513e",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libharfbuzz.so.0.60830.0",
+   "sha256": "4562cfcfd18935324ba3ac74a944898b867ab87a56e925ab3e351ba773f1513e",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libharfbuzz.so.0.60830.0",
+   "sha256": "4562cfcfd18935324ba3ac74a944898b867ab87a56e925ab3e351ba773f1513e",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libharfbuzz.so.0.60830.0",
+   "sha256": "4562cfcfd18935324ba3ac74a944898b867ab87a56e925ab3e351ba773f1513e",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libharfbuzz.so.0.60830.0",
+   "sha256": "4562cfcfd18935324ba3ac74a944898b867ab87a56e925ab3e351ba773f1513e",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libharfbuzz.so.0.60830.0",
+   "sha256": "4562cfcfd18935324ba3ac74a944898b867ab87a56e925ab3e351ba773f1513e",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libharfbuzz.so.0.60830.0",
+   "sha256": "4562cfcfd18935324ba3ac74a944898b867ab87a56e925ab3e351ba773f1513e",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libharfbuzz.so.0.60830.0",
+   "sha256": "4562cfcfd18935324ba3ac74a944898b867ab87a56e925ab3e351ba773f1513e",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libharfbuzz.so.0.60830.0",
+   "sha256": "4562cfcfd18935324ba3ac74a944898b867ab87a56e925ab3e351ba773f1513e",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libicuuc.so.70.1",
+   "sha256": "4683f3623dc47a92e862dc3c8770caff81c9f4c7e116bb672fc439737b06d88a",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libicuuc.so.70.1",
+   "sha256": "4683f3623dc47a92e862dc3c8770caff81c9f4c7e116bb672fc439737b06d88a",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libicuuc.so.70.1",
+   "sha256": "4683f3623dc47a92e862dc3c8770caff81c9f4c7e116bb672fc439737b06d88a",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libicuuc.so.70.1",
+   "sha256": "4683f3623dc47a92e862dc3c8770caff81c9f4c7e116bb672fc439737b06d88a",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libicuuc.so.70.1",
+   "sha256": "4683f3623dc47a92e862dc3c8770caff81c9f4c7e116bb672fc439737b06d88a",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libicuuc.so.70.1",
+   "sha256": "4683f3623dc47a92e862dc3c8770caff81c9f4c7e116bb672fc439737b06d88a",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libicuuc.so.70.1",
+   "sha256": "4683f3623dc47a92e862dc3c8770caff81c9f4c7e116bb672fc439737b06d88a",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libicuuc.so.70.1",
+   "sha256": "4683f3623dc47a92e862dc3c8770caff81c9f4c7e116bb672fc439737b06d88a",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libicuuc.so.70.1",
+   "sha256": "4683f3623dc47a92e862dc3c8770caff81c9f4c7e116bb672fc439737b06d88a",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libkrb5support.so.0",
+   "sha256": "0aa43578471faecbd642ed2ee6ab92b6682a2b676644193e956fc59d18ca24bb",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libkrb5support.so.0",
+   "sha256": "0aa43578471faecbd642ed2ee6ab92b6682a2b676644193e956fc59d18ca24bb",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libkrb5support.so.0",
+   "sha256": "0aa43578471faecbd642ed2ee6ab92b6682a2b676644193e956fc59d18ca24bb",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libkrb5support.so.0",
+   "sha256": "0aa43578471faecbd642ed2ee6ab92b6682a2b676644193e956fc59d18ca24bb",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libkrb5support.so.0",
+   "sha256": "0aa43578471faecbd642ed2ee6ab92b6682a2b676644193e956fc59d18ca24bb",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libkrb5support.so.0",
+   "sha256": "0aa43578471faecbd642ed2ee6ab92b6682a2b676644193e956fc59d18ca24bb",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libkrb5support.so.0",
+   "sha256": "0aa43578471faecbd642ed2ee6ab92b6682a2b676644193e956fc59d18ca24bb",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libkrb5support.so.0",
+   "sha256": "0aa43578471faecbd642ed2ee6ab92b6682a2b676644193e956fc59d18ca24bb",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libkrb5support.so.0",
+   "sha256": "0aa43578471faecbd642ed2ee6ab92b6682a2b676644193e956fc59d18ca24bb",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "liblua5.3-c++.so.0",
+   "sha256": "7b819d24923e019bc0dc7859b8db127e9a98f495b53cfae37e5e6a9224504b33",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "liblua5.3-c++.so.0",
+   "sha256": "7b819d24923e019bc0dc7859b8db127e9a98f495b53cfae37e5e6a9224504b33",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "liblua5.3-c++.so.0",
+   "sha256": "7b819d24923e019bc0dc7859b8db127e9a98f495b53cfae37e5e6a9224504b33",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "liblua5.3-c++.so.0",
+   "sha256": "7b819d24923e019bc0dc7859b8db127e9a98f495b53cfae37e5e6a9224504b33",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "liblua5.3-c++.so.0",
+   "sha256": "7b819d24923e019bc0dc7859b8db127e9a98f495b53cfae37e5e6a9224504b33",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "liblua5.3-c++.so.0",
+   "sha256": "7b819d24923e019bc0dc7859b8db127e9a98f495b53cfae37e5e6a9224504b33",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "liblua5.3-c++.so.0",
+   "sha256": "7b819d24923e019bc0dc7859b8db127e9a98f495b53cfae37e5e6a9224504b33",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "liblua5.3-c++.so.0",
+   "sha256": "7b819d24923e019bc0dc7859b8db127e9a98f495b53cfae37e5e6a9224504b33",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "liblua5.3-c++.so.0",
+   "sha256": "7b819d24923e019bc0dc7859b8db127e9a98f495b53cfae37e5e6a9224504b33",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libmlx4.so.1",
+   "sha256": "441c77abb773b3f6e04dcdf435d4a77dd85042f1938052c9d787f7bfc39cf886",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libmlx4.so.1",
+   "sha256": "441c77abb773b3f6e04dcdf435d4a77dd85042f1938052c9d787f7bfc39cf886",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libmlx4.so.1",
+   "sha256": "441c77abb773b3f6e04dcdf435d4a77dd85042f1938052c9d787f7bfc39cf886",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libmlx4.so.1",
+   "sha256": "441c77abb773b3f6e04dcdf435d4a77dd85042f1938052c9d787f7bfc39cf886",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libmlx4.so.1",
+   "sha256": "441c77abb773b3f6e04dcdf435d4a77dd85042f1938052c9d787f7bfc39cf886",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libmlx4.so.1",
+   "sha256": "441c77abb773b3f6e04dcdf435d4a77dd85042f1938052c9d787f7bfc39cf886",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libmlx4.so.1",
+   "sha256": "441c77abb773b3f6e04dcdf435d4a77dd85042f1938052c9d787f7bfc39cf886",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libmlx4.so.1",
+   "sha256": "441c77abb773b3f6e04dcdf435d4a77dd85042f1938052c9d787f7bfc39cf886",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libmlx4.so.1",
+   "sha256": "441c77abb773b3f6e04dcdf435d4a77dd85042f1938052c9d787f7bfc39cf886",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libnewt.so.0.52.24",
+   "sha256": "82705670bdb51fb698fce4bfae49f18358427c298fe51cda982285a3ec6f326d",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libnewt.so.0.52.24",
+   "sha256": "82705670bdb51fb698fce4bfae49f18358427c298fe51cda982285a3ec6f326d",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libnewt.so.0.52.24",
+   "sha256": "82705670bdb51fb698fce4bfae49f18358427c298fe51cda982285a3ec6f326d",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libnewt.so.0.52.24",
+   "sha256": "82705670bdb51fb698fce4bfae49f18358427c298fe51cda982285a3ec6f326d",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libnewt.so.0.52.24",
+   "sha256": "82705670bdb51fb698fce4bfae49f18358427c298fe51cda982285a3ec6f326d",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libnewt.so.0.52.24",
+   "sha256": "82705670bdb51fb698fce4bfae49f18358427c298fe51cda982285a3ec6f326d",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libnewt.so.0.52.24",
+   "sha256": "82705670bdb51fb698fce4bfae49f18358427c298fe51cda982285a3ec6f326d",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libnewt.so.0.52.24",
+   "sha256": "82705670bdb51fb698fce4bfae49f18358427c298fe51cda982285a3ec6f326d",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libnewt.so.0.52.24",
+   "sha256": "82705670bdb51fb698fce4bfae49f18358427c298fe51cda982285a3ec6f326d",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libobjc.so.4.0.0",
+   "sha256": "24ac8c5103f6a856eda56f46f64413d5c9db96a2ee6a6324596185c0abbea490",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libobjc.so.4.0.0",
+   "sha256": "24ac8c5103f6a856eda56f46f64413d5c9db96a2ee6a6324596185c0abbea490",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libobjc.so.4.0.0",
+   "sha256": "24ac8c5103f6a856eda56f46f64413d5c9db96a2ee6a6324596185c0abbea490",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libobjc.so.4.0.0",
+   "sha256": "24ac8c5103f6a856eda56f46f64413d5c9db96a2ee6a6324596185c0abbea490",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libobjc.so.4.0.0",
+   "sha256": "24ac8c5103f6a856eda56f46f64413d5c9db96a2ee6a6324596185c0abbea490",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libobjc.so.4.0.0",
+   "sha256": "24ac8c5103f6a856eda56f46f64413d5c9db96a2ee6a6324596185c0abbea490",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libobjc.so.4.0.0",
+   "sha256": "24ac8c5103f6a856eda56f46f64413d5c9db96a2ee6a6324596185c0abbea490",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libobjc.so.4.0.0",
+   "sha256": "24ac8c5103f6a856eda56f46f64413d5c9db96a2ee6a6324596185c0abbea490",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libobjc.so.4.0.0",
+   "sha256": "24ac8c5103f6a856eda56f46f64413d5c9db96a2ee6a6324596185c0abbea490",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libpci.so.3.10.0",
+   "sha256": "255e8554ca27ab99c2bdec02e746dd653b10e3afd30b12e41106bc89767daf5b",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpci.so.3.10.0",
+   "sha256": "255e8554ca27ab99c2bdec02e746dd653b10e3afd30b12e41106bc89767daf5b",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpci.so.3.10.0",
+   "sha256": "255e8554ca27ab99c2bdec02e746dd653b10e3afd30b12e41106bc89767daf5b",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpci.so.3.10.0",
+   "sha256": "255e8554ca27ab99c2bdec02e746dd653b10e3afd30b12e41106bc89767daf5b",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpci.so.3.10.0",
+   "sha256": "255e8554ca27ab99c2bdec02e746dd653b10e3afd30b12e41106bc89767daf5b",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpci.so.3.10.0",
+   "sha256": "255e8554ca27ab99c2bdec02e746dd653b10e3afd30b12e41106bc89767daf5b",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpci.so.3.10.0",
+   "sha256": "255e8554ca27ab99c2bdec02e746dd653b10e3afd30b12e41106bc89767daf5b",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpci.so.3.10.0",
+   "sha256": "255e8554ca27ab99c2bdec02e746dd653b10e3afd30b12e41106bc89767daf5b",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpci.so.3.10.0",
+   "sha256": "255e8554ca27ab99c2bdec02e746dd653b10e3afd30b12e41106bc89767daf5b",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libpolkit-agent-1.so.0.0.0",
+   "sha256": "52f7ce592cbc494030538b14d4c144f32bff7185b1beb0ed0722ecc2366bbc1e",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpolkit-agent-1.so.0.0.0",
+   "sha256": "52f7ce592cbc494030538b14d4c144f32bff7185b1beb0ed0722ecc2366bbc1e",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpolkit-agent-1.so.0.0.0",
+   "sha256": "52f7ce592cbc494030538b14d4c144f32bff7185b1beb0ed0722ecc2366bbc1e",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpolkit-agent-1.so.0.0.0",
+   "sha256": "52f7ce592cbc494030538b14d4c144f32bff7185b1beb0ed0722ecc2366bbc1e",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpolkit-agent-1.so.0.0.0",
+   "sha256": "52f7ce592cbc494030538b14d4c144f32bff7185b1beb0ed0722ecc2366bbc1e",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpolkit-agent-1.so.0.0.0",
+   "sha256": "52f7ce592cbc494030538b14d4c144f32bff7185b1beb0ed0722ecc2366bbc1e",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpolkit-agent-1.so.0.0.0",
+   "sha256": "52f7ce592cbc494030538b14d4c144f32bff7185b1beb0ed0722ecc2366bbc1e",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpolkit-agent-1.so.0.0.0",
+   "sha256": "52f7ce592cbc494030538b14d4c144f32bff7185b1beb0ed0722ecc2366bbc1e",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpolkit-agent-1.so.0.0.0",
+   "sha256": "52f7ce592cbc494030538b14d4c144f32bff7185b1beb0ed0722ecc2366bbc1e",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "librpm.so.9",
+   "sha256": "6a5ebacdcdf4ec59e9e5305b138a1a24e7e4ba0232453deee813442ed603d8cb",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "librpm.so.9",
+   "sha256": "6a5ebacdcdf4ec59e9e5305b138a1a24e7e4ba0232453deee813442ed603d8cb",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "librpm.so.9",
+   "sha256": "6a5ebacdcdf4ec59e9e5305b138a1a24e7e4ba0232453deee813442ed603d8cb",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "librpm.so.9",
+   "sha256": "6a5ebacdcdf4ec59e9e5305b138a1a24e7e4ba0232453deee813442ed603d8cb",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "librpm.so.9",
+   "sha256": "6a5ebacdcdf4ec59e9e5305b138a1a24e7e4ba0232453deee813442ed603d8cb",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "librpm.so.9",
+   "sha256": "6a5ebacdcdf4ec59e9e5305b138a1a24e7e4ba0232453deee813442ed603d8cb",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "librpm.so.9",
+   "sha256": "6a5ebacdcdf4ec59e9e5305b138a1a24e7e4ba0232453deee813442ed603d8cb",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "librpm.so.9",
+   "sha256": "6a5ebacdcdf4ec59e9e5305b138a1a24e7e4ba0232453deee813442ed603d8cb",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "librpm.so.9",
+   "sha256": "6a5ebacdcdf4ec59e9e5305b138a1a24e7e4ba0232453deee813442ed603d8cb",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libsodium.so.23",
+   "sha256": "fe00408090ea084504d7cb0130af56a22554fe299034b864551b65a64ca8a7b5",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libsodium.so.23",
+   "sha256": "fe00408090ea084504d7cb0130af56a22554fe299034b864551b65a64ca8a7b5",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libsodium.so.23",
+   "sha256": "fe00408090ea084504d7cb0130af56a22554fe299034b864551b65a64ca8a7b5",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libsodium.so.23",
+   "sha256": "fe00408090ea084504d7cb0130af56a22554fe299034b864551b65a64ca8a7b5",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libsodium.so.23",
+   "sha256": "fe00408090ea084504d7cb0130af56a22554fe299034b864551b65a64ca8a7b5",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libsodium.so.23",
+   "sha256": "fe00408090ea084504d7cb0130af56a22554fe299034b864551b65a64ca8a7b5",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libsodium.so.23",
+   "sha256": "fe00408090ea084504d7cb0130af56a22554fe299034b864551b65a64ca8a7b5",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libsodium.so.23",
+   "sha256": "fe00408090ea084504d7cb0130af56a22554fe299034b864551b65a64ca8a7b5",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libsodium.so.23",
+   "sha256": "fe00408090ea084504d7cb0130af56a22554fe299034b864551b65a64ca8a7b5",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libtidy.so.5deb1",
+   "sha256": "3018ff2768262f697e0dfee26ecd288a1f499fe5043d1636ac33ba6738a1589e",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libtidy.so.5deb1",
+   "sha256": "3018ff2768262f697e0dfee26ecd288a1f499fe5043d1636ac33ba6738a1589e",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libtidy.so.5deb1",
+   "sha256": "3018ff2768262f697e0dfee26ecd288a1f499fe5043d1636ac33ba6738a1589e",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libtidy.so.5deb1",
+   "sha256": "3018ff2768262f697e0dfee26ecd288a1f499fe5043d1636ac33ba6738a1589e",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libtidy.so.5deb1",
+   "sha256": "3018ff2768262f697e0dfee26ecd288a1f499fe5043d1636ac33ba6738a1589e",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libtidy.so.5deb1",
+   "sha256": "3018ff2768262f697e0dfee26ecd288a1f499fe5043d1636ac33ba6738a1589e",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libtidy.so.5deb1",
+   "sha256": "3018ff2768262f697e0dfee26ecd288a1f499fe5043d1636ac33ba6738a1589e",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libtidy.so.5deb1",
+   "sha256": "3018ff2768262f697e0dfee26ecd288a1f499fe5043d1636ac33ba6738a1589e",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libtidy.so.5deb1",
+   "sha256": "3018ff2768262f697e0dfee26ecd288a1f499fe5043d1636ac33ba6738a1589e",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libudisks2.so.0",
+   "sha256": "a568498fae341643235dd58487f1335d39052b1e0c96fd85095f5ddb25a458e6",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libudisks2.so.0",
+   "sha256": "a568498fae341643235dd58487f1335d39052b1e0c96fd85095f5ddb25a458e6",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libudisks2.so.0",
+   "sha256": "a568498fae341643235dd58487f1335d39052b1e0c96fd85095f5ddb25a458e6",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libudisks2.so.0",
+   "sha256": "a568498fae341643235dd58487f1335d39052b1e0c96fd85095f5ddb25a458e6",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libudisks2.so.0",
+   "sha256": "a568498fae341643235dd58487f1335d39052b1e0c96fd85095f5ddb25a458e6",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libudisks2.so.0",
+   "sha256": "a568498fae341643235dd58487f1335d39052b1e0c96fd85095f5ddb25a458e6",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libudisks2.so.0",
+   "sha256": "a568498fae341643235dd58487f1335d39052b1e0c96fd85095f5ddb25a458e6",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libudisks2.so.0",
+   "sha256": "a568498fae341643235dd58487f1335d39052b1e0c96fd85095f5ddb25a458e6",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libudisks2.so.0",
+   "sha256": "a568498fae341643235dd58487f1335d39052b1e0c96fd85095f5ddb25a458e6",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libvolume_key.so.1",
+   "sha256": "c8db2f36a51a19879d2250a6d2a235694d4ea27d995be6d5ed2e15207afb7cb5",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libvolume_key.so.1",
+   "sha256": "c8db2f36a51a19879d2250a6d2a235694d4ea27d995be6d5ed2e15207afb7cb5",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libvolume_key.so.1",
+   "sha256": "c8db2f36a51a19879d2250a6d2a235694d4ea27d995be6d5ed2e15207afb7cb5",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libvolume_key.so.1",
+   "sha256": "c8db2f36a51a19879d2250a6d2a235694d4ea27d995be6d5ed2e15207afb7cb5",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libvolume_key.so.1",
+   "sha256": "c8db2f36a51a19879d2250a6d2a235694d4ea27d995be6d5ed2e15207afb7cb5",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libvolume_key.so.1",
+   "sha256": "c8db2f36a51a19879d2250a6d2a235694d4ea27d995be6d5ed2e15207afb7cb5",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libvolume_key.so.1",
+   "sha256": "c8db2f36a51a19879d2250a6d2a235694d4ea27d995be6d5ed2e15207afb7cb5",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libvolume_key.so.1",
+   "sha256": "c8db2f36a51a19879d2250a6d2a235694d4ea27d995be6d5ed2e15207afb7cb5",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libvolume_key.so.1",
+   "sha256": "c8db2f36a51a19879d2250a6d2a235694d4ea27d995be6d5ed2e15207afb7cb5",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libxcb.so.1.1.0",
+   "sha256": "7958a0136b121bdc4c708968569ad152a9ed208ab026e2537b1005dde64ca440",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libxcb.so.1.1.0",
+   "sha256": "7958a0136b121bdc4c708968569ad152a9ed208ab026e2537b1005dde64ca440",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libxcb.so.1.1.0",
+   "sha256": "7958a0136b121bdc4c708968569ad152a9ed208ab026e2537b1005dde64ca440",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libxcb.so.1.1.0",
+   "sha256": "7958a0136b121bdc4c708968569ad152a9ed208ab026e2537b1005dde64ca440",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libxcb.so.1.1.0",
+   "sha256": "7958a0136b121bdc4c708968569ad152a9ed208ab026e2537b1005dde64ca440",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libxcb.so.1.1.0",
+   "sha256": "7958a0136b121bdc4c708968569ad152a9ed208ab026e2537b1005dde64ca440",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libxcb.so.1.1.0",
+   "sha256": "7958a0136b121bdc4c708968569ad152a9ed208ab026e2537b1005dde64ca440",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libxcb.so.1.1.0",
+   "sha256": "7958a0136b121bdc4c708968569ad152a9ed208ab026e2537b1005dde64ca440",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libxcb.so.1.1.0",
+   "sha256": "7958a0136b121bdc4c708968569ad152a9ed208ab026e2537b1005dde64ca440",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "Mcrt1.o",
+   "sha256": "1b165117d5d8c017d10f018ab553052946385361b3130067adbedc2b04cfa900",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Mcrt1.o",
+   "sha256": "1b165117d5d8c017d10f018ab553052946385361b3130067adbedc2b04cfa900",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Mcrt1.o",
+   "sha256": "1b165117d5d8c017d10f018ab553052946385361b3130067adbedc2b04cfa900",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Mcrt1.o",
+   "sha256": "1b165117d5d8c017d10f018ab553052946385361b3130067adbedc2b04cfa900",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Mcrt1.o",
+   "sha256": "1b165117d5d8c017d10f018ab553052946385361b3130067adbedc2b04cfa900",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libXcomposite.so.1.0.0",
+   "sha256": "675c78d8d5b088a59ad4f8eb15419d0842b17caca3317a5e9f68573171ec5d61",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libXcomposite.so.1.0.0",
+   "sha256": "675c78d8d5b088a59ad4f8eb15419d0842b17caca3317a5e9f68573171ec5d61",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libXcomposite.so.1.0.0",
+   "sha256": "675c78d8d5b088a59ad4f8eb15419d0842b17caca3317a5e9f68573171ec5d61",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libXcomposite.so.1.0.0",
+   "sha256": "675c78d8d5b088a59ad4f8eb15419d0842b17caca3317a5e9f68573171ec5d61",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libXcomposite.so.1.0.0",
+   "sha256": "675c78d8d5b088a59ad4f8eb15419d0842b17caca3317a5e9f68573171ec5d61",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libXcomposite.so.1.0.0",
+   "sha256": "675c78d8d5b088a59ad4f8eb15419d0842b17caca3317a5e9f68573171ec5d61",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libXcomposite.so.1.0.0",
+   "sha256": "675c78d8d5b088a59ad4f8eb15419d0842b17caca3317a5e9f68573171ec5d61",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libXcomposite.so.1.0.0",
+   "sha256": "675c78d8d5b088a59ad4f8eb15419d0842b17caca3317a5e9f68573171ec5d61",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libXcomposite.so.1.0.0",
+   "sha256": "675c78d8d5b088a59ad4f8eb15419d0842b17caca3317a5e9f68573171ec5d61",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libanl.so",
+   "sha256": "3e39dbcdd4a1cd2c0cbac5037c593d2b91083a064339e9cf34a788766cf3a1b9",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libanl.so",
+   "sha256": "3e39dbcdd4a1cd2c0cbac5037c593d2b91083a064339e9cf34a788766cf3a1b9",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libanl.so",
+   "sha256": "3e39dbcdd4a1cd2c0cbac5037c593d2b91083a064339e9cf34a788766cf3a1b9",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libanl.so",
+   "sha256": "3e39dbcdd4a1cd2c0cbac5037c593d2b91083a064339e9cf34a788766cf3a1b9",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libanl.so",
+   "sha256": "3e39dbcdd4a1cd2c0cbac5037c593d2b91083a064339e9cf34a788766cf3a1b9",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libanl.so",
+   "sha256": "3e39dbcdd4a1cd2c0cbac5037c593d2b91083a064339e9cf34a788766cf3a1b9",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libanl.so",
+   "sha256": "3e39dbcdd4a1cd2c0cbac5037c593d2b91083a064339e9cf34a788766cf3a1b9",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libanl.so",
+   "sha256": "3e39dbcdd4a1cd2c0cbac5037c593d2b91083a064339e9cf34a788766cf3a1b9",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libanl.so",
+   "sha256": "3e39dbcdd4a1cd2c0cbac5037c593d2b91083a064339e9cf34a788766cf3a1b9",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libaudit.so.1",
+   "sha256": "8a4ca5eda7607f2e65da7cb32a780cc0dcfbf202037482ef4261a3c1ec339083",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libaudit.so.1",
+   "sha256": "8a4ca5eda7607f2e65da7cb32a780cc0dcfbf202037482ef4261a3c1ec339083",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libaudit.so.1",
+   "sha256": "8a4ca5eda7607f2e65da7cb32a780cc0dcfbf202037482ef4261a3c1ec339083",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libaudit.so.1",
+   "sha256": "8a4ca5eda7607f2e65da7cb32a780cc0dcfbf202037482ef4261a3c1ec339083",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libaudit.so.1",
+   "sha256": "8a4ca5eda7607f2e65da7cb32a780cc0dcfbf202037482ef4261a3c1ec339083",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libaudit.so.1",
+   "sha256": "8a4ca5eda7607f2e65da7cb32a780cc0dcfbf202037482ef4261a3c1ec339083",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libaudit.so.1",
+   "sha256": "8a4ca5eda7607f2e65da7cb32a780cc0dcfbf202037482ef4261a3c1ec339083",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libaudit.so.1",
+   "sha256": "8a4ca5eda7607f2e65da7cb32a780cc0dcfbf202037482ef4261a3c1ec339083",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libaudit.so.1",
+   "sha256": "8a4ca5eda7607f2e65da7cb32a780cc0dcfbf202037482ef4261a3c1ec339083",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libbsd.so.0.12.1",
+   "sha256": "e86cd4f0019f42c2ba5e60602e0edc8694d2948377d98c3654d0f6bddb5254bb",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libbsd.so.0.12.1",
+   "sha256": "e86cd4f0019f42c2ba5e60602e0edc8694d2948377d98c3654d0f6bddb5254bb",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libbsd.so.0.12.1",
+   "sha256": "e86cd4f0019f42c2ba5e60602e0edc8694d2948377d98c3654d0f6bddb5254bb",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libbsd.so.0.12.1",
+   "sha256": "e86cd4f0019f42c2ba5e60602e0edc8694d2948377d98c3654d0f6bddb5254bb",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libbsd.so.0.12.1",
+   "sha256": "e86cd4f0019f42c2ba5e60602e0edc8694d2948377d98c3654d0f6bddb5254bb",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libbsd.so.0.12.1",
+   "sha256": "e86cd4f0019f42c2ba5e60602e0edc8694d2948377d98c3654d0f6bddb5254bb",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libbsd.so.0.12.1",
+   "sha256": "e86cd4f0019f42c2ba5e60602e0edc8694d2948377d98c3654d0f6bddb5254bb",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libbsd.so.0.12.1",
+   "sha256": "e86cd4f0019f42c2ba5e60602e0edc8694d2948377d98c3654d0f6bddb5254bb",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libctf.so.0.0.0",
+   "sha256": "25c8f765c259d05b59a3dc3634d711912a7f5ce9be8a28ace081507b925b3ad1",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libctf.so.0.0.0",
+   "sha256": "25c8f765c259d05b59a3dc3634d711912a7f5ce9be8a28ace081507b925b3ad1",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libctf.so.0.0.0",
+   "sha256": "25c8f765c259d05b59a3dc3634d711912a7f5ce9be8a28ace081507b925b3ad1",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libctf.so.0.0.0",
+   "sha256": "25c8f765c259d05b59a3dc3634d711912a7f5ce9be8a28ace081507b925b3ad1",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libctf.so.0.0.0",
+   "sha256": "25c8f765c259d05b59a3dc3634d711912a7f5ce9be8a28ace081507b925b3ad1",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libctf.so.0.0.0",
+   "sha256": "25c8f765c259d05b59a3dc3634d711912a7f5ce9be8a28ace081507b925b3ad1",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libctf.so.0.0.0",
+   "sha256": "25c8f765c259d05b59a3dc3634d711912a7f5ce9be8a28ace081507b925b3ad1",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libctf.so.0.0.0",
+   "sha256": "25c8f765c259d05b59a3dc3634d711912a7f5ce9be8a28ace081507b925b3ad1",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libctf.so.0.0.0",
+   "sha256": "25c8f765c259d05b59a3dc3634d711912a7f5ce9be8a28ace081507b925b3ad1",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libdw-0.190.so",
+   "sha256": "989dc9873f358a5af7d18d6100cf5fd66531d7990dc47d69068b3c6c96588867",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libdw-0.190.so",
+   "sha256": "989dc9873f358a5af7d18d6100cf5fd66531d7990dc47d69068b3c6c96588867",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libdw-0.190.so",
+   "sha256": "989dc9873f358a5af7d18d6100cf5fd66531d7990dc47d69068b3c6c96588867",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libdw-0.190.so",
+   "sha256": "989dc9873f358a5af7d18d6100cf5fd66531d7990dc47d69068b3c6c96588867",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libdw-0.190.so",
+   "sha256": "989dc9873f358a5af7d18d6100cf5fd66531d7990dc47d69068b3c6c96588867",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libdw-0.190.so",
+   "sha256": "989dc9873f358a5af7d18d6100cf5fd66531d7990dc47d69068b3c6c96588867",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libdw-0.190.so",
+   "sha256": "989dc9873f358a5af7d18d6100cf5fd66531d7990dc47d69068b3c6c96588867",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libdw-0.190.so",
+   "sha256": "989dc9873f358a5af7d18d6100cf5fd66531d7990dc47d69068b3c6c96588867",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libdw-0.190.so",
+   "sha256": "989dc9873f358a5af7d18d6100cf5fd66531d7990dc47d69068b3c6c96588867",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libfbclient.so.2",
+   "sha256": "c9bd955812bc56c562b2f213110396811706470fa54d9013cf237a79a75e86f6",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfbclient.so.2",
+   "sha256": "c9bd955812bc56c562b2f213110396811706470fa54d9013cf237a79a75e86f6",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfbclient.so.2",
+   "sha256": "c9bd955812bc56c562b2f213110396811706470fa54d9013cf237a79a75e86f6",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfbclient.so.2",
+   "sha256": "c9bd955812bc56c562b2f213110396811706470fa54d9013cf237a79a75e86f6",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfbclient.so.2",
+   "sha256": "c9bd955812bc56c562b2f213110396811706470fa54d9013cf237a79a75e86f6",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfbclient.so.2",
+   "sha256": "c9bd955812bc56c562b2f213110396811706470fa54d9013cf237a79a75e86f6",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfbclient.so.2",
+   "sha256": "c9bd955812bc56c562b2f213110396811706470fa54d9013cf237a79a75e86f6",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfbclient.so.2",
+   "sha256": "c9bd955812bc56c562b2f213110396811706470fa54d9013cf237a79a75e86f6",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfbclient.so.2",
+   "sha256": "c9bd955812bc56c562b2f213110396811706470fa54d9013cf237a79a75e86f6",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libfuse3.so.3.14.0",
+   "sha256": "f1e75247f42d414df611ee554c8399bfe74565f89eed7c4501e2d97c48f21eab",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfuse3.so.3.14.0",
+   "sha256": "f1e75247f42d414df611ee554c8399bfe74565f89eed7c4501e2d97c48f21eab",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfuse3.so.3.14.0",
+   "sha256": "f1e75247f42d414df611ee554c8399bfe74565f89eed7c4501e2d97c48f21eab",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfuse3.so.3.14.0",
+   "sha256": "f1e75247f42d414df611ee554c8399bfe74565f89eed7c4501e2d97c48f21eab",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfuse3.so.3.14.0",
+   "sha256": "f1e75247f42d414df611ee554c8399bfe74565f89eed7c4501e2d97c48f21eab",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfuse3.so.3.14.0",
+   "sha256": "f1e75247f42d414df611ee554c8399bfe74565f89eed7c4501e2d97c48f21eab",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfuse3.so.3.14.0",
+   "sha256": "f1e75247f42d414df611ee554c8399bfe74565f89eed7c4501e2d97c48f21eab",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfuse3.so.3.14.0",
+   "sha256": "f1e75247f42d414df611ee554c8399bfe74565f89eed7c4501e2d97c48f21eab",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libfuse3.so.3.14.0",
+   "sha256": "f1e75247f42d414df611ee554c8399bfe74565f89eed7c4501e2d97c48f21eab",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libgnutls.so.30.37.1",
+   "sha256": "ddbae2995750875c07bc218d12a062d73f8250678f54dedda7e9be5068781c98",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libgnutls.so.30.37.1",
+   "sha256": "ddbae2995750875c07bc218d12a062d73f8250678f54dedda7e9be5068781c98",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libgnutls.so.30.37.1",
+   "sha256": "ddbae2995750875c07bc218d12a062d73f8250678f54dedda7e9be5068781c98",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libgnutls.so.30.37.1",
+   "sha256": "ddbae2995750875c07bc218d12a062d73f8250678f54dedda7e9be5068781c98",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libgnutls.so.30.37.1",
+   "sha256": "ddbae2995750875c07bc218d12a062d73f8250678f54dedda7e9be5068781c98",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libgnutls.so.30.37.1",
+   "sha256": "ddbae2995750875c07bc218d12a062d73f8250678f54dedda7e9be5068781c98",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libgnutls.so.30.37.1",
+   "sha256": "ddbae2995750875c07bc218d12a062d73f8250678f54dedda7e9be5068781c98",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libgnutls.so.30.37.1",
+   "sha256": "ddbae2995750875c07bc218d12a062d73f8250678f54dedda7e9be5068781c98",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libgnutls.so.30.37.1",
+   "sha256": "ddbae2995750875c07bc218d12a062d73f8250678f54dedda7e9be5068781c98",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libharfbuzz.so.0.60830.0",
+   "sha256": "4562cfcfd18935324ba3ac74a944898b867ab87a56e925ab3e351ba773f1513e",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libharfbuzz.so.0.60830.0",
+   "sha256": "4562cfcfd18935324ba3ac74a944898b867ab87a56e925ab3e351ba773f1513e",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libharfbuzz.so.0.60830.0",
+   "sha256": "4562cfcfd18935324ba3ac74a944898b867ab87a56e925ab3e351ba773f1513e",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libharfbuzz.so.0.60830.0",
+   "sha256": "4562cfcfd18935324ba3ac74a944898b867ab87a56e925ab3e351ba773f1513e",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libharfbuzz.so.0.60830.0",
+   "sha256": "4562cfcfd18935324ba3ac74a944898b867ab87a56e925ab3e351ba773f1513e",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libharfbuzz.so.0.60830.0",
+   "sha256": "4562cfcfd18935324ba3ac74a944898b867ab87a56e925ab3e351ba773f1513e",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libharfbuzz.so.0.60830.0",
+   "sha256": "4562cfcfd18935324ba3ac74a944898b867ab87a56e925ab3e351ba773f1513e",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libharfbuzz.so.0.60830.0",
+   "sha256": "4562cfcfd18935324ba3ac74a944898b867ab87a56e925ab3e351ba773f1513e",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libharfbuzz.so.0.60830.0",
+   "sha256": "4562cfcfd18935324ba3ac74a944898b867ab87a56e925ab3e351ba773f1513e",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libicuuc.so.70.1",
+   "sha256": "4683f3623dc47a92e862dc3c8770caff81c9f4c7e116bb672fc439737b06d88a",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libicuuc.so.70.1",
+   "sha256": "4683f3623dc47a92e862dc3c8770caff81c9f4c7e116bb672fc439737b06d88a",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libicuuc.so.70.1",
+   "sha256": "4683f3623dc47a92e862dc3c8770caff81c9f4c7e116bb672fc439737b06d88a",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libicuuc.so.70.1",
+   "sha256": "4683f3623dc47a92e862dc3c8770caff81c9f4c7e116bb672fc439737b06d88a",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libicuuc.so.70.1",
+   "sha256": "4683f3623dc47a92e862dc3c8770caff81c9f4c7e116bb672fc439737b06d88a",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libicuuc.so.70.1",
+   "sha256": "4683f3623dc47a92e862dc3c8770caff81c9f4c7e116bb672fc439737b06d88a",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libicuuc.so.70.1",
+   "sha256": "4683f3623dc47a92e862dc3c8770caff81c9f4c7e116bb672fc439737b06d88a",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libicuuc.so.70.1",
+   "sha256": "4683f3623dc47a92e862dc3c8770caff81c9f4c7e116bb672fc439737b06d88a",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libicuuc.so.70.1",
+   "sha256": "4683f3623dc47a92e862dc3c8770caff81c9f4c7e116bb672fc439737b06d88a",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libkrb5support.so.0",
+   "sha256": "0aa43578471faecbd642ed2ee6ab92b6682a2b676644193e956fc59d18ca24bb",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libkrb5support.so.0",
+   "sha256": "0aa43578471faecbd642ed2ee6ab92b6682a2b676644193e956fc59d18ca24bb",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libkrb5support.so.0",
+   "sha256": "0aa43578471faecbd642ed2ee6ab92b6682a2b676644193e956fc59d18ca24bb",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libkrb5support.so.0",
+   "sha256": "0aa43578471faecbd642ed2ee6ab92b6682a2b676644193e956fc59d18ca24bb",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libkrb5support.so.0",
+   "sha256": "0aa43578471faecbd642ed2ee6ab92b6682a2b676644193e956fc59d18ca24bb",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libkrb5support.so.0",
+   "sha256": "0aa43578471faecbd642ed2ee6ab92b6682a2b676644193e956fc59d18ca24bb",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libkrb5support.so.0",
+   "sha256": "0aa43578471faecbd642ed2ee6ab92b6682a2b676644193e956fc59d18ca24bb",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libkrb5support.so.0",
+   "sha256": "0aa43578471faecbd642ed2ee6ab92b6682a2b676644193e956fc59d18ca24bb",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libkrb5support.so.0",
+   "sha256": "0aa43578471faecbd642ed2ee6ab92b6682a2b676644193e956fc59d18ca24bb",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "liblua5.3-c++.so.0",
+   "sha256": "7b819d24923e019bc0dc7859b8db127e9a98f495b53cfae37e5e6a9224504b33",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "liblua5.3-c++.so.0",
+   "sha256": "7b819d24923e019bc0dc7859b8db127e9a98f495b53cfae37e5e6a9224504b33",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "liblua5.3-c++.so.0",
+   "sha256": "7b819d24923e019bc0dc7859b8db127e9a98f495b53cfae37e5e6a9224504b33",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "liblua5.3-c++.so.0",
+   "sha256": "7b819d24923e019bc0dc7859b8db127e9a98f495b53cfae37e5e6a9224504b33",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "liblua5.3-c++.so.0",
+   "sha256": "7b819d24923e019bc0dc7859b8db127e9a98f495b53cfae37e5e6a9224504b33",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "liblua5.3-c++.so.0",
+   "sha256": "7b819d24923e019bc0dc7859b8db127e9a98f495b53cfae37e5e6a9224504b33",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "liblua5.3-c++.so.0",
+   "sha256": "7b819d24923e019bc0dc7859b8db127e9a98f495b53cfae37e5e6a9224504b33",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "liblua5.3-c++.so.0",
+   "sha256": "7b819d24923e019bc0dc7859b8db127e9a98f495b53cfae37e5e6a9224504b33",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "liblua5.3-c++.so.0",
+   "sha256": "7b819d24923e019bc0dc7859b8db127e9a98f495b53cfae37e5e6a9224504b33",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libmlx4.so.1",
+   "sha256": "441c77abb773b3f6e04dcdf435d4a77dd85042f1938052c9d787f7bfc39cf886",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libmlx4.so.1",
+   "sha256": "441c77abb773b3f6e04dcdf435d4a77dd85042f1938052c9d787f7bfc39cf886",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libmlx4.so.1",
+   "sha256": "441c77abb773b3f6e04dcdf435d4a77dd85042f1938052c9d787f7bfc39cf886",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libmlx4.so.1",
+   "sha256": "441c77abb773b3f6e04dcdf435d4a77dd85042f1938052c9d787f7bfc39cf886",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libmlx4.so.1",
+   "sha256": "441c77abb773b3f6e04dcdf435d4a77dd85042f1938052c9d787f7bfc39cf886",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libmlx4.so.1",
+   "sha256": "441c77abb773b3f6e04dcdf435d4a77dd85042f1938052c9d787f7bfc39cf886",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libmlx4.so.1",
+   "sha256": "441c77abb773b3f6e04dcdf435d4a77dd85042f1938052c9d787f7bfc39cf886",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libmlx4.so.1",
+   "sha256": "441c77abb773b3f6e04dcdf435d4a77dd85042f1938052c9d787f7bfc39cf886",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libmlx4.so.1",
+   "sha256": "441c77abb773b3f6e04dcdf435d4a77dd85042f1938052c9d787f7bfc39cf886",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libnewt.so.0.52.24",
+   "sha256": "82705670bdb51fb698fce4bfae49f18358427c298fe51cda982285a3ec6f326d",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libnewt.so.0.52.24",
+   "sha256": "82705670bdb51fb698fce4bfae49f18358427c298fe51cda982285a3ec6f326d",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libnewt.so.0.52.24",
+   "sha256": "82705670bdb51fb698fce4bfae49f18358427c298fe51cda982285a3ec6f326d",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libnewt.so.0.52.24",
+   "sha256": "82705670bdb51fb698fce4bfae49f18358427c298fe51cda982285a3ec6f326d",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libnewt.so.0.52.24",
+   "sha256": "82705670bdb51fb698fce4bfae49f18358427c298fe51cda982285a3ec6f326d",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libnewt.so.0.52.24",
+   "sha256": "82705670bdb51fb698fce4bfae49f18358427c298fe51cda982285a3ec6f326d",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libnewt.so.0.52.24",
+   "sha256": "82705670bdb51fb698fce4bfae49f18358427c298fe51cda982285a3ec6f326d",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libnewt.so.0.52.24",
+   "sha256": "82705670bdb51fb698fce4bfae49f18358427c298fe51cda982285a3ec6f326d",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libnewt.so.0.52.24",
+   "sha256": "82705670bdb51fb698fce4bfae49f18358427c298fe51cda982285a3ec6f326d",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libobjc.so.4.0.0",
+   "sha256": "24ac8c5103f6a856eda56f46f64413d5c9db96a2ee6a6324596185c0abbea490",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libobjc.so.4.0.0",
+   "sha256": "24ac8c5103f6a856eda56f46f64413d5c9db96a2ee6a6324596185c0abbea490",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libobjc.so.4.0.0",
+   "sha256": "24ac8c5103f6a856eda56f46f64413d5c9db96a2ee6a6324596185c0abbea490",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libobjc.so.4.0.0",
+   "sha256": "24ac8c5103f6a856eda56f46f64413d5c9db96a2ee6a6324596185c0abbea490",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libobjc.so.4.0.0",
+   "sha256": "24ac8c5103f6a856eda56f46f64413d5c9db96a2ee6a6324596185c0abbea490",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libobjc.so.4.0.0",
+   "sha256": "24ac8c5103f6a856eda56f46f64413d5c9db96a2ee6a6324596185c0abbea490",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libobjc.so.4.0.0",
+   "sha256": "24ac8c5103f6a856eda56f46f64413d5c9db96a2ee6a6324596185c0abbea490",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libobjc.so.4.0.0",
+   "sha256": "24ac8c5103f6a856eda56f46f64413d5c9db96a2ee6a6324596185c0abbea490",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libobjc.so.4.0.0",
+   "sha256": "24ac8c5103f6a856eda56f46f64413d5c9db96a2ee6a6324596185c0abbea490",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libpci.so.3.10.0",
+   "sha256": "255e8554ca27ab99c2bdec02e746dd653b10e3afd30b12e41106bc89767daf5b",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpci.so.3.10.0",
+   "sha256": "255e8554ca27ab99c2bdec02e746dd653b10e3afd30b12e41106bc89767daf5b",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpci.so.3.10.0",
+   "sha256": "255e8554ca27ab99c2bdec02e746dd653b10e3afd30b12e41106bc89767daf5b",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpci.so.3.10.0",
+   "sha256": "255e8554ca27ab99c2bdec02e746dd653b10e3afd30b12e41106bc89767daf5b",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpci.so.3.10.0",
+   "sha256": "255e8554ca27ab99c2bdec02e746dd653b10e3afd30b12e41106bc89767daf5b",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpci.so.3.10.0",
+   "sha256": "255e8554ca27ab99c2bdec02e746dd653b10e3afd30b12e41106bc89767daf5b",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpci.so.3.10.0",
+   "sha256": "255e8554ca27ab99c2bdec02e746dd653b10e3afd30b12e41106bc89767daf5b",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpci.so.3.10.0",
+   "sha256": "255e8554ca27ab99c2bdec02e746dd653b10e3afd30b12e41106bc89767daf5b",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpci.so.3.10.0",
+   "sha256": "255e8554ca27ab99c2bdec02e746dd653b10e3afd30b12e41106bc89767daf5b",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libpolkit-agent-1.so.0.0.0",
+   "sha256": "52f7ce592cbc494030538b14d4c144f32bff7185b1beb0ed0722ecc2366bbc1e",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpolkit-agent-1.so.0.0.0",
+   "sha256": "52f7ce592cbc494030538b14d4c144f32bff7185b1beb0ed0722ecc2366bbc1e",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpolkit-agent-1.so.0.0.0",
+   "sha256": "52f7ce592cbc494030538b14d4c144f32bff7185b1beb0ed0722ecc2366bbc1e",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpolkit-agent-1.so.0.0.0",
+   "sha256": "52f7ce592cbc494030538b14d4c144f32bff7185b1beb0ed0722ecc2366bbc1e",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpolkit-agent-1.so.0.0.0",
+   "sha256": "52f7ce592cbc494030538b14d4c144f32bff7185b1beb0ed0722ecc2366bbc1e",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpolkit-agent-1.so.0.0.0",
+   "sha256": "52f7ce592cbc494030538b14d4c144f32bff7185b1beb0ed0722ecc2366bbc1e",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpolkit-agent-1.so.0.0.0",
+   "sha256": "52f7ce592cbc494030538b14d4c144f32bff7185b1beb0ed0722ecc2366bbc1e",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpolkit-agent-1.so.0.0.0",
+   "sha256": "52f7ce592cbc494030538b14d4c144f32bff7185b1beb0ed0722ecc2366bbc1e",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libpolkit-agent-1.so.0.0.0",
+   "sha256": "52f7ce592cbc494030538b14d4c144f32bff7185b1beb0ed0722ecc2366bbc1e",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "librpm.so.9",
+   "sha256": "6a5ebacdcdf4ec59e9e5305b138a1a24e7e4ba0232453deee813442ed603d8cb",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "librpm.so.9",
+   "sha256": "6a5ebacdcdf4ec59e9e5305b138a1a24e7e4ba0232453deee813442ed603d8cb",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "librpm.so.9",
+   "sha256": "6a5ebacdcdf4ec59e9e5305b138a1a24e7e4ba0232453deee813442ed603d8cb",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "librpm.so.9",
+   "sha256": "6a5ebacdcdf4ec59e9e5305b138a1a24e7e4ba0232453deee813442ed603d8cb",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "librpm.so.9",
+   "sha256": "6a5ebacdcdf4ec59e9e5305b138a1a24e7e4ba0232453deee813442ed603d8cb",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "librpm.so.9",
+   "sha256": "6a5ebacdcdf4ec59e9e5305b138a1a24e7e4ba0232453deee813442ed603d8cb",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "librpm.so.9",
+   "sha256": "6a5ebacdcdf4ec59e9e5305b138a1a24e7e4ba0232453deee813442ed603d8cb",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "librpm.so.9",
+   "sha256": "6a5ebacdcdf4ec59e9e5305b138a1a24e7e4ba0232453deee813442ed603d8cb",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "librpm.so.9",
+   "sha256": "6a5ebacdcdf4ec59e9e5305b138a1a24e7e4ba0232453deee813442ed603d8cb",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libsodium.so.23",
+   "sha256": "fe00408090ea084504d7cb0130af56a22554fe299034b864551b65a64ca8a7b5",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libsodium.so.23",
+   "sha256": "fe00408090ea084504d7cb0130af56a22554fe299034b864551b65a64ca8a7b5",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libsodium.so.23",
+   "sha256": "fe00408090ea084504d7cb0130af56a22554fe299034b864551b65a64ca8a7b5",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libsodium.so.23",
+   "sha256": "fe00408090ea084504d7cb0130af56a22554fe299034b864551b65a64ca8a7b5",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libsodium.so.23",
+   "sha256": "fe00408090ea084504d7cb0130af56a22554fe299034b864551b65a64ca8a7b5",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libsodium.so.23",
+   "sha256": "fe00408090ea084504d7cb0130af56a22554fe299034b864551b65a64ca8a7b5",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libsodium.so.23",
+   "sha256": "fe00408090ea084504d7cb0130af56a22554fe299034b864551b65a64ca8a7b5",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libsodium.so.23",
+   "sha256": "fe00408090ea084504d7cb0130af56a22554fe299034b864551b65a64ca8a7b5",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libsodium.so.23",
+   "sha256": "fe00408090ea084504d7cb0130af56a22554fe299034b864551b65a64ca8a7b5",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libtidy.so.5deb1",
+   "sha256": "3018ff2768262f697e0dfee26ecd288a1f499fe5043d1636ac33ba6738a1589e",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libtidy.so.5deb1",
+   "sha256": "3018ff2768262f697e0dfee26ecd288a1f499fe5043d1636ac33ba6738a1589e",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libtidy.so.5deb1",
+   "sha256": "3018ff2768262f697e0dfee26ecd288a1f499fe5043d1636ac33ba6738a1589e",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libtidy.so.5deb1",
+   "sha256": "3018ff2768262f697e0dfee26ecd288a1f499fe5043d1636ac33ba6738a1589e",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libtidy.so.5deb1",
+   "sha256": "3018ff2768262f697e0dfee26ecd288a1f499fe5043d1636ac33ba6738a1589e",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libtidy.so.5deb1",
+   "sha256": "3018ff2768262f697e0dfee26ecd288a1f499fe5043d1636ac33ba6738a1589e",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libtidy.so.5deb1",
+   "sha256": "3018ff2768262f697e0dfee26ecd288a1f499fe5043d1636ac33ba6738a1589e",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libtidy.so.5deb1",
+   "sha256": "3018ff2768262f697e0dfee26ecd288a1f499fe5043d1636ac33ba6738a1589e",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libtidy.so.5deb1",
+   "sha256": "3018ff2768262f697e0dfee26ecd288a1f499fe5043d1636ac33ba6738a1589e",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libudisks2.so.0",
+   "sha256": "a568498fae341643235dd58487f1335d39052b1e0c96fd85095f5ddb25a458e6",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libudisks2.so.0",
+   "sha256": "a568498fae341643235dd58487f1335d39052b1e0c96fd85095f5ddb25a458e6",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libudisks2.so.0",
+   "sha256": "a568498fae341643235dd58487f1335d39052b1e0c96fd85095f5ddb25a458e6",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libudisks2.so.0",
+   "sha256": "a568498fae341643235dd58487f1335d39052b1e0c96fd85095f5ddb25a458e6",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libudisks2.so.0",
+   "sha256": "a568498fae341643235dd58487f1335d39052b1e0c96fd85095f5ddb25a458e6",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libudisks2.so.0",
+   "sha256": "a568498fae341643235dd58487f1335d39052b1e0c96fd85095f5ddb25a458e6",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libudisks2.so.0",
+   "sha256": "a568498fae341643235dd58487f1335d39052b1e0c96fd85095f5ddb25a458e6",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libudisks2.so.0",
+   "sha256": "a568498fae341643235dd58487f1335d39052b1e0c96fd85095f5ddb25a458e6",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libudisks2.so.0",
+   "sha256": "a568498fae341643235dd58487f1335d39052b1e0c96fd85095f5ddb25a458e6",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libvolume_key.so.1",
+   "sha256": "c8db2f36a51a19879d2250a6d2a235694d4ea27d995be6d5ed2e15207afb7cb5",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libvolume_key.so.1",
+   "sha256": "c8db2f36a51a19879d2250a6d2a235694d4ea27d995be6d5ed2e15207afb7cb5",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libvolume_key.so.1",
+   "sha256": "c8db2f36a51a19879d2250a6d2a235694d4ea27d995be6d5ed2e15207afb7cb5",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libvolume_key.so.1",
+   "sha256": "c8db2f36a51a19879d2250a6d2a235694d4ea27d995be6d5ed2e15207afb7cb5",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libvolume_key.so.1",
+   "sha256": "c8db2f36a51a19879d2250a6d2a235694d4ea27d995be6d5ed2e15207afb7cb5",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libvolume_key.so.1",
+   "sha256": "c8db2f36a51a19879d2250a6d2a235694d4ea27d995be6d5ed2e15207afb7cb5",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libvolume_key.so.1",
+   "sha256": "c8db2f36a51a19879d2250a6d2a235694d4ea27d995be6d5ed2e15207afb7cb5",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libvolume_key.so.1",
+   "sha256": "c8db2f36a51a19879d2250a6d2a235694d4ea27d995be6d5ed2e15207afb7cb5",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libvolume_key.so.1",
+   "sha256": "c8db2f36a51a19879d2250a6d2a235694d4ea27d995be6d5ed2e15207afb7cb5",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "libxcb.so.1.1.0",
+   "sha256": "7958a0136b121bdc4c708968569ad152a9ed208ab026e2537b1005dde64ca440",
+   "format": "ELF",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libxcb.so.1.1.0",
+   "sha256": "7958a0136b121bdc4c708968569ad152a9ed208ab026e2537b1005dde64ca440",
+   "format": "ELF",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libxcb.so.1.1.0",
+   "sha256": "7958a0136b121bdc4c708968569ad152a9ed208ab026e2537b1005dde64ca440",
+   "format": "ELF",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libxcb.so.1.1.0",
+   "sha256": "7958a0136b121bdc4c708968569ad152a9ed208ab026e2537b1005dde64ca440",
+   "format": "ELF",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libxcb.so.1.1.0",
+   "sha256": "7958a0136b121bdc4c708968569ad152a9ed208ab026e2537b1005dde64ca440",
+   "format": "ELF",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libxcb.so.1.1.0",
+   "sha256": "7958a0136b121bdc4c708968569ad152a9ed208ab026e2537b1005dde64ca440",
+   "format": "ELF",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libxcb.so.1.1.0",
+   "sha256": "7958a0136b121bdc4c708968569ad152a9ed208ab026e2537b1005dde64ca440",
+   "format": "ELF",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libxcb.so.1.1.0",
+   "sha256": "7958a0136b121bdc4c708968569ad152a9ed208ab026e2537b1005dde64ca440",
+   "format": "ELF",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "libxcb.so.1.1.0",
+   "sha256": "7958a0136b121bdc4c708968569ad152a9ed208ab026e2537b1005dde64ca440",
+   "format": "ELF",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  }
+ ]
+}

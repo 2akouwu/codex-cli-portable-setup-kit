@@ -1,0 +1,114 @@
+{
+ "generated": "2026-09-04T12:43:36Z",
+ "platform": "Windows-2025Server-10.0.26100-SP0",
+ "machine": "AMD64",
+ "sources": {
+  "frames.c": "725ae809b2689fd9566cfa2dfca672a5f28c4cc18ff5a2ffe4e682bc65d1d4e6",
+  "mathlib.c": "944785f519291d2f112c02c279df71e06bd26d259593913187fd454357bcf0f0"
+ },
+ "compilers": {
+  "gcc": "gcc (x86_64-posix-seh-rev1, Built by MinGW-Builds project) 15.2.0",
+  "clang": "clang version 20.1.8",
+  "cl": "usage: cl [ option... ] filename... [ /link linkoption... ]"
+ },
+ "artifacts": [
+  {
+   "file": "gcc-O0-frames.dll",
+   "compiler": "gcc",
+   "opt": "O0",
+   "source": "frames.c",
+   "flags": "-O0 -fno-omit-frame-pointer -fPIC -shared -fcf-protection=none -o",
+   "size": 40027,
+   "sha256": "3894b058f0191d130d249c8a4a96a94b7060b91b0b56f88aa0677f4d709b4647"
+  },
+  {
+   "file": "gcc-O0-mathlib.dll",
+   "compiler": "gcc",
+   "opt": "O0",
+   "source": "mathlib.c",
+   "flags": "-O0 -fno-omit-frame-pointer -fPIC -shared -fcf-protection=none -o",
+   "size": 40127,
+   "sha256": "8bcb714e3a81c47c47460dfba6399a93ef49559769ad8381e1b46b8906a269dc"
+  },
+  {
+   "file": "gcc-O2-frames.dll",
+   "compiler": "gcc",
+   "opt": "O2",
+   "source": "frames.c",
+   "flags": "-O2 -fomit-frame-pointer -fPIC -shared -fcf-protection=none -o",
+   "size": 39981,
+   "sha256": "e9093e87f7a9f69eb7f0ae74a43c23cdfc5f46cab6946e51843f1056aa25f166"
+  },
+  {
+   "file": "gcc-O2-mathlib.dll",
+   "compiler": "gcc",
+   "opt": "O2",
+   "source": "mathlib.c",
+   "flags": "-O2 -fomit-frame-pointer -fPIC -shared -fcf-protection=none -o",
+   "size": 40127,
+   "sha256": "010035e7dd1e95601cc0ab0465769f83bbd3db8ff0024e5f043dd75368b5ffd4"
+  },
+  {
+   "file": "cl-O0-frames.dll",
+   "compiler": "cl",
+   "opt": "O0",
+   "source": "frames.c",
+   "flags": "/nologo /LD /Od /W3 D:\\a\\reverify\\reverify\\benchmarks\\corpus\\src\\frames.c /Fe:D:\\a\\reverify\\reverify\\benchmarks\\corpus\\build\\cl-O0-frames.dll /Fo:D:\\a\\reverify\\reverify\\benchmarks\\corpus\\build\\cl-O0-frames.dll.obj",
+   "size": 103936,
+   "sha256": "48e4c6bc896170019a90ce1507053471d7a1ef20ca230e2869fd15c83aa73b5c"
+  },
+  {
+   "file": "cl-O0-mathlib.dll",
+   "compiler": "cl",
+   "opt": "O0",
+   "source": "mathlib.c",
+   "flags": "/nologo /LD /Od /W3 D:\\a\\reverify\\reverify\\benchmarks\\corpus\\src\\mathlib.c /Fe:D:\\a\\reverify\\reverify\\benchmarks\\corpus\\build\\cl-O0-mathlib.dll /Fo:D:\\a\\reverify\\reverify\\benchmarks\\corpus\\build\\cl-O0-mathlib.dll.obj",
+   "size": 103936,
+   "sha256": "2b5d4edd10f49d5da319416e1558ee66cba2d3137ab4113088b4f22d191d03ad"
+  },
+  {
+   "file": "cl-O2-frames.dll",
+   "compiler": "cl",
+   "opt": "O2",
+   "source": "frames.c",
+   "flags": "/nologo /LD /O2 /W3 D:\\a\\reverify\\reverify\\benchmarks\\corpus\\src\\frames.c /Fe:D:\\a\\reverify\\reverify\\benchmarks\\corpus\\build\\cl-O2-frames.dll /Fo:D:\\a\\reverify\\reverify\\benchmarks\\corpus\\build\\cl-O2-frames.dll.obj",
+   "size": 103936,
+   "sha256": "bd89c29a23d3b0c5775e25852742699a3feaacf8e18abf11f380ba2061b3b568"
+  },
+  {
+   "file": "cl-O2-mathlib.dll",
+   "compiler": "cl",
+   "opt": "O2",
+   "source": "mathlib.c",
+   "flags": "/nologo /LD /O2 /W3 D:\\a\\reverify\\reverify\\benchmarks\\corpus\\src\\mathlib.c /Fe:D:\\a\\reverify\\reverify\\benchmarks\\corpus\\build\\cl-O2-mathlib.dll /Fo:D:\\a\\reverify\\reverify\\benchmarks\\corpus\\build\\cl-O2-mathlib.dll.obj",
+   "size": 103424,
+   "sha256": "b7925e617f530372bf8ec57730a47c0802a7fa52c88b5671f5c5a171c7ed74e3"
+  }
+ ],
+ "failures": [
+  {
+   "compiler": "clang",
+   "opt": "O0",
+   "source": "frames.c",
+   "log": "clang: error: unsupported option '-fPIC' for target 'x86_64-pc-windows-msvc'\n"
+  },
+  {
+   "compiler": "clang",
+   "opt": "O0",
+   "source": "mathlib.c",
+   "log": "clang: error: unsupported option '-fPIC' for target 'x86_64-pc-windows-msvc'\n"
+  },
+  {
+   "compiler": "clang",
+   "opt": "O2",
+   "source": "frames.c",
+   "log": "clang: error: unsupported option '-fPIC' for target 'x86_64-pc-windows-msvc'\n"
+  },
+  {
+   "compiler": "clang",
+   "opt": "O2",
+   "source": "mathlib.c",
+   "log": "clang: error: unsupported option '-fPIC' for target 'x86_64-pc-windows-msvc'\n"
+  }
+ ]
+}

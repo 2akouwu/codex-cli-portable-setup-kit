@@ -1,0 +1,3834 @@
+{
+ "schema": 1,
+ "benchmark": "verifier_matrix",
+ "generated": "2026-09-04T12:43:49Z",
+ "environment": {
+  "reverify": "0.10.0",
+  "python": "3.13.15",
+  "platform": "Windows-2025Server-10.0.26100-SP0",
+  "machine": "AMD64",
+  "engines": {
+   "disassembly": {
+    "engine": "capstone",
+    "version": "5.0.7"
+   },
+   "emulation": {
+    "engine": "unicorn",
+    "version": "2.1.4"
+   },
+   "binary_parsing": {
+    "engine": "lief",
+    "version": "1.0.0-d05b3499b"
+   },
+   "proof": {
+    "engine": "z3",
+    "version": "5.1.0"
+   },
+   "semantic": {
+    "engine": "pure-python",
+    "version": null,
+    "note": "function boundaries, call graph and xrefs need pip install \"reverify[angr]\""
+   },
+   "full_fidelity": true
+  }
+ },
+ "corpus": {
+  "dirs": [
+   "C:\\Windows\\System32",
+   "C:\\Windows\\SysWOW64"
+  ],
+  "per_dir": 25,
+  "binaries": 50
+ },
+ "per_kind": {
+  "bytes_at": {
+   "n": 50,
+   "TP": 50,
+   "FN": 0,
+   "UNK_true": 0,
+   "FP": 0,
+   "TN": 50,
+   "UNK_false": 0
+  },
+  "u32_at": {
+   "n": 50,
+   "TP": 50,
+   "FN": 0,
+   "UNK_true": 0,
+   "FP": 0,
+   "TN": 50,
+   "UNK_false": 0
+  },
+  "u64_at": {
+   "n": 50,
+   "TP": 50,
+   "FN": 0,
+   "UNK_true": 0,
+   "FP": 0,
+   "TN": 50,
+   "UNK_false": 0
+  },
+  "string_present": {
+   "n": 48,
+   "TP": 48,
+   "FN": 0,
+   "UNK_true": 0,
+   "FP": 0,
+   "TN": 48,
+   "UNK_false": 0
+  },
+  "pattern_present": {
+   "n": 43,
+   "TP": 43,
+   "FN": 0,
+   "UNK_true": 0,
+   "FP": 0,
+   "TN": 43,
+   "UNK_false": 0
+  },
+  "section_present": {
+   "n": 50,
+   "TP": 50,
+   "FN": 0,
+   "UNK_true": 0,
+   "FP": 0,
+   "TN": 50,
+   "UNK_false": 0
+  },
+  "import_present": {
+   "n": 42,
+   "TP": 42,
+   "FN": 0,
+   "UNK_true": 0,
+   "FP": 0,
+   "TN": 42,
+   "UNK_false": 0
+  },
+  "export_present": {
+   "n": 43,
+   "TP": 43,
+   "FN": 0,
+   "UNK_true": 0,
+   "FP": 0,
+   "TN": 43,
+   "UNK_false": 0
+  },
+  "instructions": {
+   "n": 42,
+   "TP": 42,
+   "FN": 0,
+   "UNK_true": 0,
+   "FP": 0,
+   "TN": 42,
+   "UNK_false": 0
+  },
+  "function_at": {
+   "n": 43,
+   "TP": 43,
+   "FN": 0,
+   "UNK_true": 0,
+   "FP": 0,
+   "TN": 0,
+   "UNK_false": 43
+  }
+ },
+ "totals": {
+  "claims_true": 461,
+  "claims_false": 461,
+  "false_verified": 0,
+  "false_verified_rate_upper95": 0.008264320577160044,
+  "missed_true_byte_level": 0
+ },
+ "false_verified": [],
+ "missed_true": [],
+ "rows": [
+  {
+   "file": "07409496-a423-4a3e-b620-2cfb01a9318d_HyperV-ComputeNetwork.dll",
+   "sha256": "6fad8f322a6746f16e4881449971449bf63b06e04be3415da848eb1f639020e9",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "07409496-a423-4a3e-b620-2cfb01a9318d_HyperV-ComputeNetwork.dll",
+   "sha256": "6fad8f322a6746f16e4881449971449bf63b06e04be3415da848eb1f639020e9",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "07409496-a423-4a3e-b620-2cfb01a9318d_HyperV-ComputeNetwork.dll",
+   "sha256": "6fad8f322a6746f16e4881449971449bf63b06e04be3415da848eb1f639020e9",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "07409496-a423-4a3e-b620-2cfb01a9318d_HyperV-ComputeNetwork.dll",
+   "sha256": "6fad8f322a6746f16e4881449971449bf63b06e04be3415da848eb1f639020e9",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "07409496-a423-4a3e-b620-2cfb01a9318d_HyperV-ComputeNetwork.dll",
+   "sha256": "6fad8f322a6746f16e4881449971449bf63b06e04be3415da848eb1f639020e9",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "BthpanContextHandler.dll",
+   "sha256": "140cdba05c44bebef5bb3149abb1cb5534368b35ee9ed3d1553cfaa9b9d023e8",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "BthpanContextHandler.dll",
+   "sha256": "140cdba05c44bebef5bb3149abb1cb5534368b35ee9ed3d1553cfaa9b9d023e8",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "BthpanContextHandler.dll",
+   "sha256": "140cdba05c44bebef5bb3149abb1cb5534368b35ee9ed3d1553cfaa9b9d023e8",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "BthpanContextHandler.dll",
+   "sha256": "140cdba05c44bebef5bb3149abb1cb5534368b35ee9ed3d1553cfaa9b9d023e8",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "BthpanContextHandler.dll",
+   "sha256": "140cdba05c44bebef5bb3149abb1cb5534368b35ee9ed3d1553cfaa9b9d023e8",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "BthpanContextHandler.dll",
+   "sha256": "140cdba05c44bebef5bb3149abb1cb5534368b35ee9ed3d1553cfaa9b9d023e8",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "BthpanContextHandler.dll",
+   "sha256": "140cdba05c44bebef5bb3149abb1cb5534368b35ee9ed3d1553cfaa9b9d023e8",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "BthpanContextHandler.dll",
+   "sha256": "140cdba05c44bebef5bb3149abb1cb5534368b35ee9ed3d1553cfaa9b9d023e8",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "BthpanContextHandler.dll",
+   "sha256": "140cdba05c44bebef5bb3149abb1cb5534368b35ee9ed3d1553cfaa9b9d023e8",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "BthpanContextHandler.dll",
+   "sha256": "140cdba05c44bebef5bb3149abb1cb5534368b35ee9ed3d1553cfaa9b9d023e8",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "DeviceDisplayStatusManager.dll",
+   "sha256": "5a754de68f19283534e8e0cc0e2416c6169e28347e1da86a1f1848979256abae",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "DeviceDisplayStatusManager.dll",
+   "sha256": "5a754de68f19283534e8e0cc0e2416c6169e28347e1da86a1f1848979256abae",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "DeviceDisplayStatusManager.dll",
+   "sha256": "5a754de68f19283534e8e0cc0e2416c6169e28347e1da86a1f1848979256abae",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "DeviceDisplayStatusManager.dll",
+   "sha256": "5a754de68f19283534e8e0cc0e2416c6169e28347e1da86a1f1848979256abae",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "DeviceDisplayStatusManager.dll",
+   "sha256": "5a754de68f19283534e8e0cc0e2416c6169e28347e1da86a1f1848979256abae",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "DeviceDisplayStatusManager.dll",
+   "sha256": "5a754de68f19283534e8e0cc0e2416c6169e28347e1da86a1f1848979256abae",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "DeviceDisplayStatusManager.dll",
+   "sha256": "5a754de68f19283534e8e0cc0e2416c6169e28347e1da86a1f1848979256abae",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "DeviceDisplayStatusManager.dll",
+   "sha256": "5a754de68f19283534e8e0cc0e2416c6169e28347e1da86a1f1848979256abae",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "DeviceDisplayStatusManager.dll",
+   "sha256": "5a754de68f19283534e8e0cc0e2416c6169e28347e1da86a1f1848979256abae",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "DeviceDisplayStatusManager.dll",
+   "sha256": "5a754de68f19283534e8e0cc0e2416c6169e28347e1da86a1f1848979256abae",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "HttpsDataSource.dll",
+   "sha256": "093c551a8ee3a148a698f44067371f1a2a7cb23f12e887f5faf1ddc6b41a8328",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "HttpsDataSource.dll",
+   "sha256": "093c551a8ee3a148a698f44067371f1a2a7cb23f12e887f5faf1ddc6b41a8328",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "HttpsDataSource.dll",
+   "sha256": "093c551a8ee3a148a698f44067371f1a2a7cb23f12e887f5faf1ddc6b41a8328",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "HttpsDataSource.dll",
+   "sha256": "093c551a8ee3a148a698f44067371f1a2a7cb23f12e887f5faf1ddc6b41a8328",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "HttpsDataSource.dll",
+   "sha256": "093c551a8ee3a148a698f44067371f1a2a7cb23f12e887f5faf1ddc6b41a8328",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "HttpsDataSource.dll",
+   "sha256": "093c551a8ee3a148a698f44067371f1a2a7cb23f12e887f5faf1ddc6b41a8328",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "HttpsDataSource.dll",
+   "sha256": "093c551a8ee3a148a698f44067371f1a2a7cb23f12e887f5faf1ddc6b41a8328",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "HttpsDataSource.dll",
+   "sha256": "093c551a8ee3a148a698f44067371f1a2a7cb23f12e887f5faf1ddc6b41a8328",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "HttpsDataSource.dll",
+   "sha256": "093c551a8ee3a148a698f44067371f1a2a7cb23f12e887f5faf1ddc6b41a8328",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "HttpsDataSource.dll",
+   "sha256": "093c551a8ee3a148a698f44067371f1a2a7cb23f12e887f5faf1ddc6b41a8328",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "KBDKYR.DLL",
+   "sha256": "29ade97e6590586a819e7baa1e13295287c267268d9c3c66d09ac7db1f226e46",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "KBDKYR.DLL",
+   "sha256": "29ade97e6590586a819e7baa1e13295287c267268d9c3c66d09ac7db1f226e46",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "KBDKYR.DLL",
+   "sha256": "29ade97e6590586a819e7baa1e13295287c267268d9c3c66d09ac7db1f226e46",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "KBDKYR.DLL",
+   "sha256": "29ade97e6590586a819e7baa1e13295287c267268d9c3c66d09ac7db1f226e46",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "KBDKYR.DLL",
+   "sha256": "29ade97e6590586a819e7baa1e13295287c267268d9c3c66d09ac7db1f226e46",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "KBDKYR.DLL",
+   "sha256": "29ade97e6590586a819e7baa1e13295287c267268d9c3c66d09ac7db1f226e46",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "KBDKYR.DLL",
+   "sha256": "29ade97e6590586a819e7baa1e13295287c267268d9c3c66d09ac7db1f226e46",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "MFWMAAEC.DLL",
+   "sha256": "7dcd0242772701292adf6a3accfa7aa5cb68a4c2ee431058540087b6ad41930f",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "MFWMAAEC.DLL",
+   "sha256": "7dcd0242772701292adf6a3accfa7aa5cb68a4c2ee431058540087b6ad41930f",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "MFWMAAEC.DLL",
+   "sha256": "7dcd0242772701292adf6a3accfa7aa5cb68a4c2ee431058540087b6ad41930f",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "MFWMAAEC.DLL",
+   "sha256": "7dcd0242772701292adf6a3accfa7aa5cb68a4c2ee431058540087b6ad41930f",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "MFWMAAEC.DLL",
+   "sha256": "7dcd0242772701292adf6a3accfa7aa5cb68a4c2ee431058540087b6ad41930f",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "MFWMAAEC.DLL",
+   "sha256": "7dcd0242772701292adf6a3accfa7aa5cb68a4c2ee431058540087b6ad41930f",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "MFWMAAEC.DLL",
+   "sha256": "7dcd0242772701292adf6a3accfa7aa5cb68a4c2ee431058540087b6ad41930f",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "MFWMAAEC.DLL",
+   "sha256": "7dcd0242772701292adf6a3accfa7aa5cb68a4c2ee431058540087b6ad41930f",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "MFWMAAEC.DLL",
+   "sha256": "7dcd0242772701292adf6a3accfa7aa5cb68a4c2ee431058540087b6ad41930f",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "NetDriverInstall.dll",
+   "sha256": "f13d51c790cc304396b127abbd0db8fae2a299f385567d9613416a32e4fed134",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "NetDriverInstall.dll",
+   "sha256": "f13d51c790cc304396b127abbd0db8fae2a299f385567d9613416a32e4fed134",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "NetDriverInstall.dll",
+   "sha256": "f13d51c790cc304396b127abbd0db8fae2a299f385567d9613416a32e4fed134",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "NetDriverInstall.dll",
+   "sha256": "f13d51c790cc304396b127abbd0db8fae2a299f385567d9613416a32e4fed134",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "NetDriverInstall.dll",
+   "sha256": "f13d51c790cc304396b127abbd0db8fae2a299f385567d9613416a32e4fed134",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "NetDriverInstall.dll",
+   "sha256": "f13d51c790cc304396b127abbd0db8fae2a299f385567d9613416a32e4fed134",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "NetDriverInstall.dll",
+   "sha256": "f13d51c790cc304396b127abbd0db8fae2a299f385567d9613416a32e4fed134",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "NetDriverInstall.dll",
+   "sha256": "f13d51c790cc304396b127abbd0db8fae2a299f385567d9613416a32e4fed134",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "NetDriverInstall.dll",
+   "sha256": "f13d51c790cc304396b127abbd0db8fae2a299f385567d9613416a32e4fed134",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "NetDriverInstall.dll",
+   "sha256": "f13d51c790cc304396b127abbd0db8fae2a299f385567d9613416a32e4fed134",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "ResourcePolicyServer.dll",
+   "sha256": "d61fff5c86811735bc2070f4cab889beef4c4cfc4f265bb0eedf9ca931005e09",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ResourcePolicyServer.dll",
+   "sha256": "d61fff5c86811735bc2070f4cab889beef4c4cfc4f265bb0eedf9ca931005e09",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ResourcePolicyServer.dll",
+   "sha256": "d61fff5c86811735bc2070f4cab889beef4c4cfc4f265bb0eedf9ca931005e09",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ResourcePolicyServer.dll",
+   "sha256": "d61fff5c86811735bc2070f4cab889beef4c4cfc4f265bb0eedf9ca931005e09",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ResourcePolicyServer.dll",
+   "sha256": "d61fff5c86811735bc2070f4cab889beef4c4cfc4f265bb0eedf9ca931005e09",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ResourcePolicyServer.dll",
+   "sha256": "d61fff5c86811735bc2070f4cab889beef4c4cfc4f265bb0eedf9ca931005e09",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ResourcePolicyServer.dll",
+   "sha256": "d61fff5c86811735bc2070f4cab889beef4c4cfc4f265bb0eedf9ca931005e09",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ResourcePolicyServer.dll",
+   "sha256": "d61fff5c86811735bc2070f4cab889beef4c4cfc4f265bb0eedf9ca931005e09",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ResourcePolicyServer.dll",
+   "sha256": "d61fff5c86811735bc2070f4cab889beef4c4cfc4f265bb0eedf9ca931005e09",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ResourcePolicyServer.dll",
+   "sha256": "d61fff5c86811735bc2070f4cab889beef4c4cfc4f265bb0eedf9ca931005e09",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "StorageContextHandler.dll",
+   "sha256": "f46e02939a15d74fdf137bf3c03a3559751b419ffa4e385040ff2df342182e26",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "StorageContextHandler.dll",
+   "sha256": "f46e02939a15d74fdf137bf3c03a3559751b419ffa4e385040ff2df342182e26",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "StorageContextHandler.dll",
+   "sha256": "f46e02939a15d74fdf137bf3c03a3559751b419ffa4e385040ff2df342182e26",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "StorageContextHandler.dll",
+   "sha256": "f46e02939a15d74fdf137bf3c03a3559751b419ffa4e385040ff2df342182e26",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "StorageContextHandler.dll",
+   "sha256": "f46e02939a15d74fdf137bf3c03a3559751b419ffa4e385040ff2df342182e26",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "StorageContextHandler.dll",
+   "sha256": "f46e02939a15d74fdf137bf3c03a3559751b419ffa4e385040ff2df342182e26",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "StorageContextHandler.dll",
+   "sha256": "f46e02939a15d74fdf137bf3c03a3559751b419ffa4e385040ff2df342182e26",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "StorageContextHandler.dll",
+   "sha256": "f46e02939a15d74fdf137bf3c03a3559751b419ffa4e385040ff2df342182e26",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "StorageContextHandler.dll",
+   "sha256": "f46e02939a15d74fdf137bf3c03a3559751b419ffa4e385040ff2df342182e26",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "WMVENCOD.DLL",
+   "sha256": "642427cea40aa1e9762fad10bfb78d4353cab333d1fdd1f4a8456f180874c046",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "WMVENCOD.DLL",
+   "sha256": "642427cea40aa1e9762fad10bfb78d4353cab333d1fdd1f4a8456f180874c046",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "WMVENCOD.DLL",
+   "sha256": "642427cea40aa1e9762fad10bfb78d4353cab333d1fdd1f4a8456f180874c046",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "WMVENCOD.DLL",
+   "sha256": "642427cea40aa1e9762fad10bfb78d4353cab333d1fdd1f4a8456f180874c046",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "WMVENCOD.DLL",
+   "sha256": "642427cea40aa1e9762fad10bfb78d4353cab333d1fdd1f4a8456f180874c046",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "WMVENCOD.DLL",
+   "sha256": "642427cea40aa1e9762fad10bfb78d4353cab333d1fdd1f4a8456f180874c046",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "WMVENCOD.DLL",
+   "sha256": "642427cea40aa1e9762fad10bfb78d4353cab333d1fdd1f4a8456f180874c046",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "WMVENCOD.DLL",
+   "sha256": "642427cea40aa1e9762fad10bfb78d4353cab333d1fdd1f4a8456f180874c046",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "WMVENCOD.DLL",
+   "sha256": "642427cea40aa1e9762fad10bfb78d4353cab333d1fdd1f4a8456f180874c046",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "WMVENCOD.DLL",
+   "sha256": "642427cea40aa1e9762fad10bfb78d4353cab333d1fdd1f4a8456f180874c046",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "Windows.Internal.ShellCommon.dll",
+   "sha256": "ab2f09c51eac8f39dbaa140e1668aa35bbd5e6786e63afcdbc4cb27506b3392c",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Windows.Internal.ShellCommon.dll",
+   "sha256": "ab2f09c51eac8f39dbaa140e1668aa35bbd5e6786e63afcdbc4cb27506b3392c",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Windows.Internal.ShellCommon.dll",
+   "sha256": "ab2f09c51eac8f39dbaa140e1668aa35bbd5e6786e63afcdbc4cb27506b3392c",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Windows.Internal.ShellCommon.dll",
+   "sha256": "ab2f09c51eac8f39dbaa140e1668aa35bbd5e6786e63afcdbc4cb27506b3392c",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Windows.Internal.ShellCommon.dll",
+   "sha256": "ab2f09c51eac8f39dbaa140e1668aa35bbd5e6786e63afcdbc4cb27506b3392c",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Windows.Internal.ShellCommon.dll",
+   "sha256": "ab2f09c51eac8f39dbaa140e1668aa35bbd5e6786e63afcdbc4cb27506b3392c",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Windows.Internal.ShellCommon.dll",
+   "sha256": "ab2f09c51eac8f39dbaa140e1668aa35bbd5e6786e63afcdbc4cb27506b3392c",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Windows.Internal.ShellCommon.dll",
+   "sha256": "ab2f09c51eac8f39dbaa140e1668aa35bbd5e6786e63afcdbc4cb27506b3392c",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Windows.Internal.ShellCommon.dll",
+   "sha256": "ab2f09c51eac8f39dbaa140e1668aa35bbd5e6786e63afcdbc4cb27506b3392c",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Windows.Internal.ShellCommon.dll",
+   "sha256": "ab2f09c51eac8f39dbaa140e1668aa35bbd5e6786e63afcdbc4cb27506b3392c",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "WofUtil.dll",
+   "sha256": "9c17ddbeba5b21e2eb2bc6dd71fa01c2a94cdd709db0782c59cedce73a62606e",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "WofUtil.dll",
+   "sha256": "9c17ddbeba5b21e2eb2bc6dd71fa01c2a94cdd709db0782c59cedce73a62606e",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "WofUtil.dll",
+   "sha256": "9c17ddbeba5b21e2eb2bc6dd71fa01c2a94cdd709db0782c59cedce73a62606e",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "WofUtil.dll",
+   "sha256": "9c17ddbeba5b21e2eb2bc6dd71fa01c2a94cdd709db0782c59cedce73a62606e",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "WofUtil.dll",
+   "sha256": "9c17ddbeba5b21e2eb2bc6dd71fa01c2a94cdd709db0782c59cedce73a62606e",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "WofUtil.dll",
+   "sha256": "9c17ddbeba5b21e2eb2bc6dd71fa01c2a94cdd709db0782c59cedce73a62606e",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "WofUtil.dll",
+   "sha256": "9c17ddbeba5b21e2eb2bc6dd71fa01c2a94cdd709db0782c59cedce73a62606e",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "WofUtil.dll",
+   "sha256": "9c17ddbeba5b21e2eb2bc6dd71fa01c2a94cdd709db0782c59cedce73a62606e",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "WofUtil.dll",
+   "sha256": "9c17ddbeba5b21e2eb2bc6dd71fa01c2a94cdd709db0782c59cedce73a62606e",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "WofUtil.dll",
+   "sha256": "9c17ddbeba5b21e2eb2bc6dd71fa01c2a94cdd709db0782c59cedce73a62606e",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "blbres.dll",
+   "sha256": "4f4ff0c1e4dc7bacebc954ee53e5ba150ee3978a691c13a8e1c100e529ae2f7b",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "blbres.dll",
+   "sha256": "4f4ff0c1e4dc7bacebc954ee53e5ba150ee3978a691c13a8e1c100e529ae2f7b",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "blbres.dll",
+   "sha256": "4f4ff0c1e4dc7bacebc954ee53e5ba150ee3978a691c13a8e1c100e529ae2f7b",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "blbres.dll",
+   "sha256": "4f4ff0c1e4dc7bacebc954ee53e5ba150ee3978a691c13a8e1c100e529ae2f7b",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "d2d1.dll",
+   "sha256": "cbe7f97e79974d82cad9fc8d10618ab6c3fe206d4ec6b0e063e966999ccdb84d",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "d2d1.dll",
+   "sha256": "cbe7f97e79974d82cad9fc8d10618ab6c3fe206d4ec6b0e063e966999ccdb84d",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "d2d1.dll",
+   "sha256": "cbe7f97e79974d82cad9fc8d10618ab6c3fe206d4ec6b0e063e966999ccdb84d",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "d2d1.dll",
+   "sha256": "cbe7f97e79974d82cad9fc8d10618ab6c3fe206d4ec6b0e063e966999ccdb84d",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "d2d1.dll",
+   "sha256": "cbe7f97e79974d82cad9fc8d10618ab6c3fe206d4ec6b0e063e966999ccdb84d",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "d2d1.dll",
+   "sha256": "cbe7f97e79974d82cad9fc8d10618ab6c3fe206d4ec6b0e063e966999ccdb84d",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "d2d1.dll",
+   "sha256": "cbe7f97e79974d82cad9fc8d10618ab6c3fe206d4ec6b0e063e966999ccdb84d",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "d2d1.dll",
+   "sha256": "cbe7f97e79974d82cad9fc8d10618ab6c3fe206d4ec6b0e063e966999ccdb84d",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "d2d1.dll",
+   "sha256": "cbe7f97e79974d82cad9fc8d10618ab6c3fe206d4ec6b0e063e966999ccdb84d",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "d2d1.dll",
+   "sha256": "cbe7f97e79974d82cad9fc8d10618ab6c3fe206d4ec6b0e063e966999ccdb84d",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "dpx.dll",
+   "sha256": "7bf88a3e143a4785fde10aface828a450effcd78f50d37b853d54649b4097c39",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dpx.dll",
+   "sha256": "7bf88a3e143a4785fde10aface828a450effcd78f50d37b853d54649b4097c39",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dpx.dll",
+   "sha256": "7bf88a3e143a4785fde10aface828a450effcd78f50d37b853d54649b4097c39",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dpx.dll",
+   "sha256": "7bf88a3e143a4785fde10aface828a450effcd78f50d37b853d54649b4097c39",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dpx.dll",
+   "sha256": "7bf88a3e143a4785fde10aface828a450effcd78f50d37b853d54649b4097c39",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dpx.dll",
+   "sha256": "7bf88a3e143a4785fde10aface828a450effcd78f50d37b853d54649b4097c39",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dpx.dll",
+   "sha256": "7bf88a3e143a4785fde10aface828a450effcd78f50d37b853d54649b4097c39",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dpx.dll",
+   "sha256": "7bf88a3e143a4785fde10aface828a450effcd78f50d37b853d54649b4097c39",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dpx.dll",
+   "sha256": "7bf88a3e143a4785fde10aface828a450effcd78f50d37b853d54649b4097c39",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dpx.dll",
+   "sha256": "7bf88a3e143a4785fde10aface828a450effcd78f50d37b853d54649b4097c39",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "fvecerts.dll",
+   "sha256": "48a4274b7ebf47c14fc287185795f362d67e0caf14024657ee97cc89f3ae57f2",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "fvecerts.dll",
+   "sha256": "48a4274b7ebf47c14fc287185795f362d67e0caf14024657ee97cc89f3ae57f2",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "fvecerts.dll",
+   "sha256": "48a4274b7ebf47c14fc287185795f362d67e0caf14024657ee97cc89f3ae57f2",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "fvecerts.dll",
+   "sha256": "48a4274b7ebf47c14fc287185795f362d67e0caf14024657ee97cc89f3ae57f2",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "fvecerts.dll",
+   "sha256": "48a4274b7ebf47c14fc287185795f362d67e0caf14024657ee97cc89f3ae57f2",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "fvecerts.dll",
+   "sha256": "48a4274b7ebf47c14fc287185795f362d67e0caf14024657ee97cc89f3ae57f2",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "fvecerts.dll",
+   "sha256": "48a4274b7ebf47c14fc287185795f362d67e0caf14024657ee97cc89f3ae57f2",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "fvecerts.dll",
+   "sha256": "48a4274b7ebf47c14fc287185795f362d67e0caf14024657ee97cc89f3ae57f2",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "fvecerts.dll",
+   "sha256": "48a4274b7ebf47c14fc287185795f362d67e0caf14024657ee97cc89f3ae57f2",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "fvecerts.dll",
+   "sha256": "48a4274b7ebf47c14fc287185795f362d67e0caf14024657ee97cc89f3ae57f2",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "iumcrypt.dll",
+   "sha256": "6fce2472c05efb55600c5908c8a090329da8ee5043c6fadb59939ff77bcaee92",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "iumcrypt.dll",
+   "sha256": "6fce2472c05efb55600c5908c8a090329da8ee5043c6fadb59939ff77bcaee92",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "iumcrypt.dll",
+   "sha256": "6fce2472c05efb55600c5908c8a090329da8ee5043c6fadb59939ff77bcaee92",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "iumcrypt.dll",
+   "sha256": "6fce2472c05efb55600c5908c8a090329da8ee5043c6fadb59939ff77bcaee92",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "iumcrypt.dll",
+   "sha256": "6fce2472c05efb55600c5908c8a090329da8ee5043c6fadb59939ff77bcaee92",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "iumcrypt.dll",
+   "sha256": "6fce2472c05efb55600c5908c8a090329da8ee5043c6fadb59939ff77bcaee92",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "iumcrypt.dll",
+   "sha256": "6fce2472c05efb55600c5908c8a090329da8ee5043c6fadb59939ff77bcaee92",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "iumcrypt.dll",
+   "sha256": "6fce2472c05efb55600c5908c8a090329da8ee5043c6fadb59939ff77bcaee92",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "iumcrypt.dll",
+   "sha256": "6fce2472c05efb55600c5908c8a090329da8ee5043c6fadb59939ff77bcaee92",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "iumcrypt.dll",
+   "sha256": "6fce2472c05efb55600c5908c8a090329da8ee5043c6fadb59939ff77bcaee92",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "mfc120u.dll",
+   "sha256": "75497de4aec4b5f0f258164672db2eb55eef5138c028317860e05f11030f7b7c",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mfc120u.dll",
+   "sha256": "75497de4aec4b5f0f258164672db2eb55eef5138c028317860e05f11030f7b7c",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mfc120u.dll",
+   "sha256": "75497de4aec4b5f0f258164672db2eb55eef5138c028317860e05f11030f7b7c",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mfc120u.dll",
+   "sha256": "75497de4aec4b5f0f258164672db2eb55eef5138c028317860e05f11030f7b7c",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mfc120u.dll",
+   "sha256": "75497de4aec4b5f0f258164672db2eb55eef5138c028317860e05f11030f7b7c",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mfc120u.dll",
+   "sha256": "75497de4aec4b5f0f258164672db2eb55eef5138c028317860e05f11030f7b7c",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mfc120u.dll",
+   "sha256": "75497de4aec4b5f0f258164672db2eb55eef5138c028317860e05f11030f7b7c",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mfc120u.dll",
+   "sha256": "75497de4aec4b5f0f258164672db2eb55eef5138c028317860e05f11030f7b7c",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msdtctm.dll",
+   "sha256": "948feb3d76064157f9ce02e876a66ce8d955c4f91023bd19ff75cba22589a71a",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msdtctm.dll",
+   "sha256": "948feb3d76064157f9ce02e876a66ce8d955c4f91023bd19ff75cba22589a71a",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msdtctm.dll",
+   "sha256": "948feb3d76064157f9ce02e876a66ce8d955c4f91023bd19ff75cba22589a71a",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msdtctm.dll",
+   "sha256": "948feb3d76064157f9ce02e876a66ce8d955c4f91023bd19ff75cba22589a71a",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msdtctm.dll",
+   "sha256": "948feb3d76064157f9ce02e876a66ce8d955c4f91023bd19ff75cba22589a71a",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msdtctm.dll",
+   "sha256": "948feb3d76064157f9ce02e876a66ce8d955c4f91023bd19ff75cba22589a71a",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msdtctm.dll",
+   "sha256": "948feb3d76064157f9ce02e876a66ce8d955c4f91023bd19ff75cba22589a71a",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msdtctm.dll",
+   "sha256": "948feb3d76064157f9ce02e876a66ce8d955c4f91023bd19ff75cba22589a71a",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msdtctm.dll",
+   "sha256": "948feb3d76064157f9ce02e876a66ce8d955c4f91023bd19ff75cba22589a71a",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msdtctm.dll",
+   "sha256": "948feb3d76064157f9ce02e876a66ce8d955c4f91023bd19ff75cba22589a71a",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "ngcpopkeysrv.dll",
+   "sha256": "63c5a2eab1f596423a6ad275b045ee3c8dd9d2786521933694ba2a78f3a5546c",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ngcpopkeysrv.dll",
+   "sha256": "63c5a2eab1f596423a6ad275b045ee3c8dd9d2786521933694ba2a78f3a5546c",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ngcpopkeysrv.dll",
+   "sha256": "63c5a2eab1f596423a6ad275b045ee3c8dd9d2786521933694ba2a78f3a5546c",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ngcpopkeysrv.dll",
+   "sha256": "63c5a2eab1f596423a6ad275b045ee3c8dd9d2786521933694ba2a78f3a5546c",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ngcpopkeysrv.dll",
+   "sha256": "63c5a2eab1f596423a6ad275b045ee3c8dd9d2786521933694ba2a78f3a5546c",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ngcpopkeysrv.dll",
+   "sha256": "63c5a2eab1f596423a6ad275b045ee3c8dd9d2786521933694ba2a78f3a5546c",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ngcpopkeysrv.dll",
+   "sha256": "63c5a2eab1f596423a6ad275b045ee3c8dd9d2786521933694ba2a78f3a5546c",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ngcpopkeysrv.dll",
+   "sha256": "63c5a2eab1f596423a6ad275b045ee3c8dd9d2786521933694ba2a78f3a5546c",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ngcpopkeysrv.dll",
+   "sha256": "63c5a2eab1f596423a6ad275b045ee3c8dd9d2786521933694ba2a78f3a5546c",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "ngcpopkeysrv.dll",
+   "sha256": "63c5a2eab1f596423a6ad275b045ee3c8dd9d2786521933694ba2a78f3a5546c",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "provops.dll",
+   "sha256": "f904a752ef43f2f7d2fa0e0324cd122ceb46208240a9b288bd2db91c7ea1eb83",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "provops.dll",
+   "sha256": "f904a752ef43f2f7d2fa0e0324cd122ceb46208240a9b288bd2db91c7ea1eb83",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "provops.dll",
+   "sha256": "f904a752ef43f2f7d2fa0e0324cd122ceb46208240a9b288bd2db91c7ea1eb83",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "provops.dll",
+   "sha256": "f904a752ef43f2f7d2fa0e0324cd122ceb46208240a9b288bd2db91c7ea1eb83",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "provops.dll",
+   "sha256": "f904a752ef43f2f7d2fa0e0324cd122ceb46208240a9b288bd2db91c7ea1eb83",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "provops.dll",
+   "sha256": "f904a752ef43f2f7d2fa0e0324cd122ceb46208240a9b288bd2db91c7ea1eb83",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "provops.dll",
+   "sha256": "f904a752ef43f2f7d2fa0e0324cd122ceb46208240a9b288bd2db91c7ea1eb83",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "provops.dll",
+   "sha256": "f904a752ef43f2f7d2fa0e0324cd122ceb46208240a9b288bd2db91c7ea1eb83",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "provops.dll",
+   "sha256": "f904a752ef43f2f7d2fa0e0324cd122ceb46208240a9b288bd2db91c7ea1eb83",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "provops.dll",
+   "sha256": "f904a752ef43f2f7d2fa0e0324cd122ceb46208240a9b288bd2db91c7ea1eb83",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "setupcl.dll",
+   "sha256": "ac3043eeeb8b6253541b7184a2d5db65f56d5ffa1be1c903c23e3533905de3b5",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "setupcl.dll",
+   "sha256": "ac3043eeeb8b6253541b7184a2d5db65f56d5ffa1be1c903c23e3533905de3b5",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "setupcl.dll",
+   "sha256": "ac3043eeeb8b6253541b7184a2d5db65f56d5ffa1be1c903c23e3533905de3b5",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "setupcl.dll",
+   "sha256": "ac3043eeeb8b6253541b7184a2d5db65f56d5ffa1be1c903c23e3533905de3b5",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "setupcl.dll",
+   "sha256": "ac3043eeeb8b6253541b7184a2d5db65f56d5ffa1be1c903c23e3533905de3b5",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "setupcl.dll",
+   "sha256": "ac3043eeeb8b6253541b7184a2d5db65f56d5ffa1be1c903c23e3533905de3b5",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "setupcl.dll",
+   "sha256": "ac3043eeeb8b6253541b7184a2d5db65f56d5ffa1be1c903c23e3533905de3b5",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "setupcl.dll",
+   "sha256": "ac3043eeeb8b6253541b7184a2d5db65f56d5ffa1be1c903c23e3533905de3b5",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "setupcl.dll",
+   "sha256": "ac3043eeeb8b6253541b7184a2d5db65f56d5ffa1be1c903c23e3533905de3b5",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "setupcl.dll",
+   "sha256": "ac3043eeeb8b6253541b7184a2d5db65f56d5ffa1be1c903c23e3533905de3b5",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "tier2punctuations.dll",
+   "sha256": "2c43a6875db32f7471ff8a1b32a42190b16fd16413e2ea2c1334978b63ac5ef5",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "tier2punctuations.dll",
+   "sha256": "2c43a6875db32f7471ff8a1b32a42190b16fd16413e2ea2c1334978b63ac5ef5",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "tier2punctuations.dll",
+   "sha256": "2c43a6875db32f7471ff8a1b32a42190b16fd16413e2ea2c1334978b63ac5ef5",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "tier2punctuations.dll",
+   "sha256": "2c43a6875db32f7471ff8a1b32a42190b16fd16413e2ea2c1334978b63ac5ef5",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "vfcompat.dll",
+   "sha256": "d91593bd4618649585bcf28ff7cc3943fb22a1732e51992d359003ef54509d07",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "vfcompat.dll",
+   "sha256": "d91593bd4618649585bcf28ff7cc3943fb22a1732e51992d359003ef54509d07",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "vfcompat.dll",
+   "sha256": "d91593bd4618649585bcf28ff7cc3943fb22a1732e51992d359003ef54509d07",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "vfcompat.dll",
+   "sha256": "d91593bd4618649585bcf28ff7cc3943fb22a1732e51992d359003ef54509d07",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "vfcompat.dll",
+   "sha256": "d91593bd4618649585bcf28ff7cc3943fb22a1732e51992d359003ef54509d07",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "vfcompat.dll",
+   "sha256": "d91593bd4618649585bcf28ff7cc3943fb22a1732e51992d359003ef54509d07",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "vfcompat.dll",
+   "sha256": "d91593bd4618649585bcf28ff7cc3943fb22a1732e51992d359003ef54509d07",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "vfcompat.dll",
+   "sha256": "d91593bd4618649585bcf28ff7cc3943fb22a1732e51992d359003ef54509d07",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "wininet.dll",
+   "sha256": "e642389e32fcabe729731db27249e5505a47cec4775d19b35e0110494a620b25",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "wininet.dll",
+   "sha256": "e642389e32fcabe729731db27249e5505a47cec4775d19b35e0110494a620b25",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "wininet.dll",
+   "sha256": "e642389e32fcabe729731db27249e5505a47cec4775d19b35e0110494a620b25",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "wininet.dll",
+   "sha256": "e642389e32fcabe729731db27249e5505a47cec4775d19b35e0110494a620b25",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "wininet.dll",
+   "sha256": "e642389e32fcabe729731db27249e5505a47cec4775d19b35e0110494a620b25",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "wininet.dll",
+   "sha256": "e642389e32fcabe729731db27249e5505a47cec4775d19b35e0110494a620b25",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "wininet.dll",
+   "sha256": "e642389e32fcabe729731db27249e5505a47cec4775d19b35e0110494a620b25",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "wininet.dll",
+   "sha256": "e642389e32fcabe729731db27249e5505a47cec4775d19b35e0110494a620b25",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "wininet.dll",
+   "sha256": "e642389e32fcabe729731db27249e5505a47cec4775d19b35e0110494a620b25",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "wininet.dll",
+   "sha256": "e642389e32fcabe729731db27249e5505a47cec4775d19b35e0110494a620b25",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "3bc29097-7317-41d3-93b9-38a48f99d48a_mssrch.dll",
+   "sha256": "434954e45d5ca20d6d010db6b4329f8806776b2706757b146e8d3c5c494b8da3",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "3bc29097-7317-41d3-93b9-38a48f99d48a_mssrch.dll",
+   "sha256": "434954e45d5ca20d6d010db6b4329f8806776b2706757b146e8d3c5c494b8da3",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "3bc29097-7317-41d3-93b9-38a48f99d48a_mssrch.dll",
+   "sha256": "434954e45d5ca20d6d010db6b4329f8806776b2706757b146e8d3c5c494b8da3",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "3bc29097-7317-41d3-93b9-38a48f99d48a_mssrch.dll",
+   "sha256": "434954e45d5ca20d6d010db6b4329f8806776b2706757b146e8d3c5c494b8da3",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "3bc29097-7317-41d3-93b9-38a48f99d48a_mssrch.dll",
+   "sha256": "434954e45d5ca20d6d010db6b4329f8806776b2706757b146e8d3c5c494b8da3",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "3bc29097-7317-41d3-93b9-38a48f99d48a_mssrch.dll",
+   "sha256": "434954e45d5ca20d6d010db6b4329f8806776b2706757b146e8d3c5c494b8da3",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Chakrathunk.dll",
+   "sha256": "5423bbf29649f50e8f4c8676608a92d3a58a87f35e64349b7f47e595d2e2aca7",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Chakrathunk.dll",
+   "sha256": "5423bbf29649f50e8f4c8676608a92d3a58a87f35e64349b7f47e595d2e2aca7",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Chakrathunk.dll",
+   "sha256": "5423bbf29649f50e8f4c8676608a92d3a58a87f35e64349b7f47e595d2e2aca7",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Chakrathunk.dll",
+   "sha256": "5423bbf29649f50e8f4c8676608a92d3a58a87f35e64349b7f47e595d2e2aca7",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Chakrathunk.dll",
+   "sha256": "5423bbf29649f50e8f4c8676608a92d3a58a87f35e64349b7f47e595d2e2aca7",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Chakrathunk.dll",
+   "sha256": "5423bbf29649f50e8f4c8676608a92d3a58a87f35e64349b7f47e595d2e2aca7",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Chakrathunk.dll",
+   "sha256": "5423bbf29649f50e8f4c8676608a92d3a58a87f35e64349b7f47e595d2e2aca7",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Chakrathunk.dll",
+   "sha256": "5423bbf29649f50e8f4c8676608a92d3a58a87f35e64349b7f47e595d2e2aca7",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Chakrathunk.dll",
+   "sha256": "5423bbf29649f50e8f4c8676608a92d3a58a87f35e64349b7f47e595d2e2aca7",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Chakrathunk.dll",
+   "sha256": "5423bbf29649f50e8f4c8676608a92d3a58a87f35e64349b7f47e595d2e2aca7",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "EtwRundown.dll",
+   "sha256": "a6e92589cb668b669e1c426d584ca7e8517c3c59f76d2e9b7c16cc4f4014cfb6",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "EtwRundown.dll",
+   "sha256": "a6e92589cb668b669e1c426d584ca7e8517c3c59f76d2e9b7c16cc4f4014cfb6",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "EtwRundown.dll",
+   "sha256": "a6e92589cb668b669e1c426d584ca7e8517c3c59f76d2e9b7c16cc4f4014cfb6",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "EtwRundown.dll",
+   "sha256": "a6e92589cb668b669e1c426d584ca7e8517c3c59f76d2e9b7c16cc4f4014cfb6",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "EtwRundown.dll",
+   "sha256": "a6e92589cb668b669e1c426d584ca7e8517c3c59f76d2e9b7c16cc4f4014cfb6",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "EtwRundown.dll",
+   "sha256": "a6e92589cb668b669e1c426d584ca7e8517c3c59f76d2e9b7c16cc4f4014cfb6",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "EtwRundown.dll",
+   "sha256": "a6e92589cb668b669e1c426d584ca7e8517c3c59f76d2e9b7c16cc4f4014cfb6",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "EtwRundown.dll",
+   "sha256": "a6e92589cb668b669e1c426d584ca7e8517c3c59f76d2e9b7c16cc4f4014cfb6",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "EtwRundown.dll",
+   "sha256": "a6e92589cb668b669e1c426d584ca7e8517c3c59f76d2e9b7c16cc4f4014cfb6",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "EtwRundown.dll",
+   "sha256": "a6e92589cb668b669e1c426d584ca7e8517c3c59f76d2e9b7c16cc4f4014cfb6",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "KBDFRNA.DLL",
+   "sha256": "460dd1b25b1011afc35675515a30e7a679c3d4b13f8eeb83a74614e8d634cf22",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "KBDFRNA.DLL",
+   "sha256": "460dd1b25b1011afc35675515a30e7a679c3d4b13f8eeb83a74614e8d634cf22",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "KBDFRNA.DLL",
+   "sha256": "460dd1b25b1011afc35675515a30e7a679c3d4b13f8eeb83a74614e8d634cf22",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "KBDFRNA.DLL",
+   "sha256": "460dd1b25b1011afc35675515a30e7a679c3d4b13f8eeb83a74614e8d634cf22",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "KBDFRNA.DLL",
+   "sha256": "460dd1b25b1011afc35675515a30e7a679c3d4b13f8eeb83a74614e8d634cf22",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "KBDFRNA.DLL",
+   "sha256": "460dd1b25b1011afc35675515a30e7a679c3d4b13f8eeb83a74614e8d634cf22",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "KBDFRNA.DLL",
+   "sha256": "460dd1b25b1011afc35675515a30e7a679c3d4b13f8eeb83a74614e8d634cf22",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "KBDFRNA.DLL",
+   "sha256": "460dd1b25b1011afc35675515a30e7a679c3d4b13f8eeb83a74614e8d634cf22",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "KBDRU1.DLL",
+   "sha256": "29e263175c66432113e8ea682dfe71665dd5ff6cb5bff2c20a506032a0620ce9",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "KBDRU1.DLL",
+   "sha256": "29e263175c66432113e8ea682dfe71665dd5ff6cb5bff2c20a506032a0620ce9",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "KBDRU1.DLL",
+   "sha256": "29e263175c66432113e8ea682dfe71665dd5ff6cb5bff2c20a506032a0620ce9",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "KBDRU1.DLL",
+   "sha256": "29e263175c66432113e8ea682dfe71665dd5ff6cb5bff2c20a506032a0620ce9",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "KBDRU1.DLL",
+   "sha256": "29e263175c66432113e8ea682dfe71665dd5ff6cb5bff2c20a506032a0620ce9",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "KBDRU1.DLL",
+   "sha256": "29e263175c66432113e8ea682dfe71665dd5ff6cb5bff2c20a506032a0620ce9",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "KBDRU1.DLL",
+   "sha256": "29e263175c66432113e8ea682dfe71665dd5ff6cb5bff2c20a506032a0620ce9",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "KBDRU1.DLL",
+   "sha256": "29e263175c66432113e8ea682dfe71665dd5ff6cb5bff2c20a506032a0620ce9",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "MSVidCtl.dll",
+   "sha256": "da10a79b3a2ef63b580f31d4cee57ed927a3d5bb6395c7e23f976f717edb3c9b",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "MSVidCtl.dll",
+   "sha256": "da10a79b3a2ef63b580f31d4cee57ed927a3d5bb6395c7e23f976f717edb3c9b",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "MSVidCtl.dll",
+   "sha256": "da10a79b3a2ef63b580f31d4cee57ed927a3d5bb6395c7e23f976f717edb3c9b",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "MSVidCtl.dll",
+   "sha256": "da10a79b3a2ef63b580f31d4cee57ed927a3d5bb6395c7e23f976f717edb3c9b",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "MSVidCtl.dll",
+   "sha256": "da10a79b3a2ef63b580f31d4cee57ed927a3d5bb6395c7e23f976f717edb3c9b",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "MSVidCtl.dll",
+   "sha256": "da10a79b3a2ef63b580f31d4cee57ed927a3d5bb6395c7e23f976f717edb3c9b",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "MSVidCtl.dll",
+   "sha256": "da10a79b3a2ef63b580f31d4cee57ed927a3d5bb6395c7e23f976f717edb3c9b",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "MSVidCtl.dll",
+   "sha256": "da10a79b3a2ef63b580f31d4cee57ed927a3d5bb6395c7e23f976f717edb3c9b",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "MSVidCtl.dll",
+   "sha256": "da10a79b3a2ef63b580f31d4cee57ed927a3d5bb6395c7e23f976f717edb3c9b",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "MSVidCtl.dll",
+   "sha256": "da10a79b3a2ef63b580f31d4cee57ed927a3d5bb6395c7e23f976f717edb3c9b",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "PresentationCFFRasterizerNative_v0300.dll",
+   "sha256": "32c3c232f8d10e946401570198063583eb68c7597544e3a50200caa3b81bdded",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "PresentationCFFRasterizerNative_v0300.dll",
+   "sha256": "32c3c232f8d10e946401570198063583eb68c7597544e3a50200caa3b81bdded",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "PresentationCFFRasterizerNative_v0300.dll",
+   "sha256": "32c3c232f8d10e946401570198063583eb68c7597544e3a50200caa3b81bdded",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "PresentationCFFRasterizerNative_v0300.dll",
+   "sha256": "32c3c232f8d10e946401570198063583eb68c7597544e3a50200caa3b81bdded",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "PresentationCFFRasterizerNative_v0300.dll",
+   "sha256": "32c3c232f8d10e946401570198063583eb68c7597544e3a50200caa3b81bdded",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "PresentationCFFRasterizerNative_v0300.dll",
+   "sha256": "32c3c232f8d10e946401570198063583eb68c7597544e3a50200caa3b81bdded",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "PresentationCFFRasterizerNative_v0300.dll",
+   "sha256": "32c3c232f8d10e946401570198063583eb68c7597544e3a50200caa3b81bdded",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "PresentationCFFRasterizerNative_v0300.dll",
+   "sha256": "32c3c232f8d10e946401570198063583eb68c7597544e3a50200caa3b81bdded",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "PresentationCFFRasterizerNative_v0300.dll",
+   "sha256": "32c3c232f8d10e946401570198063583eb68c7597544e3a50200caa3b81bdded",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "PresentationCFFRasterizerNative_v0300.dll",
+   "sha256": "32c3c232f8d10e946401570198063583eb68c7597544e3a50200caa3b81bdded",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "TileDataRepository.dll",
+   "sha256": "9cc202772301dd7096d905236b1d944d7c2849964d3481f68eee66e072815485",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "TileDataRepository.dll",
+   "sha256": "9cc202772301dd7096d905236b1d944d7c2849964d3481f68eee66e072815485",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "TileDataRepository.dll",
+   "sha256": "9cc202772301dd7096d905236b1d944d7c2849964d3481f68eee66e072815485",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "TileDataRepository.dll",
+   "sha256": "9cc202772301dd7096d905236b1d944d7c2849964d3481f68eee66e072815485",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "TileDataRepository.dll",
+   "sha256": "9cc202772301dd7096d905236b1d944d7c2849964d3481f68eee66e072815485",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "TileDataRepository.dll",
+   "sha256": "9cc202772301dd7096d905236b1d944d7c2849964d3481f68eee66e072815485",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "TileDataRepository.dll",
+   "sha256": "9cc202772301dd7096d905236b1d944d7c2849964d3481f68eee66e072815485",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "TileDataRepository.dll",
+   "sha256": "9cc202772301dd7096d905236b1d944d7c2849964d3481f68eee66e072815485",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "TileDataRepository.dll",
+   "sha256": "9cc202772301dd7096d905236b1d944d7c2849964d3481f68eee66e072815485",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "TileDataRepository.dll",
+   "sha256": "9cc202772301dd7096d905236b1d944d7c2849964d3481f68eee66e072815485",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "Windows.ApplicationModel.Store.Preview.DOSettings.dll",
+   "sha256": "169c1526386d8f5666dc3c3bc8667c8d1df0c4256ca5454b85d33637f6a199a6",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Windows.ApplicationModel.Store.Preview.DOSettings.dll",
+   "sha256": "169c1526386d8f5666dc3c3bc8667c8d1df0c4256ca5454b85d33637f6a199a6",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Windows.ApplicationModel.Store.Preview.DOSettings.dll",
+   "sha256": "169c1526386d8f5666dc3c3bc8667c8d1df0c4256ca5454b85d33637f6a199a6",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Windows.ApplicationModel.Store.Preview.DOSettings.dll",
+   "sha256": "169c1526386d8f5666dc3c3bc8667c8d1df0c4256ca5454b85d33637f6a199a6",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Windows.ApplicationModel.Store.Preview.DOSettings.dll",
+   "sha256": "169c1526386d8f5666dc3c3bc8667c8d1df0c4256ca5454b85d33637f6a199a6",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Windows.ApplicationModel.Store.Preview.DOSettings.dll",
+   "sha256": "169c1526386d8f5666dc3c3bc8667c8d1df0c4256ca5454b85d33637f6a199a6",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Windows.ApplicationModel.Store.Preview.DOSettings.dll",
+   "sha256": "169c1526386d8f5666dc3c3bc8667c8d1df0c4256ca5454b85d33637f6a199a6",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Windows.ApplicationModel.Store.Preview.DOSettings.dll",
+   "sha256": "169c1526386d8f5666dc3c3bc8667c8d1df0c4256ca5454b85d33637f6a199a6",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Windows.ApplicationModel.Store.Preview.DOSettings.dll",
+   "sha256": "169c1526386d8f5666dc3c3bc8667c8d1df0c4256ca5454b85d33637f6a199a6",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Windows.ApplicationModel.Store.Preview.DOSettings.dll",
+   "sha256": "169c1526386d8f5666dc3c3bc8667c8d1df0c4256ca5454b85d33637f6a199a6",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "Windows.Networking.Sockets.PushEnabledApplication.dll",
+   "sha256": "ad3c8a606b12d20db8fab866419322ca5f85d9f21275ac25aa2f762add057254",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Windows.Networking.Sockets.PushEnabledApplication.dll",
+   "sha256": "ad3c8a606b12d20db8fab866419322ca5f85d9f21275ac25aa2f762add057254",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Windows.Networking.Sockets.PushEnabledApplication.dll",
+   "sha256": "ad3c8a606b12d20db8fab866419322ca5f85d9f21275ac25aa2f762add057254",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Windows.Networking.Sockets.PushEnabledApplication.dll",
+   "sha256": "ad3c8a606b12d20db8fab866419322ca5f85d9f21275ac25aa2f762add057254",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Windows.Networking.Sockets.PushEnabledApplication.dll",
+   "sha256": "ad3c8a606b12d20db8fab866419322ca5f85d9f21275ac25aa2f762add057254",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Windows.Networking.Sockets.PushEnabledApplication.dll",
+   "sha256": "ad3c8a606b12d20db8fab866419322ca5f85d9f21275ac25aa2f762add057254",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Windows.Networking.Sockets.PushEnabledApplication.dll",
+   "sha256": "ad3c8a606b12d20db8fab866419322ca5f85d9f21275ac25aa2f762add057254",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Windows.Networking.Sockets.PushEnabledApplication.dll",
+   "sha256": "ad3c8a606b12d20db8fab866419322ca5f85d9f21275ac25aa2f762add057254",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Windows.Networking.Sockets.PushEnabledApplication.dll",
+   "sha256": "ad3c8a606b12d20db8fab866419322ca5f85d9f21275ac25aa2f762add057254",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "Windows.Networking.Sockets.PushEnabledApplication.dll",
+   "sha256": "ad3c8a606b12d20db8fab866419322ca5f85d9f21275ac25aa2f762add057254",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "aadtb.dll",
+   "sha256": "8113351cc4fdf7fc9dcb7249d45fcabc27a5c371ef36bdcd956b6d87fdcc8940",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "aadtb.dll",
+   "sha256": "8113351cc4fdf7fc9dcb7249d45fcabc27a5c371ef36bdcd956b6d87fdcc8940",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "aadtb.dll",
+   "sha256": "8113351cc4fdf7fc9dcb7249d45fcabc27a5c371ef36bdcd956b6d87fdcc8940",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "aadtb.dll",
+   "sha256": "8113351cc4fdf7fc9dcb7249d45fcabc27a5c371ef36bdcd956b6d87fdcc8940",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "aadtb.dll",
+   "sha256": "8113351cc4fdf7fc9dcb7249d45fcabc27a5c371ef36bdcd956b6d87fdcc8940",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "aadtb.dll",
+   "sha256": "8113351cc4fdf7fc9dcb7249d45fcabc27a5c371ef36bdcd956b6d87fdcc8940",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "aadtb.dll",
+   "sha256": "8113351cc4fdf7fc9dcb7249d45fcabc27a5c371ef36bdcd956b6d87fdcc8940",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "aadtb.dll",
+   "sha256": "8113351cc4fdf7fc9dcb7249d45fcabc27a5c371ef36bdcd956b6d87fdcc8940",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "aadtb.dll",
+   "sha256": "8113351cc4fdf7fc9dcb7249d45fcabc27a5c371ef36bdcd956b6d87fdcc8940",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "aadtb.dll",
+   "sha256": "8113351cc4fdf7fc9dcb7249d45fcabc27a5c371ef36bdcd956b6d87fdcc8940",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "cfmifs.dll",
+   "sha256": "4e699ae25b6e705c15a11bc5b0772d1e9f44a7782768f6e8c03660855bd82bbc",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "cfmifs.dll",
+   "sha256": "4e699ae25b6e705c15a11bc5b0772d1e9f44a7782768f6e8c03660855bd82bbc",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "cfmifs.dll",
+   "sha256": "4e699ae25b6e705c15a11bc5b0772d1e9f44a7782768f6e8c03660855bd82bbc",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "cfmifs.dll",
+   "sha256": "4e699ae25b6e705c15a11bc5b0772d1e9f44a7782768f6e8c03660855bd82bbc",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "cfmifs.dll",
+   "sha256": "4e699ae25b6e705c15a11bc5b0772d1e9f44a7782768f6e8c03660855bd82bbc",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "cfmifs.dll",
+   "sha256": "4e699ae25b6e705c15a11bc5b0772d1e9f44a7782768f6e8c03660855bd82bbc",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "cfmifs.dll",
+   "sha256": "4e699ae25b6e705c15a11bc5b0772d1e9f44a7782768f6e8c03660855bd82bbc",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "cfmifs.dll",
+   "sha256": "4e699ae25b6e705c15a11bc5b0772d1e9f44a7782768f6e8c03660855bd82bbc",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "cfmifs.dll",
+   "sha256": "4e699ae25b6e705c15a11bc5b0772d1e9f44a7782768f6e8c03660855bd82bbc",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "cfmifs.dll",
+   "sha256": "4e699ae25b6e705c15a11bc5b0772d1e9f44a7782768f6e8c03660855bd82bbc",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "d3dim700.dll",
+   "sha256": "9928cf574f86f25525de9692f5866a7ca9a0166222d9c3e24a1c50a67c42ed47",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "d3dim700.dll",
+   "sha256": "9928cf574f86f25525de9692f5866a7ca9a0166222d9c3e24a1c50a67c42ed47",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "d3dim700.dll",
+   "sha256": "9928cf574f86f25525de9692f5866a7ca9a0166222d9c3e24a1c50a67c42ed47",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "d3dim700.dll",
+   "sha256": "9928cf574f86f25525de9692f5866a7ca9a0166222d9c3e24a1c50a67c42ed47",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "d3dim700.dll",
+   "sha256": "9928cf574f86f25525de9692f5866a7ca9a0166222d9c3e24a1c50a67c42ed47",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "d3dim700.dll",
+   "sha256": "9928cf574f86f25525de9692f5866a7ca9a0166222d9c3e24a1c50a67c42ed47",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "d3dim700.dll",
+   "sha256": "9928cf574f86f25525de9692f5866a7ca9a0166222d9c3e24a1c50a67c42ed47",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "d3dim700.dll",
+   "sha256": "9928cf574f86f25525de9692f5866a7ca9a0166222d9c3e24a1c50a67c42ed47",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "d3dim700.dll",
+   "sha256": "9928cf574f86f25525de9692f5866a7ca9a0166222d9c3e24a1c50a67c42ed47",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "dpx.dll",
+   "sha256": "9616b6ab0c3959df75bfd92cfbeb7a6d01a9b743554916f0ab1e1d5303220739",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dpx.dll",
+   "sha256": "9616b6ab0c3959df75bfd92cfbeb7a6d01a9b743554916f0ab1e1d5303220739",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dpx.dll",
+   "sha256": "9616b6ab0c3959df75bfd92cfbeb7a6d01a9b743554916f0ab1e1d5303220739",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dpx.dll",
+   "sha256": "9616b6ab0c3959df75bfd92cfbeb7a6d01a9b743554916f0ab1e1d5303220739",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dpx.dll",
+   "sha256": "9616b6ab0c3959df75bfd92cfbeb7a6d01a9b743554916f0ab1e1d5303220739",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dpx.dll",
+   "sha256": "9616b6ab0c3959df75bfd92cfbeb7a6d01a9b743554916f0ab1e1d5303220739",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dpx.dll",
+   "sha256": "9616b6ab0c3959df75bfd92cfbeb7a6d01a9b743554916f0ab1e1d5303220739",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dpx.dll",
+   "sha256": "9616b6ab0c3959df75bfd92cfbeb7a6d01a9b743554916f0ab1e1d5303220739",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dpx.dll",
+   "sha256": "9616b6ab0c3959df75bfd92cfbeb7a6d01a9b743554916f0ab1e1d5303220739",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "dpx.dll",
+   "sha256": "9616b6ab0c3959df75bfd92cfbeb7a6d01a9b743554916f0ab1e1d5303220739",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "fphc.dll",
+   "sha256": "19b4d9e30d2a03e1230629e8f04da13596f869eca9d2bdaf6a6856cfe8eebdc5",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "fphc.dll",
+   "sha256": "19b4d9e30d2a03e1230629e8f04da13596f869eca9d2bdaf6a6856cfe8eebdc5",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "fphc.dll",
+   "sha256": "19b4d9e30d2a03e1230629e8f04da13596f869eca9d2bdaf6a6856cfe8eebdc5",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "fphc.dll",
+   "sha256": "19b4d9e30d2a03e1230629e8f04da13596f869eca9d2bdaf6a6856cfe8eebdc5",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "fphc.dll",
+   "sha256": "19b4d9e30d2a03e1230629e8f04da13596f869eca9d2bdaf6a6856cfe8eebdc5",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "fphc.dll",
+   "sha256": "19b4d9e30d2a03e1230629e8f04da13596f869eca9d2bdaf6a6856cfe8eebdc5",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "fphc.dll",
+   "sha256": "19b4d9e30d2a03e1230629e8f04da13596f869eca9d2bdaf6a6856cfe8eebdc5",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "fphc.dll",
+   "sha256": "19b4d9e30d2a03e1230629e8f04da13596f869eca9d2bdaf6a6856cfe8eebdc5",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "fphc.dll",
+   "sha256": "19b4d9e30d2a03e1230629e8f04da13596f869eca9d2bdaf6a6856cfe8eebdc5",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "fphc.dll",
+   "sha256": "19b4d9e30d2a03e1230629e8f04da13596f869eca9d2bdaf6a6856cfe8eebdc5",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "inseng.dll",
+   "sha256": "781b18f05fd4f4c6618a4f44248efa9143a3ec604c15174d13877fb17869bd2c",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "inseng.dll",
+   "sha256": "781b18f05fd4f4c6618a4f44248efa9143a3ec604c15174d13877fb17869bd2c",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "inseng.dll",
+   "sha256": "781b18f05fd4f4c6618a4f44248efa9143a3ec604c15174d13877fb17869bd2c",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "inseng.dll",
+   "sha256": "781b18f05fd4f4c6618a4f44248efa9143a3ec604c15174d13877fb17869bd2c",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "inseng.dll",
+   "sha256": "781b18f05fd4f4c6618a4f44248efa9143a3ec604c15174d13877fb17869bd2c",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "inseng.dll",
+   "sha256": "781b18f05fd4f4c6618a4f44248efa9143a3ec604c15174d13877fb17869bd2c",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "inseng.dll",
+   "sha256": "781b18f05fd4f4c6618a4f44248efa9143a3ec604c15174d13877fb17869bd2c",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "inseng.dll",
+   "sha256": "781b18f05fd4f4c6618a4f44248efa9143a3ec604c15174d13877fb17869bd2c",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "inseng.dll",
+   "sha256": "781b18f05fd4f4c6618a4f44248efa9143a3ec604c15174d13877fb17869bd2c",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "inseng.dll",
+   "sha256": "781b18f05fd4f4c6618a4f44248efa9143a3ec604c15174d13877fb17869bd2c",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "mfc140chs.dll",
+   "sha256": "d70cfa10ae44c681b12eed25b63e6127e374efdfbe385488af570be8d5de8b2b",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mfc140chs.dll",
+   "sha256": "d70cfa10ae44c681b12eed25b63e6127e374efdfbe385488af570be8d5de8b2b",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mfc140chs.dll",
+   "sha256": "d70cfa10ae44c681b12eed25b63e6127e374efdfbe385488af570be8d5de8b2b",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mfc140chs.dll",
+   "sha256": "d70cfa10ae44c681b12eed25b63e6127e374efdfbe385488af570be8d5de8b2b",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mfc140chs.dll",
+   "sha256": "d70cfa10ae44c681b12eed25b63e6127e374efdfbe385488af570be8d5de8b2b",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "mfc140chs.dll",
+   "sha256": "d70cfa10ae44c681b12eed25b63e6127e374efdfbe385488af570be8d5de8b2b",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msclmd.dll",
+   "sha256": "115663d1f7655753d632e9426c8d06abff8b1b831f52b7691ba8ea94ae3ba5b6",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msclmd.dll",
+   "sha256": "115663d1f7655753d632e9426c8d06abff8b1b831f52b7691ba8ea94ae3ba5b6",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msclmd.dll",
+   "sha256": "115663d1f7655753d632e9426c8d06abff8b1b831f52b7691ba8ea94ae3ba5b6",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msclmd.dll",
+   "sha256": "115663d1f7655753d632e9426c8d06abff8b1b831f52b7691ba8ea94ae3ba5b6",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msclmd.dll",
+   "sha256": "115663d1f7655753d632e9426c8d06abff8b1b831f52b7691ba8ea94ae3ba5b6",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msclmd.dll",
+   "sha256": "115663d1f7655753d632e9426c8d06abff8b1b831f52b7691ba8ea94ae3ba5b6",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msclmd.dll",
+   "sha256": "115663d1f7655753d632e9426c8d06abff8b1b831f52b7691ba8ea94ae3ba5b6",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msclmd.dll",
+   "sha256": "115663d1f7655753d632e9426c8d06abff8b1b831f52b7691ba8ea94ae3ba5b6",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msclmd.dll",
+   "sha256": "115663d1f7655753d632e9426c8d06abff8b1b831f52b7691ba8ea94ae3ba5b6",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msclmd.dll",
+   "sha256": "115663d1f7655753d632e9426c8d06abff8b1b831f52b7691ba8ea94ae3ba5b6",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "msvcp140_atomic_wait.dll",
+   "sha256": "e1142584f337b9b650d6d888652cb24f7b16a7dd93476840a050047bb00f0463",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msvcp140_atomic_wait.dll",
+   "sha256": "e1142584f337b9b650d6d888652cb24f7b16a7dd93476840a050047bb00f0463",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msvcp140_atomic_wait.dll",
+   "sha256": "e1142584f337b9b650d6d888652cb24f7b16a7dd93476840a050047bb00f0463",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msvcp140_atomic_wait.dll",
+   "sha256": "e1142584f337b9b650d6d888652cb24f7b16a7dd93476840a050047bb00f0463",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msvcp140_atomic_wait.dll",
+   "sha256": "e1142584f337b9b650d6d888652cb24f7b16a7dd93476840a050047bb00f0463",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msvcp140_atomic_wait.dll",
+   "sha256": "e1142584f337b9b650d6d888652cb24f7b16a7dd93476840a050047bb00f0463",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msvcp140_atomic_wait.dll",
+   "sha256": "e1142584f337b9b650d6d888652cb24f7b16a7dd93476840a050047bb00f0463",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msvcp140_atomic_wait.dll",
+   "sha256": "e1142584f337b9b650d6d888652cb24f7b16a7dd93476840a050047bb00f0463",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msvcp140_atomic_wait.dll",
+   "sha256": "e1142584f337b9b650d6d888652cb24f7b16a7dd93476840a050047bb00f0463",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "msvcp140_atomic_wait.dll",
+   "sha256": "e1142584f337b9b650d6d888652cb24f7b16a7dd93476840a050047bb00f0463",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "nsi.dll",
+   "sha256": "2034750e02d3ce72f3ae24737eafe615c6d7087f4e33848f8e7d2175ce726829",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "nsi.dll",
+   "sha256": "2034750e02d3ce72f3ae24737eafe615c6d7087f4e33848f8e7d2175ce726829",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "nsi.dll",
+   "sha256": "2034750e02d3ce72f3ae24737eafe615c6d7087f4e33848f8e7d2175ce726829",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "nsi.dll",
+   "sha256": "2034750e02d3ce72f3ae24737eafe615c6d7087f4e33848f8e7d2175ce726829",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "nsi.dll",
+   "sha256": "2034750e02d3ce72f3ae24737eafe615c6d7087f4e33848f8e7d2175ce726829",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "nsi.dll",
+   "sha256": "2034750e02d3ce72f3ae24737eafe615c6d7087f4e33848f8e7d2175ce726829",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "nsi.dll",
+   "sha256": "2034750e02d3ce72f3ae24737eafe615c6d7087f4e33848f8e7d2175ce726829",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "nsi.dll",
+   "sha256": "2034750e02d3ce72f3ae24737eafe615c6d7087f4e33848f8e7d2175ce726829",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "nsi.dll",
+   "sha256": "2034750e02d3ce72f3ae24737eafe615c6d7087f4e33848f8e7d2175ce726829",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "nsi.dll",
+   "sha256": "2034750e02d3ce72f3ae24737eafe615c6d7087f4e33848f8e7d2175ce726829",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "prntvpt.dll",
+   "sha256": "8c07796da388fd781e2029041fadec4c338ce2f625b34fae2279596584d950be",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "prntvpt.dll",
+   "sha256": "8c07796da388fd781e2029041fadec4c338ce2f625b34fae2279596584d950be",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "prntvpt.dll",
+   "sha256": "8c07796da388fd781e2029041fadec4c338ce2f625b34fae2279596584d950be",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "prntvpt.dll",
+   "sha256": "8c07796da388fd781e2029041fadec4c338ce2f625b34fae2279596584d950be",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "prntvpt.dll",
+   "sha256": "8c07796da388fd781e2029041fadec4c338ce2f625b34fae2279596584d950be",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "prntvpt.dll",
+   "sha256": "8c07796da388fd781e2029041fadec4c338ce2f625b34fae2279596584d950be",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "prntvpt.dll",
+   "sha256": "8c07796da388fd781e2029041fadec4c338ce2f625b34fae2279596584d950be",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "prntvpt.dll",
+   "sha256": "8c07796da388fd781e2029041fadec4c338ce2f625b34fae2279596584d950be",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "prntvpt.dll",
+   "sha256": "8c07796da388fd781e2029041fadec4c338ce2f625b34fae2279596584d950be",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "prntvpt.dll",
+   "sha256": "8c07796da388fd781e2029041fadec4c338ce2f625b34fae2279596584d950be",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "secproc.dll",
+   "sha256": "a15379c82a19dfc14c6229de89cebc77ee1b96bd97d8f3a4fe70ad6b349f8dd0",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "secproc.dll",
+   "sha256": "a15379c82a19dfc14c6229de89cebc77ee1b96bd97d8f3a4fe70ad6b349f8dd0",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "secproc.dll",
+   "sha256": "a15379c82a19dfc14c6229de89cebc77ee1b96bd97d8f3a4fe70ad6b349f8dd0",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "secproc.dll",
+   "sha256": "a15379c82a19dfc14c6229de89cebc77ee1b96bd97d8f3a4fe70ad6b349f8dd0",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "secproc.dll",
+   "sha256": "a15379c82a19dfc14c6229de89cebc77ee1b96bd97d8f3a4fe70ad6b349f8dd0",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "secproc.dll",
+   "sha256": "a15379c82a19dfc14c6229de89cebc77ee1b96bd97d8f3a4fe70ad6b349f8dd0",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "secproc.dll",
+   "sha256": "a15379c82a19dfc14c6229de89cebc77ee1b96bd97d8f3a4fe70ad6b349f8dd0",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "secproc.dll",
+   "sha256": "a15379c82a19dfc14c6229de89cebc77ee1b96bd97d8f3a4fe70ad6b349f8dd0",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "secproc.dll",
+   "sha256": "a15379c82a19dfc14c6229de89cebc77ee1b96bd97d8f3a4fe70ad6b349f8dd0",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "secproc.dll",
+   "sha256": "a15379c82a19dfc14c6229de89cebc77ee1b96bd97d8f3a4fe70ad6b349f8dd0",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "taskschd.dll",
+   "sha256": "331ffa63d5fae28e01929c99081899cc2ced5308f45f4c2148ce5e07132b5819",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "taskschd.dll",
+   "sha256": "331ffa63d5fae28e01929c99081899cc2ced5308f45f4c2148ce5e07132b5819",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "taskschd.dll",
+   "sha256": "331ffa63d5fae28e01929c99081899cc2ced5308f45f4c2148ce5e07132b5819",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "taskschd.dll",
+   "sha256": "331ffa63d5fae28e01929c99081899cc2ced5308f45f4c2148ce5e07132b5819",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "taskschd.dll",
+   "sha256": "331ffa63d5fae28e01929c99081899cc2ced5308f45f4c2148ce5e07132b5819",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "taskschd.dll",
+   "sha256": "331ffa63d5fae28e01929c99081899cc2ced5308f45f4c2148ce5e07132b5819",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "taskschd.dll",
+   "sha256": "331ffa63d5fae28e01929c99081899cc2ced5308f45f4c2148ce5e07132b5819",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "taskschd.dll",
+   "sha256": "331ffa63d5fae28e01929c99081899cc2ced5308f45f4c2148ce5e07132b5819",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "taskschd.dll",
+   "sha256": "331ffa63d5fae28e01929c99081899cc2ced5308f45f4c2148ce5e07132b5819",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "taskschd.dll",
+   "sha256": "331ffa63d5fae28e01929c99081899cc2ced5308f45f4c2148ce5e07132b5819",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "vcamp140d.dll",
+   "sha256": "1c599a4960b15ba69665b05829b9fed9bb582fe539df59bd4de168bbde8c49a9",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "vcamp140d.dll",
+   "sha256": "1c599a4960b15ba69665b05829b9fed9bb582fe539df59bd4de168bbde8c49a9",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "vcamp140d.dll",
+   "sha256": "1c599a4960b15ba69665b05829b9fed9bb582fe539df59bd4de168bbde8c49a9",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "vcamp140d.dll",
+   "sha256": "1c599a4960b15ba69665b05829b9fed9bb582fe539df59bd4de168bbde8c49a9",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "vcamp140d.dll",
+   "sha256": "1c599a4960b15ba69665b05829b9fed9bb582fe539df59bd4de168bbde8c49a9",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "vcamp140d.dll",
+   "sha256": "1c599a4960b15ba69665b05829b9fed9bb582fe539df59bd4de168bbde8c49a9",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "vcamp140d.dll",
+   "sha256": "1c599a4960b15ba69665b05829b9fed9bb582fe539df59bd4de168bbde8c49a9",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "vcamp140d.dll",
+   "sha256": "1c599a4960b15ba69665b05829b9fed9bb582fe539df59bd4de168bbde8c49a9",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "vcamp140d.dll",
+   "sha256": "1c599a4960b15ba69665b05829b9fed9bb582fe539df59bd4de168bbde8c49a9",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "vcamp140d.dll",
+   "sha256": "1c599a4960b15ba69665b05829b9fed9bb582fe539df59bd4de168bbde8c49a9",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  },
+  {
+   "file": "winrnr.dll",
+   "sha256": "f00703ad28f5c87b5a51be99605eda709fb3700ad77efec7fdd990c4dbe8fcc6",
+   "format": "PE",
+   "kind": "bytes_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "winrnr.dll",
+   "sha256": "f00703ad28f5c87b5a51be99605eda709fb3700ad77efec7fdd990c4dbe8fcc6",
+   "format": "PE",
+   "kind": "u32_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "winrnr.dll",
+   "sha256": "f00703ad28f5c87b5a51be99605eda709fb3700ad77efec7fdd990c4dbe8fcc6",
+   "format": "PE",
+   "kind": "u64_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "winrnr.dll",
+   "sha256": "f00703ad28f5c87b5a51be99605eda709fb3700ad77efec7fdd990c4dbe8fcc6",
+   "format": "PE",
+   "kind": "string_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "winrnr.dll",
+   "sha256": "f00703ad28f5c87b5a51be99605eda709fb3700ad77efec7fdd990c4dbe8fcc6",
+   "format": "PE",
+   "kind": "pattern_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "winrnr.dll",
+   "sha256": "f00703ad28f5c87b5a51be99605eda709fb3700ad77efec7fdd990c4dbe8fcc6",
+   "format": "PE",
+   "kind": "section_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "winrnr.dll",
+   "sha256": "f00703ad28f5c87b5a51be99605eda709fb3700ad77efec7fdd990c4dbe8fcc6",
+   "format": "PE",
+   "kind": "import_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "winrnr.dll",
+   "sha256": "f00703ad28f5c87b5a51be99605eda709fb3700ad77efec7fdd990c4dbe8fcc6",
+   "format": "PE",
+   "kind": "export_present",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "winrnr.dll",
+   "sha256": "f00703ad28f5c87b5a51be99605eda709fb3700ad77efec7fdd990c4dbe8fcc6",
+   "format": "PE",
+   "kind": "instructions",
+   "true_claim": "VERIFIED",
+   "false_claim": "REFUTED"
+  },
+  {
+   "file": "winrnr.dll",
+   "sha256": "f00703ad28f5c87b5a51be99605eda709fb3700ad77efec7fdd990c4dbe8fcc6",
+   "format": "PE",
+   "kind": "function_at",
+   "true_claim": "VERIFIED",
+   "false_claim": "INCONCLUSIVE"
+  }
+ ]
+}

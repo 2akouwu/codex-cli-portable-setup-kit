@@ -67,6 +67,29 @@ The gate is the same everywhere: one false VERIFIED fails the build. Known gap: 
 arm64 macOS runner lief reads the first slice of each universal binary, which is x86_64,
 so the arm64 Mach-O slices are not yet exercised.
 
+## A corpus anyone can rebuild: the prior is right exactly when it should be
+
+`benchmarks/corpus/` holds two small C libraries; CI compiles them on each platform with
+the compilers it has (gcc, clang, MSVC) at -O0 and -O2 and records toolchain versions, flags
+and hashes in a manifest (`results/ci-corpus-manifest-*.json`). The prologue prior is then
+applied to every **exported function** (`--probe exports`). This is the control that shows
+the benchmark measures reality rather than always refuting
+([CI run 33874141359](https://github.com/2akouwu/reverify/actions/runs/33874141359)):
+
+| platform | build | functions | prior right | prior wrong | false VERIFIED |
+|---|---|---|---|---|---|
+| Linux x86_64 | gcc 13.3 -O0 (frame pointer kept) | 9 | **9** | 0 | 0 |
+| Linux x86_64 | gcc 13.3 -O2 (frame pointer omitted) | 9 | 0 | 9 | 0 |
+| Linux x86_64 | clang 18 -O0 / -O2 | 9 / 9 | **9** / 0 | 0 / 9 | 0 |
+| Windows x86_64 | MinGW gcc -O0 / -O2 | 9 / 9 | **9** / 0 | 0 / 9 | 0 |
+| Windows x86_64 | MSVC 19 /Od and /O2 (never uses `push rbp; mov rbp, rsp`) | 9 / 9 | 0 / 0 | 9 / 9 | 0 |
+| macOS arm64 | Apple clang 21 -O0 / -O2 (AArch64 prologues) | 9 / 9 | 0 / 0 | 9 / 9 | 0 |
+
+The textbook prologue is **verified** exactly where compilers really emit it (-O0 with frame
+pointers on x86_64) and **refuted** where they don't (optimised x86_64, MSVC, AArch64) —
+and no wrong claim was accepted anywhere. The matrix benchmark on the same corpus: 0 false
+VERIFIED of 206 known-false claims across the three platforms, 0 known-true claims missed.
+
 ## The verifier as a classifier: known-true vs known-false claims of every kind
 
 `benchmarks/verifier_matrix.py` is the balanced counterpart to the prior probe: for every

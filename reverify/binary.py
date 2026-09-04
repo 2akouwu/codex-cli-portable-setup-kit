@@ -203,9 +203,11 @@ def _parse_with_lief(data: bytes) -> Optional[BinaryInfo]:
         if funcs:
             info.imports["*"] = funcs
         info.exports = [f.name for f in b.exported_functions if f.name]
+        # ELF/Mach-O section tables carry absolute addresses, and every "rva" in reverify
+        # for these formats is that same absolute address — keep exports in the same space.
         info.export_rvas = {
-            f.name: int(f.address) - (info.image_base or 0) for f in b.exported_functions
-            if f.name and int(f.address) - (info.image_base or 0) > 0
+            f.name: int(f.address) for f in b.exported_functions
+            if f.name and int(f.address) > (info.image_base or 0)
         }
         info.libraries = list(getattr(b, "libraries", []) or [])
         return info
@@ -220,8 +222,10 @@ def _parse_with_lief(data: bytes) -> Optional[BinaryInfo]:
             host = _platform.machine().lower()
             want = "ARM64" if host in ("arm64", "aarch64") else ("X86_64" if host in ("x86_64", "amd64") else None)
             try:
-                for cand in b:
-                    if want and _enum_name(cand.header.cpu_type) == want:
+                count = int(getattr(b, "size", 0) or 0) or len(b)
+                for i in range(count):
+                    cand = b.at(i)
+                    if want and cand is not None and _enum_name(cand.header.cpu_type) == want:
                         m = cand
                         break
             except Exception:
@@ -239,10 +243,11 @@ def _parse_with_lief(data: bytes) -> Optional[BinaryInfo]:
         if funcs:
             info.imports["*"] = funcs
         info.exports = [f.name for f in m.exported_functions if f.name]
-        # __mh_execute_header & co. sit at the image base (relative address 0): symbols, not functions
+        # Same absolute-address space as the section table; __mh_execute_header & co. sit at
+        # the image base itself and are symbols, not functions.
         info.export_rvas = {
-            f.name: int(f.address) - (info.image_base or 0) for f in m.exported_functions
-            if f.name and int(f.address) - (info.image_base or 0) > 0
+            f.name: int(f.address) for f in m.exported_functions
+            if f.name and int(f.address) > (info.image_base or 0)
         }
         info.libraries = [l.name for l in getattr(m, "libraries", [])]
         return info
