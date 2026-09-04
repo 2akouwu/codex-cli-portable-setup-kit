@@ -48,12 +48,14 @@ try:  # package import (e.g. ``from reverify import Verifier``)
     from .protocol_parser import ProtobufDissector
     from .binary import parse_binary, shannon_entropy
     from .behavior import behavioral_equiv, prove_expr_equiv
+    from .semantic import semantic_view, INSTALL_HINT as SEMANTIC_HINT
 except ImportError:  # flat import (CLI, MCP server, and the test suite)
     from disasm import Disassembler, pattern_scan
     from emulator import make_emulator
     from protocol_parser import ProtobufDissector
     from binary import parse_binary, shannon_entropy
     from behavior import behavioral_equiv, prove_expr_equiv
+    from semantic import semantic_view, INSTALL_HINT as SEMANTIC_HINT
 
 VERIFIED = "VERIFIED"
 REFUTED = "REFUTED"
@@ -167,11 +169,17 @@ class Verifier:
         "export_present",
         "section_present",
         "pe_import",  # alias of import_present
+        # semantic layer (engine-derived): function boundaries, call graph, xrefs
+        "function_at",
+        "calls",
+        "references",
+        "reachable_from_entry",
     )
 
     def __init__(self, data: bytes):
         self.data = data
         self._bin_cache = None
+        self._sem_cache = None
 
     def _binary(self):
         """Parsed view of the binary (lief when available), cached per verifier."""
@@ -692,6 +700,202 @@ class Verifier:
             return REFUTED, evidence, "section present but virtual address differs"
         return VERIFIED, evidence, "section present"
 
+    # -- semantic layer: function boundaries, call graph, xrefs (engine-derived) --
+
+    def _semantic(self):
+        """Engine-derived view (angr when installed, pure fallback otherwise); cached per verifier."""
+        if self._sem_cache is None:
+            self._sem_cache = semantic_view(self.data)
+        return self._sem_cache
+
+    def _sem_evidence(self, view) -> Dict[str, Any]:
+        return {
+            "engine": view.engine,
+            "engine_version": view.version,
+            "strength": ("DERIVED: recovered by static analysis, not read from the bytes"
+                         if view.complete else "pure fallback: only the entry point and exports are known"),
+        }
+
+    def _rva_evidence(self, rva: int) -> Dict[str, Any]:
+        b = self._binary()
+        out: Dict[str, Any] = {"rva": hex(rva)}
+        if b.image_base is not None:
+            out["va"] = hex(b.image_base + rva)
+        off = b.rva_to_offset(rva)
+        if off is not None:
+            out["file_offset"] = hex(off)
+        return out
+
+    def _sem_target(self, p: Dict[str, Any], key: str) -> Tuple[Optional[int], Dict[str, Any]]:
+        """Resolve ``p[key]`` (an address in file/rva/va space, or a function/import name) to an RVA."""
+        val = p[key]
+        try:
+            _as_int(val)
+            numeric = True
+        except (ValueError, TypeError):
+            numeric = False
+        if not numeric:
+            rva = self._semantic().resolve_name(str(val))
+            if rva is None:
+                return None, {"name": str(val), "error": "no function or import with that name"}
+            return rva, {"name": str(val), **self._rva_evidence(rva)}
+        off, info = self._resolve_offset({"offset": val, "space": p.get("space", "file")})
+        if "rva" not in info:
+            return None, info
+        return int(info["rva"], 16), info
+
+    def _check_function_at(self, p: Dict[str, Any]):
+        """Claim: a function starts at ``offset`` (or the function ``name`` exists). ``observe`` reads it."""
+        if "offset" not in p and "name" not in p:
+            raise ClaimError("function_at requires 'offset' or 'name'")
+        info = self._binary()
+        bad = self._not_parseable(info)
+        if bad:
+            return bad
+        view = self._semantic()
+        evidence = self._sem_evidence(view)
+        if "offset" in p:
+            rva, addr = self._sem_target(p, "offset")
+            evidence["address"] = addr
+            if rva is None:
+                return INCONCLUSIVE, evidence, "address is not inside any section"
+        else:
+            rva = view.resolve_name(str(p["name"]))
+            if rva is None:
+                if not view.complete:
+                    return INCONCLUSIVE, evidence, f"'{p['name']}' is not an export or entry point; naming other functions needs an analysis engine ({SEMANTIC_HINT})"
+                evidence["known_names_sample"] = view.names_sample()
+                return REFUTED, evidence, f"no function or import named '{p['name']}'"
+            evidence["address"] = self._rva_evidence(rva)
+        f = view.function_at(rva)
+        if f is not None:
+            evidence["function"] = f.describe(view)
+            if "name" in p and "offset" in p and str(p["name"]).strip().lower() != f.name.lower():
+                return REFUTED, evidence, f"a function starts here but it is named {f.name}, not {p['name']}"
+            if p.get("observe"):
+                return OBSERVED, evidence, f"function {f.name} read"
+            return VERIFIED, evidence, f"function {f.name} starts here"
+        if not view.complete:
+            return INCONCLUSIVE, evidence, f"not an export or the entry point; a function boundary here needs an analysis engine ({SEMANTIC_HINT})"
+        cont = view.function_containing(rva)
+        if cont is not None:
+            evidence["inside_function"] = cont.describe(view)
+            return REFUTED, evidence, f"no function starts here; the address is inside {cont.name}, which starts at rva {hex(cont.rva)}"
+        near = view.nearest_function_start(rva)
+        if near is not None:
+            nf, dist = near
+            evidence["nearest_function"] = {**nf.brief(view), "distance": dist}
+            return REFUTED, evidence, f"no function starts here; the nearest function start is {nf.name} at rva {hex(nf.rva)} ({dist:+d} bytes)"
+        return REFUTED, evidence, "no function starts here"
+
+    def _check_calls(self, p: Dict[str, Any]):
+        """Claim: the function containing ``from`` calls ``to`` (a function, or an import by name)."""
+        if "from" not in p:
+            raise ClaimError("calls requires 'from' (and 'to' unless observing)")
+        info = self._binary()
+        bad = self._not_parseable(info)
+        if bad:
+            return bad
+        view = self._semantic()
+        evidence = self._sem_evidence(view)
+        src_rva, src_addr = self._sem_target(p, "from")
+        evidence["from"] = src_addr
+        if src_rva is None:
+            if "error" in src_addr and "name" in src_addr and not view.complete:
+                return INCONCLUSIVE, evidence, f"call graph needs an analysis engine ({SEMANTIC_HINT})"
+            return (REFUTED if "name" in src_addr else INCONCLUSIVE), evidence, str(src_addr.get("error", "'from' could not be resolved"))
+        if not view.complete:
+            return INCONCLUSIVE, evidence, f"call graph needs an analysis engine ({SEMANTIC_HINT})"
+        src = view.function_containing(src_rva)
+        if src is None:
+            return REFUTED, evidence, "'from' is not inside any recovered function"
+        evidence["from_function"] = src.brief(view)
+        callees = view.callees_of(src.rva)
+        evidence["callees"] = [c.brief(view) for c in callees[:40]]
+        evidence["callee_count"] = len(callees)
+        if p.get("observe") or "to" not in p:
+            return OBSERVED, evidence, f"{src.name} has {len(callees)} callees"
+        dst_rva, dst_addr = self._sem_target(p, "to")
+        evidence["to"] = dst_addr
+        if dst_rva is None:
+            if "name" in dst_addr:
+                return REFUTED, evidence, f"no function or import named '{p['to']}' in this binary"
+            return INCONCLUSIVE, evidence, "'to' address is not inside any section"
+        dst = view.function_at(dst_rva) or view.function_containing(dst_rva)
+        if dst is None:
+            return REFUTED, evidence, "'to' is not a recovered function"
+        evidence["to_function"] = dst.brief(view)
+        if (src.rva, dst.rva) in view.edges:
+            return VERIFIED, evidence, f"{src.name} calls {dst.name}"
+        return REFUTED, evidence, f"{src.name} does not call {dst.name}; its callees are listed in the evidence"
+
+    def _check_references(self, p: Dict[str, Any]):
+        """Claim: code references the data/code at ``to`` (optionally from the function containing ``from``)."""
+        if "to" not in p:
+            raise ClaimError("references requires 'to' (the referenced address, e.g. a string)")
+        info = self._binary()
+        bad = self._not_parseable(info)
+        if bad:
+            return bad
+        view = self._semantic()
+        evidence = self._sem_evidence(view)
+        dst_rva, dst_addr = self._sem_target(p, "to")
+        evidence["to"] = dst_addr
+        if dst_rva is None:
+            return INCONCLUSIVE, evidence, str(dst_addr.get("error", "'to' could not be resolved"))
+        if not view.complete:
+            return INCONCLUSIVE, evidence, f"cross-references need an analysis engine ({SEMANTIC_HINT})"
+        refs = view.references_to(dst_rva)
+        evidence["referenced_by"] = [
+            {"function": r.get("function"), "function_rva": hex(r["function_rva"]) if r.get("function_rva") is not None else None,
+             "from_rva": hex(r["from_rva"]) if r.get("from_rva") is not None else None, "type": r.get("type")}
+            for r in refs[:40]
+        ]
+        evidence["reference_count"] = len(refs)
+        if p.get("observe"):
+            return OBSERVED, evidence, f"{len(refs)} references read"
+        if "from" not in p:
+            return (VERIFIED if refs else REFUTED), evidence, (f"referenced from {len(refs)} places" if refs else "no code references this address")
+        src_rva, src_addr = self._sem_target(p, "from")
+        evidence["from"] = src_addr
+        if src_rva is None:
+            return (REFUTED if "name" in src_addr else INCONCLUSIVE), evidence, str(src_addr.get("error", "'from' could not be resolved"))
+        src = view.function_containing(src_rva)
+        if src is None:
+            return REFUTED, evidence, "'from' is not inside any recovered function"
+        evidence["from_function"] = src.brief(view)
+        if any(r.get("function_rva") == src.rva for r in refs):
+            return VERIFIED, evidence, f"{src.name} references rva {hex(dst_rva)}"
+        return REFUTED, evidence, f"{src.name} does not reference rva {hex(dst_rva)}; the referencing functions are listed"
+
+    def _check_reachable_from_entry(self, p: Dict[str, Any]):
+        """Claim: the function at/containing ``offset`` (or named ``name``) is reachable from the entry point."""
+        if "offset" not in p and "name" not in p:
+            raise ClaimError("reachable_from_entry requires 'offset' or 'name'")
+        info = self._binary()
+        bad = self._not_parseable(info)
+        if bad:
+            return bad
+        view = self._semantic()
+        evidence = self._sem_evidence(view)
+        key = "offset" if "offset" in p else "name"
+        rva, addr = self._sem_target(p, key)
+        evidence["address"] = addr
+        if rva is None:
+            return (REFUTED if key == "name" and view.complete else INCONCLUSIVE), evidence, str(addr.get("error", "address could not be resolved"))
+        if not view.complete:
+            return INCONCLUSIVE, evidence, f"reachability needs an analysis engine ({SEMANTIC_HINT})"
+        ef = view.function_at(view.entry_rva) if view.entry_rva is not None else None
+        evidence["entry"] = ef.brief(view) if ef else None
+        evidence["reachable_functions"] = len(view.reachable)
+        f = view.function_containing(rva)
+        if f is None:
+            return REFUTED, evidence, "address is not inside any recovered function"
+        evidence["function"] = f.brief(view)
+        if f.rva in view.reachable:
+            return VERIFIED, evidence, f"{f.name} is reachable from the entry point"
+        return REFUTED, evidence, f"{f.name} is not reachable from the entry point in the call graph"
+
     # -- helpers ------------------------------------------------------------
 
     def _result(self, claim: Claim, verdict: str, evidence: Dict[str, Any], detail: str) -> Dict[str, Any]:
@@ -833,6 +1037,15 @@ def base_weight(result: Dict[str, Any]) -> float:
         return (0.7 if ("offset" in p or "count" in p) else 0.4) * rarity
     if kind == "string_present":
         return (0.6 if "offset" in p else 0.4) * rarity
+    # semantic kinds: engine-derived, fixed tier (relational claims say more than existence)
+    if kind == "function_at":
+        return 0.4 if ("name" in p and "offset" in p) else 0.3
+    if kind == "calls":
+        return 0.4
+    if kind == "references":
+        return 0.4 if "from" in p else 0.3
+    if kind == "reachable_from_entry":
+        return 0.3
     # structural kinds: fixed tier until corpus base rates exist
     if kind == "protobuf_field":
         return 0.6 if "value" in p else 0.3

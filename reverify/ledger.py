@@ -42,8 +42,10 @@ from typing import Any, Dict, Iterable, List, Optional, Union
 
 try:  # package import
     from .verifier import VERIFIED, REFUTED, OBSERVED, claim_key, _as_int, _clean_hex
+    from .semantic import SEMANTIC_KINDS
 except ImportError:  # flat import (CLI / tests)
     from verifier import VERIFIED, REFUTED, OBSERVED, claim_key, _as_int, _clean_hex
+    from semantic import SEMANTIC_KINDS
 
 SCHEMA = 1
 DEFAULT_DIR = ".reverify"
@@ -52,7 +54,8 @@ ENV_DIR = "REVERIFY_LEDGER_DIR"
 #: Strength tiers recorded per fact. Proof-grade facts are pinned in the context view.
 PROVEN = "PROVEN"
 TESTED = "TESTED"
-TIER_RANK = {PROVEN: 3, TESTED: 2, VERIFIED: 1, OBSERVED: 0}
+DERIVED = "DERIVED"  # engine-derived (static analysis): function boundaries, call graph, xrefs
+TIER_RANK = {PROVEN: 3, TESTED: 2, VERIFIED: 1, DERIVED: 1, OBSERVED: 0}
 PINNED_RANK = 2  # PROVEN and TESTED never fall out of the bounded view
 
 _EVIDENCE_KEEP = (
@@ -60,6 +63,8 @@ _EVIDENCE_KEEP = (
     "observed_registers", "actual_mnemonics", "actual_operands", "present_fields",
     "imported_libs", "sections", "error", "self_referential", "counterexample",
     "inputs_tested", "proof", "steps",
+    "engine", "engine_version", "strength", "function", "inside_function", "nearest_function",
+    "from_function", "to_function", "callee_count", "referenced_by", "reference_count",
 )
 
 LEDGER_INSTRUCTIONS = (
@@ -174,6 +179,20 @@ def _value_suffix(r: Dict[str, Any]) -> str:
             return f" expr={p['expr']}"
         if kind == "protobuf_field":
             return f" field={p.get('field')}"
+        if kind in ("function_at", "reachable_from_entry"):
+            fn = ev.get("function") or ev.get("inside_function") or {}
+            if fn.get("name"):
+                return f" {fn['name']}" + (f" size={fn['size']}" if fn.get("size") else "")
+            return ""
+        if kind == "calls":
+            a = (ev.get("from_function") or {}).get("name")
+            b = (ev.get("to_function") or {}).get("name")
+            if a and b:
+                return f" {a} -> {b}"
+            return f" {a} callees={ev.get('callee_count')}" if a else ""
+        if kind == "references":
+            names = [r.get("function") for r in (ev.get("referenced_by") or []) if r.get("function")]
+            return (" from " + ", ".join(dict.fromkeys(names[:4]))) if names else ""
     except (TypeError, ValueError):
         return ""
     return ""
@@ -216,6 +235,8 @@ def tier_of(r: Dict[str, Any]) -> Optional[str]:
             return PROVEN
         if kind == "behavior_equiv":
             return TESTED
+        if kind in SEMANTIC_KINDS:
+            return DERIVED
         return VERIFIED
     return None
 
@@ -491,12 +512,13 @@ class Ledger:
         return [e["line"] for e in self.refuted[-int(limit):]]
 
     def counts(self) -> Dict[str, int]:
-        c = {PROVEN: 0, TESTED: 0, VERIFIED: 0, OBSERVED: 0}
+        c = {PROVEN: 0, TESTED: 0, VERIFIED: 0, DERIVED: 0, OBSERVED: 0}
         for e in self.facts:
             t = e.get("tier", VERIFIED)
             c[t] = c.get(t, 0) + 1
         return {"facts": len(self.facts), "proven": c[PROVEN], "tested": c[TESTED],
-                "verified": c[VERIFIED], "observed": c[OBSERVED], "refuted": len(self.refuted)}
+                "verified": c[VERIFIED], "derived": c[DERIVED], "observed": c[OBSERVED],
+                "refuted": len(self.refuted)}
 
     def summary(self) -> Dict[str, Any]:
         out = {
@@ -522,14 +544,14 @@ class Ledger:
         how = (f"load with re_ledger or `reverify ledger \"{self.paths[-1]}\"`" if self.paths
                else "load with re_ledger (pass the file path)")
         return (f"reverify ledger: {self.label()} - {c['facts']} grounded facts "
-                f"({c['proven']} proven, {c['tested']} tested, {c['verified']} verified, {c['observed']} observed), "
+                f"({c['proven']} proven, {c['tested']} tested, {c['verified']} verified, {c['derived']} derived, {c['observed']} observed), "
                 f"{c['refuted']} refuted; {how}.")
 
     def context_text(self, max_facts: int = 40, max_false: int = 8) -> str:
         """Plain text for injection into a fresh context (hooks, ``re_ledger``)."""
         c = self.counts()
         head = (f"reverify ledger for {self.label()} ({self.size} bytes): {c['facts']} grounded facts "
-                f"({c['proven']} proven, {c['tested']} tested, {c['verified']} verified, {c['observed']} observed), "
+                f"({c['proven']} proven, {c['tested']} tested, {c['verified']} verified, {c['derived']} derived, {c['observed']} observed), "
                 f"{c['refuted']} refuted. Facts below were checked by the tools and are safe to build on; "
                 f"nothing else from earlier work should be assumed.")
         lines = [head]

@@ -85,7 +85,11 @@ Kinds and params:
 - protobuf_field:  {"field": <int>, "type"?: "varint|string|...", "value"?: <any>, "offset"?: <int>}
 - import_present:  {"function": "<symbol>", "lib"?: "<library>"}
 - export_present:  {"name": "<symbol>"}
-- section_present: {"name": "<.text|.data|...>", "virtual_address"?: <int>}"""
+- section_present: {"name": "<.text|.data|...>", "virtual_address"?: <int>}
+- function_at:     {"offset": <int>} or {"name": "<function|export>"}   (SEMANTIC, DERIVED tier: a function starts here per the analysis engine; observe:true reads its size/blocks/callees)
+- calls:           {"from": <offset|name>, "to": <offset|name|import>}   (SEMANTIC: a call edge in the recovered call graph; "from" alone with observe:true lists the callees)
+- references:      {"to": <offset>, "from"?: <offset|name>}              (SEMANTIC: code references the data at "to", e.g. a string; observe:true lists the referencing functions)
+- reachable_from_entry: {"offset": <int>} or {"name": "..."}            (SEMANTIC: the function is reachable from the entry point in the call graph)"""
 
 RULES = """RULES (how claims are scored):
 - A claim that only restates BINARY FACTS or ESTABLISHED scores ZERO. Say something the facts do not already say.

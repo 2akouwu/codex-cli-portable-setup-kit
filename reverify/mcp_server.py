@@ -135,6 +135,30 @@ TOOLS_MANIFEST = [
         }
     },
     {
+        "name": "re_semantic",
+        "description": (
+            "Semantic layer from a real analysis engine (angr when installed; otherwise only the "
+            "entry point and exports are known): function boundaries, call graph, cross-references "
+            "and reachability. query=summary|functions|function_at|callees|callers|references|reachable; "
+            "the last five take offset (+space file|rva|va) or name. Results are analysis-derived "
+            "(DERIVED tier). Assert them with re_verify_claim kinds function_at, calls, references, "
+            "reachable_from_entry."
+        ),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "file_path": {"type": "string", "description": "Target binary file path"},
+                "query": {"type": "string", "default": "summary",
+                          "enum": ["summary", "functions", "function_at", "callees", "callers", "references", "reachable"]},
+                "offset": {"type": ["integer", "string"], "description": "Address (file offset unless space says rva/va)"},
+                "space": {"type": "string", "enum": ["file", "rva", "va"], "default": "file"},
+                "name": {"type": "string", "description": "Function, export or import name (alternative to offset)"},
+                "limit": {"type": "integer", "default": 60}
+            },
+            "required": ["file_path"]
+        }
+    },
+    {
         "name": "re_ledger",
         "description": (
             "Restore or manage the durable ledger of grounded facts for a binary — everything the "
@@ -221,6 +245,47 @@ def handle_tool_call(name: str, arguments: Dict[str, Any]) -> str:
                 "hint": "grounded results are kept on disk; after a context reset call re_ledger to restore them",
             }
             return json.dumps(report, indent=2, ensure_ascii=False, default=str)
+
+        elif name == "re_semantic":
+            fpath = arguments["file_path"]
+            query = str(arguments.get("query", "summary"))
+            limit = max(1, int(arguments.get("limit", 60)))
+            data = _read(fpath)
+            v = Verifier(data)
+            view = v._semantic()
+            out: Dict[str, Any] = {"summary": view.summary()}
+            if query == "functions":
+                out["functions"] = view.list_functions(limit=limit)
+            elif query in ("function_at", "callees", "callers", "references", "reachable"):
+                p = {k: arguments[k] for k in ("offset", "space", "name") if k in arguments}
+                key = "offset" if "offset" in p else ("name" if "name" in p else None)
+                if key is None:
+                    return json.dumps({"error": f"{query} needs 'offset' or 'name'"})
+                rva, addr = v._sem_target(p, key)
+                out["target"] = addr
+                if rva is None:
+                    out["error"] = addr.get("error", "unresolved")
+                    return json.dumps(out, indent=2, ensure_ascii=False, default=str)
+                f = view.function_at(rva) or view.function_containing(rva)
+                out["function"] = f.describe(view) if f else None
+                if query == "function_at" and f is None:
+                    near = view.nearest_function_start(rva)
+                    out["nearest_function"] = {**near[0].brief(view), "distance": near[1]} if near else None
+                elif query == "callees":
+                    out["callees"] = [c.brief(view) for c in (view.callees_of(f.rva) if f else [])][:limit]
+                elif query == "callers":
+                    out["callers"] = [c.brief(view) for c in (view.callers_of(f.rva) if f else [])][:limit]
+                elif query == "references":
+                    out["references"] = [
+                        {"function": r.get("function"),
+                         "function_rva": hex(r["function_rva"]) if r.get("function_rva") is not None else None,
+                         "from_rva": hex(r["from_rva"]) if r.get("from_rva") is not None else None,
+                         "type": r.get("type")}
+                        for r in view.references_to(rva)[:limit]
+                    ]
+                elif query == "reachable":
+                    out["reachable_from_entry"] = (f.rva in view.reachable) if f else None
+            return json.dumps(out, indent=2, ensure_ascii=False, default=str)
 
         elif name == "re_ledger":
             fpath = arguments["file_path"]

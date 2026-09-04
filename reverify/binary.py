@@ -40,6 +40,7 @@ class BinaryInfo:
     sections: List[Section] = field(default_factory=list)
     imports: Dict[str, List[str]] = field(default_factory=dict)   # lib -> functions ("*" for ELF)
     exports: List[str] = field(default_factory=list)
+    export_rvas: Dict[str, int] = field(default_factory=dict)  # export name -> RVA (function starts, independently known)
     libraries: List[str] = field(default_factory=list)            # linked libs (ELF/MachO)
     backend: str = "pure-python"
     error: Optional[str] = None
@@ -169,6 +170,10 @@ def _parse_with_lief(data: bytes) -> Optional[BinaryInfo]:
         for imp in b.imports:
             info.imports[imp.name] = [e.name for e in imp.entries if e.name]
         info.exports = [f.name for f in b.exported_functions if f.name]
+        info.export_rvas = {
+            f.name: int(f.address) for f in b.exported_functions
+            if f.name and not getattr(f, "is_forwarded", False) and int(f.address) > 0
+        }
         info.libraries = list(info.imports.keys())
         return info
 
@@ -188,6 +193,10 @@ def _parse_with_lief(data: bytes) -> Optional[BinaryInfo]:
         if funcs:
             info.imports["*"] = funcs
         info.exports = [f.name for f in b.exported_functions if f.name]
+        info.export_rvas = {
+            f.name: int(f.address) - (info.image_base or 0) for f in b.exported_functions
+            if f.name and int(f.address) > 0
+        }
         info.libraries = list(getattr(b, "libraries", []) or [])
         return info
 
@@ -229,6 +238,16 @@ def _parse_pe_pure(data: bytes) -> BinaryInfo:
         info.sections.append(Section(s["Name"], s["RVA"], s["VirtualSize"], s["SizeOfRawData"], s["PointerToRawData"]))
     info.imports = {k: list(v) for k, v in p.imports.items()}
     info.exports = [e["name"] for e in p.exports]
+    exp_dir = (getattr(p, "data_directories", {}) or {}).get("EXPORT") or (0, 0)
+    for e in p.exports:
+        rva = e.get("rva", e.get("address"))
+        try:
+            rva = int(str(rva), 16) if isinstance(rva, str) else int(rva)
+        except (TypeError, ValueError):
+            continue
+        forwarded = exp_dir[0] <= rva < exp_dir[0] + exp_dir[1]  # an RVA inside the export directory is a forwarder string
+        if e.get("name") and rva > 0 and not forwarded:
+            info.export_rvas[e["name"]] = rva
     info.libraries = list(info.imports.keys())
     return info
 

@@ -51,9 +51,10 @@ of the model's imagination.
   scanning, CPU emulation, Protobuf/TLV dissection, Frida hook generation. Pure Python out of
   the box; installs clean with no Ghidra.
 - **Mature engines, optional** — with `pip install "reverify[full]"` the toolkit upgrades
-  itself in place to **capstone** (disassembly), **unicorn** (real CPU emulation) and **lief**
-  (PE/ELF/Mach-O). Not installed? It falls back to the pure-Python core. `reverify backends`
-  shows what's active.
+  itself in place to **capstone** (disassembly), **unicorn** (real CPU emulation), **lief**
+  (PE/ELF/Mach-O) and **Z3** (proofs); `pip install "reverify[angr]"` adds **angr** for
+  function boundaries, the call graph and cross-references. Not installed? It falls back to
+  the pure-Python core. `reverify backends` shows what's active.
 - **Grounded, not guessed** — structural claims are verified against the binary by the tools.
 - **Agent-native** — ships as an MCP server, so Claude Code, Cursor, and other agents can call
   the tools directly; also a plain CLI.
@@ -99,8 +100,10 @@ Claims can be batched from a JSON file (`--claims-file claims.json`); the CLI ex
 non-zero if **anything** is refuted, so an agent or CI job can gate on a grounded
 reconstruction. Claim kinds: `bytes_at`, `u16_at` / `u32_at` / `u64_at` (typed reads, no
 endianness math), `pattern_present`, `string_present`, `instructions` (mnemonics and
-optionally operands), `emulate_result`, `protobuf_field`, `import_present`,
-`export_present`, `section_present`. Offsets are file offsets unless a claim says
+optionally operands), `emulate_result`, `behavior_equiv`, `prove_equiv`, `protobuf_field`,
+`import_present`, `export_present`, `section_present`, and the semantic kinds
+`function_at`, `calls`, `references`, `reachable_from_entry` (see
+[The semantic layer](#the-semantic-layer-functions-calls-and-cross-references)). Offsets are file offsets unless a claim says
 `"space": "rva"` or `"va"`; the verifier translates through the section table and echoes
 all three addresses in the evidence, and a refuted `bytes_at` reports where the expected
 bytes actually are. Set `"observe": true` (or omit `expected`) to have the tools *read* a
@@ -164,6 +167,38 @@ and `re_ledger` hands them back after the host compacts or clears its context (t
 server's `instructions` tell the agent to do so). Nothing unverified is ever stored — claim
 notes are excluded on purpose.
 
+## The semantic layer: functions, calls and cross-references
+
+Bytes, instructions, imports and emulation are what the deterministic core can judge on
+its own. The claims analysts actually make — *function X calls Y*, *this string is
+referenced from that routine*, *this code is reachable from the entry point* — need
+function boundaries and cross-references, which means a real program-analysis engine.
+Reverify does not build one. It stands on **angr** (`pip install "reverify[angr]"`) and
+keeps its own part thin: an engine-neutral view of functions, call edges, data references
+and reachability, and four claim kinds checked against it.
+
+```bash
+reverify functions msimg32.dll                                 # what the engine recovered
+reverify verify msimg32.dll \
+  --claim '{"kind": "calls", "params": {"from": "AlphaBlend", "to": "SetLastError"}}' \
+  --claim '{"kind": "references", "params": {"to": 12632, "space": "rva", "from": "AlphaBlend"}}' \
+  --claim '{"kind": "function_at", "params": {"offset": 4112, "space": "rva"}}' \
+  --claim '{"kind": "reachable_from_entry", "params": {"name": "DllInitialize"}}'
+```
+
+A refuted `calls` lists the function's real callees and a refuted `references` lists the
+functions that do reference the address, so a model can fix the claim instead of guessing
+again. `observe: true` reads instead of asserts (a function's size, blocks and callees; the
+referencing functions of a string).
+
+Honesty about strength: a recovered control-flow graph is *analysis-derived* — CFGFast is
+heuristic and can miss or split functions — so semantic verdicts name the engine and are
+recorded at a **`DERIVED`** tier below `VERIFIED`. Without an engine the pure fallback only
+knows what is independently certain (the entry point and the exports are function starts)
+and answers `INCONCLUSIVE` for everything else, never a guess. And the engine is checked the
+way the readers are: the export table, parsed independently of angr, must agree with the
+functions it recovers.
+
 ## The toolkit
 
 | Command | What it does |
@@ -203,7 +238,7 @@ before it reports them — and records every grounded result in the binary's led
 
 ## Status
 
-**v0.8.0 — lossless context rollover**, on [PyPI](https://pypi.org/project/reverify/)
+**v0.9.0 — the semantic layer**, on [PyPI](https://pypi.org/project/reverify/)
 (`pip install reverify`). The tool-grounded judge — a claim about the binary is checked
 against the actual bytes and returned as `VERIFIED` / `REFUTED` / `INCONCLUSIVE` /
 `OBSERVED` / `INVALIDATED` with evidence — ships as `reverify verify` and the
@@ -223,8 +258,11 @@ Z3 to prove two expressions equal for *all* inputs (verifying MBA deobfuscation)
 strength ladder — proven > tested > observed. **v0.8.0** makes the loop's state durable: a
 per-binary ledger of what the tools verified, observed, proved and refuted, checkpointed every
 round and restored after `/clear`, compaction or a restart — lossless by construction, because
-nothing the model said on its own was ever kept. Tested with 196 unit tests, so the verifier is
-not just trusted, it is checked.
+nothing the model said on its own was ever kept. **v0.9.0** adds the semantic layer on angr:
+function boundaries, the call graph and cross-references as `function_at` / `calls` /
+`references` / `reachable_from_entry` claims, recorded at an honest `DERIVED` tier, with the
+export table as an independent oracle for the engine. Tested with 208 unit tests, so the
+verifier is not just trusted, it is checked.
 
 ## License
 

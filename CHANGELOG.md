@@ -2,6 +2,45 @@
 
 All notable changes to this project are documented here.
 
+## [0.9.0] - 2026-09-04
+
+The semantic layer (roadmap issue #3). Bytes, instructions, imports and emulation
+are what the deterministic core can judge on its own; the claims analysts actually
+make — *function X calls Y*, *this string is referenced from that routine*, *this
+code is reachable from the entry point* — need function boundaries and
+cross-references, i.e. a real program-analysis engine. Reverify does not build one:
+it stands on **angr** (`CFGFast`) and keeps its own part thin.
+
+### Added
+
+- **`reverify/semantic.py`**: an engine-neutral `SemanticView` (functions, call edges,
+  data cross-references, reachability from the entry point; all addresses as RVAs)
+  built by angr when installed (`pip install "reverify[angr]"`, cached per content
+  hash so a long-lived MCP server pays for the CFG once). Without an engine the
+  **pure fallback only knows what is independently certain** — the entry point and the
+  exports are function starts — and everything else is `INCONCLUSIVE`, never a guess.
+- **Four claim kinds**: `function_at` (offset or name; `observe` reads size, blocks,
+  callees), `calls` (`from` -> `to`, where `to` may be a function or an import name;
+  a refutation lists the real callees), `references` (code references the data at
+  `to`, e.g. a string, optionally from a given function; a refutation lists the
+  referencing functions) and `reachable_from_entry`. Addresses accept
+  `space: file|rva|va` like every other claim; names accept `lib!func`.
+- **Honest strength**: semantic verdicts carry `engine`/`engine_version` and are
+  recorded in the ledger at a new **`DERIVED`** tier — recovered by static analysis,
+  not read from the bytes — below `VERIFIED`; CFGFast is heuristic and the evidence says
+  so. The ladder is now proven > tested > verified/derived > observed.
+- **Who verifies the verifier, semantic edition**: the export table (lief or the pure
+  parser, independent of angr) is the oracle — every export must be a function start the
+  engine recovered (`test_exports_are_function_starts_differential`).
+- `BinaryInfo.export_rvas` (name -> RVA, forwarders excluded) from lief and the pure PE
+  parser; `reverify backends` reports the semantic engine; MCP tool **`re_semantic`**
+  (`summary|functions|function_at|callees|callers|references|reachable`); CLI
+  **`reverify functions <file>`**; `pyproject` extra `[angr]` (large; deliberately not
+  part of `[full]`).
+- 12 new tests (208 total), gated: the pure-fallback tests always run, the angr tests run
+  when the engine is installed (verified on Python 3.12 with angr 9.3.4 and, without
+  angr, on Python 3.14).
+
 ## [0.8.0] - 2026-09-04
 
 Lossless context rollover. Every agent harness compacts a full context window

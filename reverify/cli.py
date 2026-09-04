@@ -26,6 +26,7 @@ try:  # installed package (e.g. the ``reverify`` console script)
     from .verifier import Verifier, Claim
     from .agent import ReconstructionAgent, openai_proposer, demo_proposer
     from .ledger import Ledger, context_for_directory, hook_config, list_ledgers, ledger_dir
+    from .semantic import semantic_view
 except ImportError:  # run directly as a script: ``python reverify/cli.py ...``
     from pe_parser import PEParser, BinaryParseError
     from disasm import Disassembler, pattern_scan, create_patch
@@ -38,6 +39,7 @@ except ImportError:  # run directly as a script: ``python reverify/cli.py ...``
     from verifier import Verifier, Claim
     from agent import ReconstructionAgent, openai_proposer, demo_proposer
     from ledger import Ledger, context_for_directory, hook_config, list_ledgers, ledger_dir
+    from semantic import semantic_view
 
 
 def load_input_bytes(input_val: str, offset: int = 0, length: int = 0) -> bytes:
@@ -241,10 +243,10 @@ def cmd_backends(args: argparse.Namespace) -> None:
         print(json.dumps(rep, indent=2))
     else:
         print("=== Reverify backends ===")
-        for k in ("disassembly", "emulation", "binary_parsing"):
-            v = rep[k]
-            ver = f" {v['version']}" if v["version"] else ""
-            print(f"{k:<16} {v['engine']}{ver}")
+        for k in ("disassembly", "emulation", "binary_parsing", "proof", "semantic"):
+            v = rep.get(k) or {}
+            ver = f" {v['version']}" if v.get("version") else ""
+            print(f"{k:<16} {v.get('engine', '?')}{ver}")
         print(f"full fidelity:   {rep['full_fidelity']}")
         if rep["install_hint"]:
             print(f"upgrade:         {rep['install_hint']}")
@@ -325,6 +327,25 @@ def cmd_reconstruct(args: argparse.Namespace) -> None:
         sys.exit(2)
 
 
+def cmd_functions(args: argparse.Namespace) -> None:
+    data = load_input_bytes(args.target)
+    view = semantic_view(data)
+    funcs = view.list_functions(limit=args.limit, imports=args.imports)
+    if args.json:
+        print(json.dumps({"summary": view.summary(), "functions": funcs}, indent=2, ensure_ascii=False))
+        return
+    s = view.summary()
+    print(
+        f"Engine: {s['engine']} {s['engine_version'] or ''} | functions {s['functions']} | "
+        f"call edges {s['call_edges']} | xref targets {s['xref_targets']} | reachable from entry {s['reachable_from_entry']}"
+    )
+    if s.get("install_hint"):
+        print(f"(partial: only the entry point and exports are known; {s['install_hint']} for boundaries, calls and xrefs)")
+    for f in funcs:
+        flag = "  export" if f.get("is_export") else ""
+        print(f"  {f['rva']:>10}  {f['name']:<40} size {f.get('size', 0):>6}  blocks {f.get('blocks', 0):>4}{flag}")
+
+
 def cmd_ledger(args: argparse.Namespace) -> None:
     # Hook hosts read stdout as UTF-8; a legacy Windows code page must not garble or crash the hand-off.
     reconfigure = getattr(sys.stdout, "reconfigure", None)
@@ -372,8 +393,9 @@ def cmd_verify(args: argparse.Namespace) -> None:
             loaded = json.load(f)
         claims_data = loaded if isinstance(loaded, list) else [loaded]
     elif args.claim:
-        loaded = json.loads(args.claim)
-        claims_data = loaded if isinstance(loaded, list) else [loaded]
+        for raw in (args.claim if isinstance(args.claim, list) else [args.claim]):
+            loaded = json.loads(raw)
+            claims_data.extend(loaded if isinstance(loaded, list) else [loaded])
     else:
         raise SystemExit("verify requires --claim '<json>' or --claims-file <path>")
 
@@ -588,6 +610,17 @@ def main() -> None:
     p_recon.add_argument("--session", help="Session label recorded in the ledger")
     p_recon.set_defaults(func=cmd_reconstruct)
 
+    # functions (semantic layer)
+    p_fn = subparsers.add_parser(
+        "functions",
+        help="List recovered functions: angr when installed, otherwise only the entry point and exports",
+    )
+    p_fn.add_argument("target", help="Binary path")
+    p_fn.add_argument("--limit", type=int, default=200, help="Maximum functions to list")
+    p_fn.add_argument("--imports", action="store_true", help="Include import stubs")
+    p_fn.add_argument("--json", action="store_true", help="Output JSON")
+    p_fn.set_defaults(func=cmd_functions)
+
     # ledger
     p_led = subparsers.add_parser(
         "ledger",
@@ -609,7 +642,7 @@ def main() -> None:
         help="Verify claims about a binary against the deterministic tools (the core Reverify loop)",
     )
     p_verify.add_argument("target", help="File path or hex stream to check claims against")
-    p_verify.add_argument("--claim", help="A single claim as a JSON object, or a JSON array of claims")
+    p_verify.add_argument("--claim", action="append", help="A claim as a JSON object, or a JSON array of claims (repeatable)")
     p_verify.add_argument("--claims-file", help="Path to a JSON file with a claim object or array")
     p_verify.add_argument("--min-information", type=float, default=1.0, help="Weight sum verified claims must reach to count as grounded")
     p_verify.add_argument("--json", action="store_true", help="Output the full JSON verdict report")
