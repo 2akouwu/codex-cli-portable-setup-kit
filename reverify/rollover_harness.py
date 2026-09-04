@@ -1505,25 +1505,45 @@ def _selected_harnesses(argv: List[str]) -> List[Harness]:
     return [get_harness(n) for n in names]
 
 
+def _remedy(harness_name: str, exc: Exception) -> str:
+    if harness_name == "opencode" and isinstance(exc, (PermissionError, OSError)):
+        return ("opencode: FAILED — cannot write the config dir "
+                f"({OpenCodeHarness.config_dir()}): {exc}. Fix its permissions, or set OPENCODE_CONFIG_DIR "
+                "to a writable dir and re-run (export the same var before starting opencode).")
+    return f"{harness_name}: FAILED — {exc}"
+
+
+def _run_over_harnesses(harnesses: List[Harness], action) -> int:
+    """Run install/uninstall per harness; one harness's failure never stops the others."""
+    ok, failed = [], []
+    for harness in harnesses:
+        try:
+            for line in action(harness):
+                print(line)
+            ok.append(harness.name)
+        except Exception as exc:  # a permission / disk problem on one CLI must not block the rest
+            print(_remedy(harness.name, exc))
+            failed.append(harness.name)
+            debug(f"{harness.name} failed: {exc!r}")
+    if failed:
+        print(f"done: {', '.join(ok) or 'none'}" + f"; failed: {', '.join(failed)}")
+    return 0 if ok else 1
+
+
 def run_install(argv: List[str]) -> int:
     harnesses = _selected_harnesses(argv)
     threshold, step = _flag_value(argv, "--threshold"), _flag_value(argv, "--step")
     disable = "--keep-autocompact" not in argv
-    for harness in harnesses:
-        for line in harness.install(threshold, step, disable):
-            print(line)
+    code = _run_over_harnesses(harnesses, lambda h: h.install(threshold, step, disable))
     if "--harness" not in argv:
         print(f"detected: {', '.join(h.name for h in harnesses)} (choose explicitly with --harness a,b)")
     print(f"threshold: {parse_tokens(threshold, threshold_tokens())} tokens, step {parse_tokens(step, step_tokens())}; "
           "sessions already running keep their old settings.")
-    return 0
+    return code
 
 
 def run_uninstall(argv: List[str]) -> int:
-    for harness in _selected_harnesses(argv):
-        for line in harness.uninstall():
-            print(line)
-    return 0
+    return _run_over_harnesses(_selected_harnesses(argv), lambda h: h.uninstall())
 
 
 # --------------------------------------------------------------------------- launcher

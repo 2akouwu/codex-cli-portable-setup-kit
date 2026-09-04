@@ -389,6 +389,30 @@ class Selection(Base):
             self.assertEqual(rh.main(["hook"]), 0)
             self.assertEqual(rh.main(["hook", "claude"]), 0)
 
+    def test_one_harness_failure_does_not_stop_the_others(self):
+        # claude installs into a real settings file; opencode cannot write its config dir
+        os.environ[rh.ENV_SETTINGS] = str(self.root / "settings.json")
+        os.environ["OPENCODE_CONFIG_DIR"] = str(self.root / "denied" / "opencode")
+        original = rh.OpenCodeHarness.install
+
+        def boom(self, *a, **k):
+            raise PermissionError("[WinError 5] access denied")
+
+        rh.OpenCodeHarness.install = boom
+        try:
+            out = io.StringIO()
+            with redirect_stdout(out):
+                code = rh.run_install(["--harness", "claude,opencode"])
+        finally:
+            rh.OpenCodeHarness.install = original
+        text = out.getvalue()
+        self.assertEqual(code, 0)                        # claude succeeded -> overall success
+        self.assertIn("claude: hooks", text)
+        self.assertIn("opencode: FAILED", text)
+        self.assertIn("OPENCODE_CONFIG_DIR", text)
+        self.assertIn("failed: opencode", text)
+        self.assertTrue((self.root / "settings.json").is_file())
+
 
 if __name__ == "__main__":
     unittest.main()
