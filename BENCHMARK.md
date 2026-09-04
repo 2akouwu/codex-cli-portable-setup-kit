@@ -49,12 +49,23 @@ save (`mov [rsp+8], rbx ; push rdi ; sub rsp, N`) or the x86 hot-patch stub
 (`mov edi, edi ; push ebp`), the verifier refuted every one, and it never once marked a wrong
 claim VERIFIED.
 
-### Linux and macOS
+### CI, three platforms (GitHub-hosted runners, not the author's machine)
 
-Produced by CI on every push (ubuntu-latest and macos-latest full-engine jobs): open the
-latest [CI run](https://github.com/2akouwu/reverify/actions/workflows/ci.yml), read the
-summary, or download the `benchmark-ubuntu-latest` / `benchmark-macos-latest` artifact for
-the full record. The gate is the same on all three platforms: false VERIFIED must be 0.
+Produced by [CI run 33871442164](https://github.com/2akouwu/reverify/actions/runs/33871442164)
+on each runner's own system binaries; the full records (every file's SHA-256, every verdict)
+are committed under `benchmarks/results/ci-*.json` and attached to every run as artifacts.
+
+| platform (runner) | formats | tested | prior wrong | **false VERIFIED** | 95% upper bound | true bytes after 1 round |
+|---|---|---|---|---|---|---|
+| Linux x86_64 (ubuntu-latest) | ELF | 40 | 40 | **0** | 8.8% | 40/40 |
+| macOS (macos-latest, universal binaries, x86_64 slice) | Mach-O | 77 | 77 | **0** | 4.8% | 77/77 |
+| Windows Server (windows-latest) | PE x86 + x86_64 | 68 | 68 | **0** | 5.3% | 68/68 |
+
+Across the reference run, the three CI runs and the third-party aarch64 run below: **275
+binaries, 4 formats/architectures, 0 false VERIFIED** (pooled 95% upper bound about 1.4%).
+The gate is the same everywhere: one false VERIFIED fails the build. Known gap: on the
+arm64 macOS runner lief reads the first slice of each universal binary, which is x86_64,
+so the arm64 Mach-O slices are not yet exercised.
 
 ### Third-party replication: aarch64 Linux ELF (Jetson)
 
