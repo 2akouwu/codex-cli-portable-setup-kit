@@ -1,22 +1,65 @@
 # Benchmark: does the verifier catch a real hallucination, safely?
 
-Reproducible: `python benchmarks/prologue_prior.py` (needs real binaries on disk
-plus capstone + lief; defaults to Windows System32 / SysWOW64).
+**Replicate it yourself** (needs capstone + lief: `pip install "reverify[full]"`):
+
+```bash
+python benchmarks/prologue_prior.py --per-dir 40 --json my-run.json --fail-on-false-verified
+```
+
+It runs on your platform's own system binaries (Windows System32/SysWOW64, Linux
+`/usr/bin` + multiarch `/usr/lib`, macOS `/bin` + `/usr/bin`), samples them
+deterministically (sorted, fixed stride), and writes a record with the SHA-256 of every
+file tested, every verdict, and the tool versions — so two people can compare runs file by
+file. **CI runs exactly this on Linux, Windows and macOS on every push and fails the build
+if a single wrong claim is VERIFIED**; each run's record is attached as an artifact
+(`benchmark-<os>`) and the summary appears on the run page. Reference records are
+committed under [`benchmarks/results/`](benchmarks/results/).
 
 ## What it measures
 
-A language model asked what a function's entry prologue looks like tends to answer
-the textbook frame-pointer prologue `push rbp ; mov rbp, rsp`. This benchmark
-applies that prior **blind** — it never reads the disassembly itself — to a corpus
-of real system DLLs and measures, purely through reverify's verifier:
+A language model asked what a function's entry prologue looks like tends to answer the
+textbook frame-pointer prologue `push rbp ; mov rbp, rsp`. This benchmark applies that
+prior **blind** — it never reads the disassembly itself — to real binaries and measures,
+purely through reverify's verifier:
 
 | metric | meaning |
 |---|---|
-| **prior wrong** | how often the model's textbook prologue is a hallucination |
+| **prior wrong** | how often the model's textbook prologue is a hallucination on this corpus |
 | **false VERIFIED** | how often a *wrong* claim was accepted — the safety failure, must be 0 |
-| **grounded after 1 round** | the loop re-states the mnemonics the verifier reported, reaching the true bytes |
+| **true bytes after 1 round** | the loop re-states the mnemonics the verifier reported, reaching the true bytes |
+| **95% upper bound** | Wilson interval on the false-VERIFIED rate: what "0 of N" does and does not prove |
 
-## Result (one run, 19 real DLLs: 9 x64 System32, 10 x86 SysWOW64)
+## Results
+
+### Windows 11, x86_64 + x86 (71 binaries, reference record)
+
+Record: [`benchmarks/results/windows-x86_64-2026-09-04.json`](benchmarks/results/windows-x86_64-2026-09-04.json)
+(reverify 0.10.0, Python 3.14, capstone + lief).
+
+```
+binaries tested                 : 71  (inconclusive, not counted: 0)
+prior wrong (hallucination rate): 69/71 = 97%
+false VERIFIED (must be 0)       : 0   (95% upper bound on the rate: 5.1%)
+true bytes after 1 feedback round: 71/71 = 100%
+```
+
+Two of the 71 DLLs really do open with `push ; mov` and were *correctly* VERIFIED — the
+metric is not rigged to make the prior look bad. The other 69 open with the x64 shadow-space
+save (`mov [rsp+8], rbx ; push rdi ; sub rsp, N`) or the x86 hot-patch stub
+(`mov edi, edi ; push ebp`), the verifier refuted every one, and it never once marked a wrong
+claim VERIFIED.
+
+### Linux and macOS
+
+Produced by CI on every push (ubuntu-latest and macos-latest full-engine jobs): open the
+latest [CI run](https://github.com/2akouwu/reverify/actions/workflows/ci.yml), read the
+summary, or download the `benchmark-ubuntu-latest` / `benchmark-macos-latest` artifact for
+the full record. The gate is the same on all three platforms: false VERIFIED must be 0.
+
+### Third-party replication: aarch64 Linux ELF (Jetson)
+
+Reported in [#5](https://github.com/2akouwu/reverify/pull/5) by @IMGillusion — 19 aarch64
+ELFs from `/usr/bin`:
 
 ```
 prior wrong (hallucination rate): 19/19 = 100%
@@ -24,50 +67,31 @@ false VERIFIED (must be 0)       : 0
 true bytes after 1 feedback round: 19/19 = 100%
 ```
 
-Every binary's real entry prologue was something other than `push; mov` — the x64
-ones open by saving a register to shadow space (`mov [rsp+8], rbx ; push rdi ;
-sub rsp, N`), the x86 ones with the `mov edi, edi` hot-patch stub. The textbook
-prior was wrong every time, the verifier refuted every one, and **it never once
-marked a wrong claim VERIFIED**.
+The x86 textbook prior is a weak probe on ARM64 — it is *expected* to be wrong, because
+aarch64 entry points open with `sub sp, sp, #N` / `mov x29, sp`. The load-bearing number is
+the **zero false-VERIFIED**: the soundness guarantee holds across architectures. Producing
+this run surfaced a real bug (arm64 was routed to the x86_64 decoder), fixed in v0.9.1 —
+which is what replication is for.
 
 ## Reading it honestly
 
-- The meaningful result is the first two rows: a real, common model hallucination
-  is caught with **zero false accepts** on real binaries. The zero-false-accept
-  property is the verifier's soundness (tested independently in
-  `tests/test_oracle.py` / `test_differential.py`), confirmed here in the field.
-- "100% wrong" is specific to **entry-point** prologues, which are CRT/DLL startup
-  stubs with characteristic non-textbook shapes. Random internal functions would
-  give a different rate; this is one clean probe of one well-known prior, not a
-  survey of all hallucinations.
-- "grounded after 1 round" shows the feedback loop converging to the true bytes,
-  but round 2 restates what the tool reported — in the scored `reconstruct` loop
-  that restatement is echo-detected and carries no information weight. It proves
-  the loop reaches ground truth; it is not the model independently reasoning.
+- The meaningful result is the false-VERIFIED row, and the honest way to read "0 of N" is
+  the upper bound: 0/71 means the rate is below about 5% with 95% confidence, not that it is
+  zero. The bound tightens only with more binaries; CI adds two platforms per push and the
+  `--per-dir` knob widens the sample. The zero-false-accept property is the verifier's
+  soundness, tested independently (`tests/test_oracle.py`, `test_differential.py`, the
+  nightly fuzz) and confirmed here in the field.
+- "Prior wrong" is specific to **entry-point** prologues, which are CRT/DLL startup stubs
+  with characteristic non-textbook shapes. Random internal functions would give a different
+  rate; this is one clean probe of one well-known prior, not a survey of all hallucinations.
+- "True bytes after 1 round" shows the feedback loop converging, but round 2 restates what
+  the tool reported — in the scored `reconstruct` loop that restatement is echo-detected and
+  carries no information weight. It proves the loop reaches ground truth; it is not the
+  model independently reasoning.
+- Binaries whose entry the verifier cannot judge (no engines, unknown format) are reported
+  as *inconclusive* and excluded from every rate — never silently dropped and never counted
+  as a pass.
 
-The model here was Claude, plugged in as the injected proposer — no API key, no
-specific model (see [EXAMPLE.md](EXAMPLE.md)).
-
-## Result (aarch64 Linux ELF)
-
-Same probe on an aarch64 host (Jetson, `/usr/bin` — 19 aarch64 ELFs):
-
-```
-prior wrong (hallucination rate): 19/19 = 100%
-false VERIFIED (must be 0)       : 0
-true bytes after 1 feedback round: 19/19 = 100%
-```
-
-Reading it honestly:
-
-- The x86 textbook prior (`push; mov`) is a weak probe on ARM64 — it is
-  *expected* to be wrong, because aarch64 entry points open with a
-  `sub sp, sp, #N` / `mov x29, sp` frame, not `push rbp`. The load-bearing
-  number is the **zero false-VERIFIED**: the soundness guarantee (a wrong claim
-  is never accepted) holds across architectures, not just x86.
-- Producing this surfaced an arch-routing bug: `disasm.py` matched
-  `"64" in arch` for x86_64 *before* checking for arm64, so `"arm64"` was
-  silently decoded as x86_64 (entry points came back as junk x86 mnemonics and
-  round-2 convergence fell to 11%). `prologue_prior.py` also hard-coded the arch
-  to the x86 family. Using `info.arch` fixes both: aarch64 entry points now
-  decode to real `nop`/`mov` bytes and round-2 converges 100%.
+The model in the worked example ([EXAMPLE.md](EXAMPLE.md)) was Claude, plugged in as the
+injected proposer — no API key, no specific model. The benchmark itself needs no model at
+all: the prior is fixed, so anyone can run it.

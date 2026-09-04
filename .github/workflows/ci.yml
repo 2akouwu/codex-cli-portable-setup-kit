@@ -48,6 +48,18 @@ jobs:
         run: reverify backends
       - name: Tests
         run: python -m unittest discover -s reverify/tests -p "test_*.py"
+      - name: Benchmark on this platform's real binaries (false VERIFIED must be 0)
+        if: matrix.deps == 'full'
+        shell: bash
+        run: |
+          python benchmarks/prologue_prior.py --per-dir 40 --json "bench-${{ matrix.os }}.json" --fail-on-false-verified
+          python benchmarks/prologue_prior.py --per-dir 40 --markdown | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Keep the benchmark record (hashes, verdicts, tool versions)
+        if: matrix.deps == 'full'
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-${{ matrix.os }}
+          path: bench-*.json
 
   # Single required check for branch protection, so the matrix can change freely.
   ci-ok:

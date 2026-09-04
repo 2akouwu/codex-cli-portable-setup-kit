@@ -37,8 +37,11 @@ factual, informative and non-repetitive.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import math
+import platform
+import time
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -49,9 +52,13 @@ try:  # package import (e.g. ``from reverify import Verifier``)
     from .binary import parse_binary, shannon_entropy
     from .behavior import behavioral_equiv, prove_expr_equiv
     from .semantic import semantic_view, INSTALL_HINT as SEMANTIC_HINT
+    from .backends import backend_report
+    from ._version import __version__
 except ImportError:  # flat import (CLI, MCP server, and the test suite)
     from disasm import Disassembler, pattern_scan, UnsupportedArch, PSEUDO_MNEMONICS
     from emulator import make_emulator, EmulatorError
+    from backends import backend_report
+    from _version import __version__
     from protocol_parser import ProtobufDissector
     from binary import parse_binary, shannon_entropy
     from behavior import behavioral_equiv, prove_expr_equiv
@@ -180,6 +187,28 @@ class Verifier:
         self.data = data
         self._bin_cache = None
         self._sem_cache = None
+        self._sha_cache: Optional[str] = None
+
+    def receipt(self) -> Dict[str, Any]:
+        """Everything a third party needs to re-run these checks: which bytes, with which tools.
+
+        Verdicts are deterministic given the same bytes and the same engines, so a
+        report plus its receipt is evidence that can be handed over and replayed —
+        not a claim that has to be taken on trust.
+        """
+        if self._sha_cache is None:
+            self._sha_cache = hashlib.sha256(self.data).hexdigest()
+        engines = backend_report()
+        return {
+            "binary_sha256": self._sha_cache,
+            "binary_size": len(self.data),
+            "reverify": __version__,
+            "python": platform.python_version(),
+            "platform": platform.platform(),
+            "engines": {k: v.get("engine") for k, v in engines.items() if isinstance(v, dict) and "engine" in v},
+            "generated": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "replay": "reverify verify <file> --claims-file <claims.json>",
+        }
 
     def _binary(self):
         """Parsed view of the binary (lief when available), cached per verifier."""
@@ -219,7 +248,9 @@ class Verifier:
         """
         results = [self.verify(c) for c in claims]
         _apply_dependencies(results)
-        return summarize(results, facts=facts, min_information=min_information)
+        report = summarize(results, facts=facts, min_information=min_information)
+        report["receipt"] = self.receipt()
+        return report
 
     # -- addressing -----------------------------------------------------------
 

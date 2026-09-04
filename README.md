@@ -23,8 +23,9 @@ Ask an AI to reverse-engineer a file and it will make things up — offsets, str
 code does — and say it like it's fact. Reverify checks it against the one thing that can't lie,
 **the bytes**. Every claim is tested against the real binary; only what's true survives.
 
-On 19 real Windows system files, the AI's textbook answer was wrong **100% of the time** —
-reverify caught every one, with **zero false alarms**
+On 71 real Windows system files, the AI's textbook answer was wrong **97% of the time** —
+reverify caught every one and **never accepted a wrong claim** (0 of 71; the same gate runs
+in CI on Linux and macOS on every push, and an independent aarch64 run found the same)
 ([EXAMPLE.md](EXAMPLE.md), [BENCHMARK.md](BENCHMARK.md); `python benchmarks/prologue_prior.py`).
 
 <p align="center">
@@ -130,6 +131,25 @@ lets the verifier — not the model's confidence — select among them.
 proposes the textbook prologue from prior, the verifier refutes it with the real
 bytes, and the model corrects to grounded, with no API key and no specific model.
 [BENCHMARK.md](BENCHMARK.md) is the reproducible measurement behind the numbers above.
+
+## Evidence, not claims
+
+Everything above is checkable without trusting the author:
+
+- **The verifier is checked by independent judges**, not by its own tests: the pure
+  parser against lief on real binaries, the disassembler against capstone, binutils
+  `objdump` and hand-verified Intel vectors, the emulator against Unicorn, the semantic
+  engine against the export table — plus fuzzing that a malformed file never crashes the
+  reader and that a wrong claim is never VERIFIED. All of it runs in CI on Linux, Windows
+  and macOS, with and without the engines; a nightly job fuzzes 20k inputs.
+- **The benchmark runs in CI on every push, on each platform's own system binaries**, and
+  **fails the build if a single wrong claim is VERIFIED**. Each run leaves a
+  machine-readable record — SHA-256 of every binary, verdicts, tool versions — as an
+  artifact; reference runs live in [`benchmarks/results/`](benchmarks/results/), and a
+  third-party aarch64 replication is in [BENCHMARK.md](BENCHMARK.md).
+- **Every verdict carries a receipt**: `reverify verify --json` (and `re_verify_claim`)
+  include the binary's SHA-256, the reverify version and which engines judged, so a report
+  can be handed over and replayed rather than believed.
 
 ## The ledger: state that survives a context reset
 

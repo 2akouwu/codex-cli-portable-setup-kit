@@ -48,12 +48,34 @@ def _sample(paths, n):
     return [paths[int(i * stride)] for i in range(n)]
 
 
+_MAGICS = (b"MZ", b"\x7fELF", b"\xcf\xfa\xed\xfe", b"\xce\xfa\xed\xfe",
+           b"\xca\xfe\xba\xbe", b"\xfe\xed\xfa\xcf", b"\xfe\xed\xfa\xce")
+
+
+def _is_binary(p):
+    try:
+        with open(p, "rb") as f:
+            head = f.read(4)
+    except OSError:
+        return False
+    return len(head) == 4 and any(head.startswith(m) for m in _MAGICS)
+
+
 def real_binaries(per_dir=12):
-    """Real PEs present on this machine: x64 (System32), x86 (SysWOW64), plus the interpreter."""
+    """Real binaries present on this machine, per platform — Windows PE (System32 x64,
+    SysWOW64 x86), Linux ELF (/usr/bin and the multiarch /usr/lib), macOS Mach-O
+    (/bin, /usr/bin) — plus the interpreter itself. CI runs this on all three."""
     out = [sys.executable]
-    for d in (r"C:\Windows\System32", r"C:\Windows\SysWOW64"):
+    if sys.platform.startswith("win"):
+        dirs = [(r"C:\Windows\System32", "*.dll"), (r"C:\Windows\SysWOW64", "*.dll")]
+    elif sys.platform == "darwin":
+        dirs = [("/bin", "*"), ("/usr/bin", "*")]
+    else:
+        dirs = [("/usr/bin", "*"), ("/usr/lib/x86_64-linux-gnu", "*.so*"),
+                ("/usr/lib/aarch64-linux-gnu", "*.so*"), ("/lib/x86_64-linux-gnu", "*.so*")]
+    for d, pat in dirs:
         if os.path.isdir(d):
-            cand = [p for p in glob.glob(os.path.join(d, "*.dll")) if _ok_size(p)]
+            cand = [p for p in glob.glob(os.path.join(d, pat)) if os.path.isfile(p) and _ok_size(p) and _is_binary(p)]
             out += _sample(cand, per_dir)
     seen, uniq = set(), []
     for p in out:
@@ -91,20 +113,24 @@ class TestDifferentialParsing(unittest.TestCase):
             lief = parse_binary(data, prefer="lief")
             if lief.error or lief.format == "raw":
                 continue  # lief could not parse it either; nothing to diff
+            if lief.format == "MachO":
+                continue  # there is no pure Mach-O reader (documented: Mach-O needs lief)
             name = os.path.basename(path)
             self.assertIsNone(pure.error, f"pure parser errored on {name}: {pure.error}")
             self.assertEqual(pure.format, lief.format, name)
             self.assertEqual(pure.arch, lief.arch, f"{name}: arch")
             self.assertEqual(pure.bits, lief.bits, f"{name}: bits")
-            self.assertEqual(pure.image_base, lief.image_base, f"{name}: image_base")
             self.assertEqual(pure.entrypoint, lief.entrypoint, f"{name}: entrypoint")
-            self.assertEqual(
-                [s.name for s in pure.sections], [s.name for s in lief.sections], f"{name}: section names"
-            )
-            for ps, ls in zip(pure.sections, lief.sections):
-                self.assertEqual(ps.virtual_address, ls.virtual_address, f"{name}: {ps.name} RVA")
+            if lief.format == "PE":  # the pure ELF reader is header-only: no sections or image base to diff
+                self.assertEqual(pure.image_base, lief.image_base, f"{name}: image_base")
+                self.assertEqual(
+                    [s.name for s in pure.sections], [s.name for s in lief.sections], f"{name}: section names"
+                )
+                for ps, ls in zip(pure.sections, lief.sections):
+                    self.assertEqual(ps.virtual_address, ls.virtual_address, f"{name}: {ps.name} RVA")
             checked += 1
-        self.assertGreater(checked, 0, "no binaries were actually compared")
+        if checked == 0:
+            self.skipTest("no binaries the pure parser reads on this platform (Mach-O needs lief)")
         print(f"\n  [differential] pure==lief on {checked} real binaries")
 
     def test_pure_imports_never_invented(self):
@@ -177,6 +203,7 @@ class TestRobustnessFuzz(unittest.TestCase):
     """Malformed input must degrade, never crash; and a claim verifies iff bytes match."""
 
     def _malformed(self, rng, n=400):
+        n = int(os.environ.get("REVERIFY_FUZZ_N", n))  # the nightly fuzz job raises this
         out = []
         real_head = _read(CORPUS[0])[:256] if CORPUS else b"MZ" + b"\x00" * 200
         for _ in range(n):
@@ -232,7 +259,7 @@ class TestRobustnessFuzz(unittest.TestCase):
     def test_soundness_verify_iff_match(self):
         """On arbitrary bytes: expected==actual -> VERIFIED; one bit flipped -> never VERIFIED."""
         rng = random.Random(3)
-        for _ in range(500):
+        for _ in range(int(os.environ.get("REVERIFY_FUZZ_N", 500))):
             n = rng.randint(16, 200)
             data = bytes(rng.getrandbits(8) for _ in range(n))
             off = rng.randint(0, n - 4)
