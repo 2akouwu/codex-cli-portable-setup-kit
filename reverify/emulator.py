@@ -392,4 +392,12 @@ def make_emulator(arch: str = "x86_64", prefer: str = "auto", **kwargs):
         raise EmulatorError("unicorn backend requested but not installed: pip install unicorn")
     if prefer in ("auto", "unicorn") and HAS_UNICORN:
         return UnicornEmulator(arch=arch, **kwargs)
+    a = str(arch).lower()
+    if any(tag in a for tag in ("arm", "aarch", "mips", "ppc", "powerpc", "riscv", "sparc")):
+        # never run non-x86 code through the x86-only micro-emulator: that would
+        # let a wrong claim verify against a meaningless execution
+        raise EmulatorError(
+            f"'{arch}' emulation needs unicorn (the pure-Python micro-emulator is x86/x64 only): "
+            'pip install "reverify[unicorn]"'
+        )
     return MicroEmulator(arch=arch, **kwargs)

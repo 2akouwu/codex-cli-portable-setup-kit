@@ -43,15 +43,15 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Tuple
 
 try:  # package import (e.g. ``from reverify import Verifier``)
-    from .disasm import Disassembler, pattern_scan
-    from .emulator import make_emulator
+    from .disasm import Disassembler, pattern_scan, UnsupportedArch
+    from .emulator import make_emulator, EmulatorError
     from .protocol_parser import ProtobufDissector
     from .binary import parse_binary, shannon_entropy
     from .behavior import behavioral_equiv, prove_expr_equiv
     from .semantic import semantic_view, INSTALL_HINT as SEMANTIC_HINT
 except ImportError:  # flat import (CLI, MCP server, and the test suite)
-    from disasm import Disassembler, pattern_scan
-    from emulator import make_emulator
+    from disasm import Disassembler, pattern_scan, UnsupportedArch
+    from emulator import make_emulator, EmulatorError
     from protocol_parser import ProtobufDissector
     from binary import parse_binary, shannon_entropy
     from behavior import behavioral_equiv, prove_expr_equiv
@@ -420,7 +420,11 @@ class Verifier:
             return INCONCLUSIVE, {"address": addr, "file_size": len(self.data)}, "offset out of range"
         code = self.data[off : off + length] if length else self.data[off : off + 64]
         base = _as_int(p["base"]) if "base" in p else 0x1000
-        insns = Disassembler(arch=arch).disassemble(code, base_address=base)
+        try:
+            insns = Disassembler(arch=arch).disassemble(code, base_address=base)
+        except UnsupportedArch as exc:
+            # never judge non-x86 bytes with the x86-only fallback: that could accept a wrong claim
+            return INCONCLUSIVE, {"address": addr, "arch": arch, "error": str(exc)}, str(exc)
         actual = [i.mnemonic.lower() for i in insns]
         actual_ops = [i.op_str for i in insns]
         matched = b"".join(bytes(i.bytes) for i in insns[: len(expected)])

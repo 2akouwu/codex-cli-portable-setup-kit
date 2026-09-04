@@ -2,6 +2,23 @@
 
 All notable changes to this project are documented here.
 
+## [0.9.1] - 2026-09-04
+
+### Fixed
+
+- **ARM64 was disassembled as x86_64** (PR #5 by @IMGillusion, found by running the
+  prologue benchmark on an aarch64 Jetson): `disasm.py` picked the x86_64 capstone decoder
+  on `"64" in arch`, which is also true for `arm64` / `aarch64`. The ARM branches now come
+  first; `benchmarks/prologue_prior.py` honors the parsed `info.arch`; the objdump oracle test
+  picks its target from the arch and skips when it is absent. Regression tests pin the
+  routing. BENCHMARK.md gains the aarch64 Linux ELF result: prior wrong 19/19, false
+  VERIFIED 0, true bytes after one feedback round 19/19 (11% before the fix).
+- **Soundness without the engines**: the pure-Python decoder and micro-emulator are
+  x86/x64 only. They used to run ARM/MIPS/... bytes anyway and produce junk a wrong claim
+  could match — a possible false VERIFIED in pure mode. `instructions` and `emulate_result`
+  on a non-x86 arch now return `INCONCLUSIVE` with an install hint when capstone / unicorn
+  are missing (`UnsupportedArch`, `EmulatorError`). 4 new tests.
+
 ## [0.9.0] - 2026-09-04
 
 The semantic layer (roadmap issue #3). Bytes, instructions, imports and emulation

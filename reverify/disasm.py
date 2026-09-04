@@ -4,6 +4,17 @@ import re
 from typing import Dict, Any, List, Optional, Tuple
 
 
+class UnsupportedArch(ValueError):
+    """The requested architecture needs capstone: the pure-Python decoder is x86/x64 only.
+
+    Raised instead of silently decoding ARM/MIPS/... bytes as x86, which would
+    let a wrong claim verify against junk (a false VERIFIED).
+    """
+
+
+_PURE_UNSUPPORTED = ("arm", "aarch", "mips", "ppc", "powerpc", "riscv", "sparc")
+
+
 class Instruction:
     def __init__(self, address: int, size: int, mnemonic: str, op_str: str, raw_bytes: bytes):
         self.address = address
@@ -56,6 +67,11 @@ class Disassembler:
                     Instruction(ins.address, ins.size, ins.mnemonic, ins.op_str, bytes(ins.bytes))
                 )
             return instructions
+        if any(tag in self.arch for tag in _PURE_UNSUPPORTED):
+            raise UnsupportedArch(
+                f"'{self.arch}' disassembly needs capstone (the pure-Python decoder is x86/x64 only): "
+                'pip install "reverify[capstone]"'
+            )
         return self._disassemble_pure_python(code, base_address)
 
     def _disassemble_pure_python(self, code: bytes, base_address: int) -> List[Instruction]:
