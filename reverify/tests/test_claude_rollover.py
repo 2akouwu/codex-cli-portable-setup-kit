@@ -415,8 +415,8 @@ class WaitForReceipt(Base):
     """The receipt-processing wiring — consume a good receipt, discard a bad one — tested with a
     fake process, so the discard paths are deterministic (no real subprocess exiting under us)."""
 
-    def _launcher(self, **kw):
-        return cr.Launcher([], poll=0.01, settle=0.0, min_interval=0.0, quiet=True, **kw)
+    def _launcher(self, min_interval=0.0, **kw):
+        return cr.Launcher([], poll=0.01, settle=0.0, min_interval=min_interval, quiet=True, **kw)
 
     def _receipt(self, launch_id, **extra):
         self.write_transcript(user_line("go", "2026-09-04T09:00:00.000Z"), assistant_line(250_000))
