@@ -396,10 +396,75 @@ class TestConsumeReason(Base):
         self.assertIn("user message", reason)
 
 
+class _FakeProc:
+    """A process that stays 'alive' for a fixed number of polls, then exits 0."""
+
+    def __init__(self, alive_polls=50):
+        self.n = alive_polls
+        self.returncode = None
+
+    def poll(self):
+        if self.n > 0:
+            self.n -= 1
+            return None
+        self.returncode = 0
+        return 0
+
+
+class WaitForReceipt(Base):
+    """The receipt-processing wiring — consume a good receipt, discard a bad one — tested with a
+    fake process, so the discard paths are deterministic (no real subprocess exiting under us)."""
+
+    def _launcher(self, **kw):
+        return cr.Launcher([], poll=0.01, settle=0.0, min_interval=0.0, quiet=True, **kw)
+
+    def _receipt(self, launch_id, **extra):
+        self.write_transcript(user_line("go", "2026-09-04T09:00:00.000Z"), assistant_line(250_000))
+        r = {"schema": cr.RECEIPT_SCHEMA, "launch_id": launch_id, "transcript_path": str(self.transcript),
+             "handoff_path": str(self.handoff), "written_epoch": time.time(),
+             "first_user_message": "go", "last_user_message": "go"}
+        r.update(extra)
+        cr._write_json(cr.receipt_path(launch_id), r)
+
+    def test_good_receipt_is_consumed(self):
+        self._receipt("L1")
+        launcher = self._launcher()
+        got = launcher.wait_for_receipt("L1", _FakeProc())
+        self.assertIsNotNone(got)
+        self.assertEqual(got["launch_id"], "L1")
+        self.assertTrue((self.state / "receipts" / "L1.consumed.json").exists())
+        self.assertEqual(launcher.skipped, [])
+
+    def test_bad_schema_is_discarded(self):
+        self._receipt("L2", schema=99)
+        launcher = self._launcher()
+        self.assertIsNone(launcher.wait_for_receipt("L2", _FakeProc()))
+        self.assertTrue(any("schema" in s for s in launcher.skipped))
+        self.assertFalse(cr.receipt_path("L2").exists())
+
+    def test_too_soon_is_discarded(self):
+        self._receipt("L3")
+        launcher = self._launcher(min_interval=60.0)
+        launcher._last_rollover_at = time.time()
+        self.assertIsNone(launcher.wait_for_receipt("L3", _FakeProc()))
+        self.assertTrue(any("too soon" in s for s in launcher.skipped))
+
+    def test_user_message_after_handoff_is_discarded(self):
+        self.write_transcript(user_line("go", "2026-09-04T09:00:00.000Z"), assistant_line(250_000),
+                              user_line("wait, one more thing", cr.now_iso()))
+        cr._write_json(cr.receipt_path("L4"),
+                       {"schema": cr.RECEIPT_SCHEMA, "launch_id": "L4", "transcript_path": str(self.transcript),
+                        "written_epoch": time.time() - 60})
+        launcher = self._launcher()
+        self.assertIsNone(launcher.wait_for_receipt("L4", _FakeProc()))
+        self.assertTrue(any("user message" in s for s in launcher.skipped))
+
+
 class LauncherLoop(Base):
-    """A stub stands in for Claude Code. Receipts and the exit flag are written *synchronously*
-    inside the spawn callback (before the launcher starts waiting), so the loop is deterministic
-    — no wall-clock timers racing a real subprocess."""
+    """A stub stands in for Claude Code, for the real spawn/kill/relaunch lifecycle. Receipts and
+    the exit flag are written after a readiness barrier (the stub has logged its launch), so the
+    loop is deterministic — no wall-clock timers, and the receipt-discard decisions live in
+    WaitForReceipt above rather than racing a real process here."""
 
     def setUp(self):
         super().setUp()
@@ -476,31 +541,6 @@ class LauncherLoop(Base):
         self.assertEqual(list((self.state / "receipts").glob("*.json")), consumed)
         events = [json.loads(l)["event"] for l in (self.state / "events.jsonl").read_text(encoding="utf-8").splitlines()]
         self.assertEqual(events, ["launch", "rollover", "launch"])
-
-    def test_user_message_after_handoff_cancels_the_rollover(self):
-        def on_launch(launch_id, n):
-            self.make_receipt(launch_id, written_epoch=time.time() - 60)
-            with self.transcript.open("a", encoding="utf-8") as handle:
-                handle.write(user_line("wait, one more thing", cr.now_iso()) + "\n")
-            self.stop_stub()                               # the (single) session then exits
-
-        launcher, code = self.run_launcher(on_launch)
-        self.assertEqual(code, 0)
-        self.assertEqual(launcher.rollovers, [])
-        self.assertEqual(len(self.launches()), 1)
-        self.assertTrue(any("user message" in s for s in launcher.skipped))
-        self.assertFalse(any((self.state / "receipts").glob("*.json")))
-
-    def test_unknown_schema_is_discarded_no_rollover(self):
-        def on_launch(launch_id, n):
-            self.make_receipt(launch_id, schema=99)        # bad schema -> discarded, no rollover
-            self.stop_stub()
-
-        launcher, code = self.run_launcher(on_launch)
-        self.assertEqual(code, 0)
-        self.assertEqual(launcher.rollovers, [])
-        self.assertEqual(len(self.launches()), 1)
-        self.assertTrue(any("schema" in s for s in launcher.skipped))
 
     def test_max_rollovers_stops_the_loop(self):
         def on_launch(launch_id, n):
