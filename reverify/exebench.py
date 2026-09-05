@@ -13,8 +13,11 @@ Honest scope and labelling (kept consistent with ``behavior.py``):
   emulation) the candidate is compiled and executed on the host, so a claim's
   ``c_source`` is arbitrary code. The adapter is therefore **off by default**:
   it returns ``inconclusive`` unless the environment opts in with
-  ``REVERIFY_ALLOW_NATIVE_EXEC=1`` (never enable it for an MCP server exposed to
-  untrusted agents without a sandbox).
+  ``REVERIFY_ALLOW_NATIVE_EXEC=1``. When enabled, both the compile and the run go
+  through :mod:`reverify.sandbox` (wall-clock timeout, CPU / memory / file-size /
+  process-count limits, output cap, scrubbed env, isolated cwd), so a runaway or
+  fork-bombing candidate is contained. It is still not a boundary against a
+  determined attacker — for hostile corpora run it inside a container as well.
 - The candidate C is compiled with a C compiler. The whole adapter is *gated*:
   if no compiler is available it returns ``inconclusive`` rather than failing.
 - I/O contract: each test case passes its inputs to the program as command-line
@@ -39,10 +42,26 @@ import subprocess
 import tempfile
 from typing import Any, Dict, List, Optional, Sequence
 
+try:  # package import
+    from .sandbox import run_sandboxed, SandboxLimits
+except ImportError:  # flat import (CLI / tests)
+    from sandbox import run_sandboxed, SandboxLimits
+
+_MB = 1024 * 1024
+# Compilation runs a (trusted) compiler over untrusted source: cap time / memory
+# so a macro/template bomb cannot hang or OOM the host, but leave the process
+# count unlimited — the compiler forks cc1 / as / ld.
+_COMPILE_LIMITS = SandboxLimits(cpu_seconds=None, memory_bytes=1536 * _MB,
+                                file_size_bytes=64 * _MB, max_processes=None, output_bytes=_MB)
+# The candidate binary is fully untrusted: tight CPU / memory, small output, and
+# a process-count limit to blunt fork bombs.
+_RUN_LIMITS = SandboxLimits(cpu_seconds=5, memory_bytes=256 * _MB,
+                            file_size_bytes=8 * _MB, max_processes=32, output_bytes=256 * 1024)
+
 NATIVE_EXEC_ENV = "REVERIFY_ALLOW_NATIVE_EXEC"
 NATIVE_EXEC_HINT = (
-    f"native execution of candidate C is off by default; set {NATIVE_EXEC_ENV}=1 in a trusted, "
-    "sandboxed environment to enable it"
+    f"native execution of candidate C is off by default; set {NATIVE_EXEC_ENV}=1 to enable it "
+    "(compile and run are then confined by reverify.sandbox; for hostile corpora also use a container)"
 )
 
 
@@ -85,10 +104,11 @@ def compile_candidate(
     with open(src, "w", encoding="utf-8") as f:
         f.write(c_source)
     cmd = [cc, "-O0", "-w", *list(extra_flags or []), "-o", out, src]
-    try:
-        subprocess.run(cmd, capture_output=True, timeout=timeout, check=False, cwd=workdir,
-                       stdin=subprocess.DEVNULL)
-    except (subprocess.TimeoutExpired, OSError):
+    limits = SandboxLimits(wall_seconds=timeout, cpu_seconds=_COMPILE_LIMITS.cpu_seconds,
+                           memory_bytes=_COMPILE_LIMITS.memory_bytes, file_size_bytes=_COMPILE_LIMITS.file_size_bytes,
+                           max_processes=_COMPILE_LIMITS.max_processes, output_bytes=_COMPILE_LIMITS.output_bytes)
+    res = run_sandboxed(cmd, cwd=workdir, limits=limits)
+    if res.timed_out:
         return None
     # MinGW / MSVC toolchains append .exe to the requested output name
     for cand in (out, out + ".exe"):
@@ -103,20 +123,15 @@ def run_case(
     *,
     timeout: int = 10,
 ) -> Optional[int]:
-    """Run ``binary`` with ``input_args`` as argv; parse one int from stdout."""
-    try:
-        proc = subprocess.run(
-            [binary, *[str(a) for a in input_args]],
-            capture_output=True,
-            timeout=timeout,
-            cwd=os.path.dirname(binary) or None,
-            stdin=subprocess.DEVNULL,
-        )
-    except (subprocess.TimeoutExpired, OSError):
+    """Run ``binary`` with ``input_args`` as argv (sandboxed); parse one int from stdout."""
+    limits = SandboxLimits(wall_seconds=timeout, cpu_seconds=min(int(timeout) or 1, _RUN_LIMITS.cpu_seconds),
+                           memory_bytes=_RUN_LIMITS.memory_bytes, file_size_bytes=_RUN_LIMITS.file_size_bytes,
+                           max_processes=_RUN_LIMITS.max_processes, output_bytes=_RUN_LIMITS.output_bytes)
+    res = run_sandboxed([binary, *[str(a) for a in input_args]],
+                        cwd=os.path.dirname(binary) or None, limits=limits)
+    if not res.ok:
         return None
-    if proc.returncode != 0:
-        return None
-    text = proc.stdout.decode("utf-8", "ignore").strip()
+    text = res.stdout.decode("utf-8", "ignore").strip()
     # take the first whitespace-separated token that parses as an integer
     for tok in text.split():
         try:

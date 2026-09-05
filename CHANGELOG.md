@@ -4,6 +4,41 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Added
+
+- **Native-execution sandbox** (`reverify/sandbox.py`): a single `run_sandboxed`
+  that confines untrusted code with a wall-clock timeout, CPU / memory / file-size /
+  process-count limits (POSIX `setrlimit`), a Windows Job Object (memory cap +
+  kill-on-close), an output cap, a scrubbed environment, and an isolated working
+  directory. `exebench` now runs both the compile and the candidate through it, so
+  `REVERIFY_ALLOW_NATIVE_EXEC=1` is reasonable to enable on a normal machine
+  (still opt-in; for hostile corpora also use a container). `protections_active()`
+  reports what is actually enforced per platform.
+- **Re-executability scorecard** (`benchmarks/reexec_dataset.py`): point an
+  ExeBench / LLM4Decompile-shaped dataset (candidate C + recorded I/O) at reverify
+  and get the executable-correctness numbers the field reports, produced through the
+  `exebench` verifier — a labeled-wrong candidate that slips through as
+  re-executable is a hard failure (0 false accepts). Bundled sample corpus.
+- **`ROADMAP.md`**: the path to the reference standard (benchmark as the measure,
+  second independent engine for differential verification, hardening, editor
+  plugins, deeper claim kinds, the hand-off spec).
+
+### Fixed
+
+- **32-bit x86 argument passing in the emulation runner** (PR #12, @IMGillusion):
+  `arch='x86'` fell back to 64-bit register names, a no-op in 32-bit unicorn mode,
+  so every 32-bit call silently saw `arg=0` and returned 0. Added 32-bit register
+  sets, an arch→bit-width map (bits derived from arch; an explicit mismatch now
+  raises), fixing `behavior_equiv` for 32-bit code.
+- **`--probe` filter off-by-one** in the hallucination scorecard (PR #13).
+
+### Added (benchmark)
+
+- **`elf_shoff` hallucination probe** (PR #13, @IMGillusion, part of #4): a memorized
+  textbook ELF64 section-table offset (`e_shoff == 0x1000`) applied blindly to real
+  ELF64 binaries — the struct-layout sibling of the `md5_const` prior — with an
+  independent re-read guard.
+
 ## [0.11.0] - 2026-09-05
 
 The ledger already keeps grounded facts across a context reset. This release decides *when*
