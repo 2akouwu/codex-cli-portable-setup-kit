@@ -19,6 +19,8 @@ ADD_FN = bytes.fromhex("4889f8" "4801f0" "c3")
 XOR_FN = bytes.fromhex("4889f8" "4831f0" "c3")
 # rax = rdi + rsi via lea (different encoding, same behavior): lea rax,[rdi+rsi] ; ret
 ADD_LEA = bytes.fromhex("488d0437" "c3")
+# 32-bit x86: eax = edi + esi ; ret   (mov eax,edi ; add eax,esi ; ret)
+ADD_FN_32 = bytes.fromhex("89f8" "03c6" "c3")
 
 
 class TestExprSafety(unittest.TestCase):
@@ -113,6 +115,39 @@ class TestBehaviorClaim(unittest.TestCase):
         self.assertEqual(r["verdict"], VERIFIED)
         self.assertTrue(r["evidence"]["self_referential"])
         self.assertEqual(r["weight"], 0.0)
+
+
+@unittest.skipUnless(HAS_UNICORN, "unicorn not installed")
+class TestRunFunction32Bit(unittest.TestCase):
+    """32-bit x86 arg passing must actually work (regression: 32-bit arch fell
+    back to 64-bit register names, which no-op in 32-bit unicorn mode, so the
+    function saw arg=0 and every 32-bit call returned 0)."""
+
+    def test_32bit_add_works(self):
+        for a, b in [(5, 3), (1, 2), (0x7FFFFFFF, 1), (0, 0)]:
+            self.assertEqual(run_function(ADD_FN_32, (a, b), arch="x86"), (a + b) & 0xFFFFFFFF)
+
+    def test_32bit_bits_derived_when_omitted(self):
+        # no explicit bits: arch="x86" must imply 32-bit, result masked to 32 bits
+        self.assertEqual(run_function(ADD_FN_32, (0xFFFFFFFE, 2), arch="x86"), 0)
+
+    def test_64bit_regression_unaffected(self):
+        self.assertEqual(run_function(ADD_FN, (5, 3)), 8)
+
+    def test_arch_bits_mismatch_raises(self):
+        with self.assertRaises(ValueError):
+            run_function(ADD_FN, (5, 3), arch="x86_64", bits=32)
+        with self.assertRaises(ValueError):
+            run_function(ADD_FN_32, (5, 3), arch="x86", bits=64)
+
+    def test_32bit_behavioral_equiv(self):
+        r = behavioral_equiv(ADD_FN_32, expr="x0 + x1", nargs=2, arch="x86")
+        self.assertEqual(r["status"], "equivalent")
+        self.assertGreaterEqual(r["tested"], 8)
+
+    def test_32bit_behavioral_equiv_mismatch_raises(self):
+        with self.assertRaises(ValueError):
+            behavioral_equiv(ADD_FN_32, expr="x0 + x1", nargs=2, arch="x86", bits=64)
 
 
 if __name__ == "__main__":

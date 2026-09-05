@@ -80,9 +80,32 @@ def eval_expr(expr: str, variables: Dict[str, int]) -> int:
 
 _DEFAULT_ARG_REGS = {
     "x86_64": ["rdi", "rsi", "rdx", "rcx", "r8", "r9"],  # System V
-    "x86_64_ms": ["rcx", "rdx", "r8", "r9"],             # Microsoft x64
+    "x86_64_ms": ["rcx", "rdx", "r8", "r9"],              # Microsoft x64
+    "x86": ["edi", "esi", "edx", "ecx"],                  # 32-bit cdecl (System V)
+    "x86_ms": ["ecx", "edx", "eax", "ebp"],               # 32-bit Microsoft
 }
-_DEFAULT_RET = {"x86_64": "rax", "x86_64_ms": "rax"}
+_DEFAULT_RET = {
+    "x86_64": "rax", "x86_64_ms": "rax",
+    "x86": "eax", "x86_ms": "eax",
+}
+# Bit width for each canonical arch key. The unicorn mode (``bits``) and the
+# register naming (``arch``) must agree: writing 64-bit register names (rdi,
+# rsi, ...) in a 32-bit unicorn instance is a no-op, so a mismatch silently
+# drops every argument and the "function" sees arg=0. Mapping arch -> width lets
+# us derive a consistent ``bits`` when it is omitted and reject an explicit one
+# that disagrees.
+_ARCH_BITS = {"x86_64": 64, "x86_64_ms": 64, "x86": 32, "x86_ms": 32}
+_ARCH_ALIASES = {
+    "x86_64": "x86_64", "x64": "x86_64", "amd64": "x86_64",
+    "x86_64_ms": "x86_64_ms", "x64_ms": "x86_64_ms", "amd64_ms": "x86_64_ms",
+    "x86": "x86", "i386": "x86", "ia32": "x86", "i686": "x86",
+    "x86_ms": "x86_ms", "i386_ms": "x86_ms",
+}
+
+
+def _norm_arch(arch: str) -> str:
+    """Canonical arch key for register/width lookup (tolerant of common aliases)."""
+    return _ARCH_ALIASES.get(str(arch).lower(), str(arch).lower())
 _BASE = 0x100000
 _STACK = 0x400000
 _EXIT = 0x1000
@@ -95,10 +118,16 @@ def run_function(
     arch: str = "x86_64",
     arg_regs: Optional[List[str]] = None,
     ret_reg: Optional[str] = None,
-    bits: int = 64,
+    bits: Optional[int] = None,
     max_steps: int = 5000,
 ) -> Optional[int]:
     """Run ``code`` as a function with ``args`` in registers; return the result register.
+
+    ``bits`` (32 or 64) selects the unicorn mode and result masking. Omit it to
+    derive it from ``arch`` (the correct width for that arch); passing an
+    explicit ``bits`` that disagrees with ``arch``'s width raises ``ValueError``
+    rather than silently running (a 64-bit register name written into a 32-bit
+    unicorn instance is a no-op, so a mismatch would drop every argument).
 
     Returns the masked return value on a clean ``ret``, or ``None`` if the code
     faults, calls out, or never returns within ``max_steps``.
@@ -108,9 +137,17 @@ def run_function(
     import unicorn
     from unicorn import x86_const
 
-    key = "x86_64" if arch.lower() in ("x86_64", "x64", "amd64") else arch.lower()
+    key = _norm_arch(arch)
     arg_regs = arg_regs or _DEFAULT_ARG_REGS.get(key, _DEFAULT_ARG_REGS["x86_64"])
     ret_reg = ret_reg or _DEFAULT_RET.get(key, "rax")
+    width = _ARCH_BITS.get(key)
+    if bits is None:
+        bits = width or 64
+    elif width is not None and bits != width:
+        raise ValueError(
+            f"arch={arch!r} is {width}-bit but bits={bits} was passed; pass "
+            f"bits={width} (or omit bits) so the unicorn mode matches the register widths"
+        )
     mask = (1 << bits) - 1
 
     def reg(name):
@@ -172,12 +209,16 @@ def behavioral_equiv(
     nargs: int = 2,
     inputs: Optional[Sequence[Sequence[int]]] = None,
     arch: str = "x86_64",
-    bits: int = 64,
+    bits: Optional[int] = None,
     arg_regs: Optional[List[str]] = None,
     ret_reg: Optional[str] = None,
     max_inputs: int = 40,
 ) -> Dict[str, Any]:
     """Run original and candidate over the same inputs; compare outputs.
+
+    ``bits`` (32 or 64) is derived from ``arch`` when omitted; an explicit value
+    that disagrees with ``arch``'s width raises ``ValueError`` (see
+    ``run_function``).
 
     Returns a dict: {status: 'equivalent'|'refuted'|'inconclusive', tested,
     counterexample?, detail}.
@@ -187,6 +228,8 @@ def behavioral_equiv(
     if candidate_code is None and expr is None:
         raise ValueError("need candidate_code or expr")
 
+    if bits is None:
+        bits = _ARCH_BITS.get(_norm_arch(arch), 64)
     mask = (1 << bits) - 1
     cases = [tuple(int(x) for x in c) for c in inputs] if inputs else gen_inputs(nargs, bits)
     cases = cases[:max_inputs]
