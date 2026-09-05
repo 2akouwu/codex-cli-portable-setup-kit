@@ -1,8 +1,8 @@
 <h1 align="center">Reverify</h1>
 
 <p align="center">
-  <strong>The AI proposes. The bytes decide.</strong><br>
-  Anti-hallucination for AI agents that read binaries: every claim is checked against the real bytes.
+  <strong>Stop your AI from making things up.</strong><br>
+  It proposes; deterministic tools check every claim against ground truth, and only what's verified counts.
 </p>
 
 <p align="center">
@@ -19,14 +19,26 @@
   </a>
 </p>
 
-Ask an AI to reverse-engineer a file and it will make things up — offsets, structs, what the
-code does — and say it like it's fact. Reverify checks it against the one thing that can't lie,
-**the bytes**. Every claim is tested against the real binary; only what's true survives.
+AI is confident and often wrong: it invents an API, a struct field, an offset, or what a
+function does, and says it like fact. Reverify makes a deterministic tool the judge — the model
+proposes a claim, the tool checks it against the actual artifact, and it comes back **VERIFIED /
+REFUTED with evidence**. The model never gets to assert a fact on its own.
 
-On 71 real Windows system files, the AI's textbook answer was wrong **97% of the time** —
-reverify caught every one and **never accepted a wrong claim** (0 of 71; the same gate runs
-in CI on Linux and macOS on every push, and an independent aarch64 run found the same)
-([EXAMPLE.md](EXAMPLE.md), [BENCHMARK.md](BENCHMARK.md); `python benchmarks/prologue_prior.py`).
+Two things it does today:
+
+- **Keeps your AI honest** — every structural or behavioral claim is checked against ground
+  truth, not trusted, and only what survives becomes a fact (`reverify verify`, or the MCP
+  server your agent already talks to).
+- **Keeps your AI's context from rotting** — instead of a lossy auto-summary, `reverify rollover`
+  hands the session off to a file and starts a fresh one, so long tasks don't drift or need
+  `/clear`. Works in Claude Code, Codex, Gemini CLI and OpenCode.
+
+The hardest place to prove the first point is binary reverse engineering, where hallucination is
+worst — so that's where the numbers come from. On 71 real Windows system files the AI's textbook
+answer was wrong **97% of the time**; reverify caught every one and **never accepted a wrong
+claim** (0 of 71; the same gate runs in CI on Linux and macOS every push, and an independent
+aarch64 run found the same) ([EXAMPLE.md](EXAMPLE.md), [BENCHMARK.md](BENCHMARK.md);
+`python benchmarks/prologue_prior.py`).
 
 <p align="center">
   <img src="docs/demo.svg" alt="Reverify catches the model's hallucinated prologue on kernel32.dll, then verifies the corrected claim" width="760">

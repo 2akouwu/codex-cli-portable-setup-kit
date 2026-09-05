@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "reverify"
 version = "0.11.0"
-description = "Anti-hallucination for AI agents that read binaries: the model proposes, deterministic tools decide. Claims verified or refuted against the real bytes, with evidence; grounded facts survive context resets. MCP server + CLI."
+description = "Stop your AI from making things up: it proposes, deterministic tools decide. Every claim verified or refuted against ground truth, with evidence; grounded facts survive context resets. Proven first on the hardest case, reading binaries. MCP server + CLI."
 readme = "README.md"
 requires-python = ">=3.8"
 license = { text = "MIT" }
