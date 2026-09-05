@@ -83,6 +83,20 @@ jobs:
             corpus-manifest-*.json
             bench-corpus-*.json
             matrix-corpus-*.json
+      - name: Reconstruction re-executability (correct rebuild verifies, wrong is refuted, 0 false accepts)
+        if: runner.os != 'Windows'
+        shell: bash
+        env:
+          REVERIFY_ALLOW_NATIVE_EXEC: "1"
+        run: |
+          python benchmarks/reconstructions.py --markdown --fail-on-false-accept \
+            --json "recon-${{ matrix.os }}-${{ matrix.deps }}.json" | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Keep the reconstruction record
+        if: runner.os != 'Windows'
+        uses: actions/upload-artifact@v7
+        with:
+          name: recon-${{ matrix.os }}-py${{ matrix.python }}-${{ matrix.deps }}
+          path: recon-*.json
       - name: Verifier confusion matrix on real binaries (false VERIFIED must be 0, known-true never refuted)
         shell: bash
         run: python benchmarks/verifier_matrix.py --per-dir 25 --json "matrix-${{ matrix.os }}-${{ matrix.deps }}.json" --fail-on-false-verified | tee -a "$GITHUB_STEP_SUMMARY"

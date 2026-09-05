@@ -14,8 +14,11 @@ goal is numbers an outside researcher reproduces and quotes.
   against recorded I/O through the `exebench` path, reports the re-exec rate and a
   false-accept gate (a labeled-wrong candidate must be refuted). Bundled sample
   corpus + tests.
-- [ ] Run it against the **published LLM4Decompile / ExeBench test sets** and record
-  the numbers in `BENCHMARK.md` with dataset hashes and tool versions.
+- [x] A readable, reproducible **reconstruction re-executability corpus** (12 functions ×
+  faithful/wrong) scored through `functions_equiv`, gated in CI (0 false accepts), with the
+  numbers in `BENCHMARK.md` — the metric working end to end on a corpus anyone can extend.
+- [ ] Run the same runner against the **published LLM4Decompile / ExeBench test sets** and record
+  those numbers in `BENCHMARK.md` with dataset hashes and tool versions.
 - [ ] Expand the hallucination scorecard to a **labeled multi-class corpus** across
   PE / ELF / Mach-O and x86/x64/ARM64 (in progress: `prologue`, `md5_const`,
   `import_gets`, `section_rodata`, `elf_shoff`).

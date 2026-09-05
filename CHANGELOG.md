@@ -6,6 +6,14 @@ All notable changes to this project are documented here.
 
 ### Added
 
+- **Reconstruction re-executability benchmark** (`benchmarks/reconstructions.py` + corpus
+  `corpus/reconstructions.jsonl`, built by `build_reconstructions.py`): 12 functions, each with a
+  faithful reconstruction and one carrying a plausible decompilation mistake (swapped operator,
+  min vs max, wrong shift amount, a rounding bug). Scored through `functions_equiv` — the
+  ExeBench / LLM4Decompile re-executability metric — a faithful rebuild verifies, a wrong one is
+  refuted with a witness, and **0 wrong rebuilds are accepted**. Python runs on every platform
+  (no toolchain), C where a compiler exists; both gated in CI on every push. The same runner
+  reads the published LLM4Decompile / ExeBench datasets. See BENCHMARK.md.
 - **`functions_equiv` — verify two implementations agree** (`reverify/exebench.py`,
   `functions_equiv_verify`; claim kind + **`reverify equiv` CLI**): does a candidate implementation
   compute the same as a reference one? Run both over shared inputs and compare — the everyday "did
