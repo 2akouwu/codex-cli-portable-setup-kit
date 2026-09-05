@@ -338,13 +338,19 @@ class Settings(Base):
 STUB = textwrap.dedent("""\
     import os, sys, time, json
     log = sys.argv[1]
+    lid = os.environ.get("REVERIFY_ROLLOVER_LAUNCH_ID", "")
     with open(log, "a", encoding="utf-8") as h:
-        h.write(json.dumps({"argv": sys.argv[2:], "launch": os.environ.get("REVERIFY_ROLLOVER_LAUNCH_ID")}) + "\\n")
+        h.write(json.dumps({"argv": sys.argv[2:], "launch": lid}) + "\\n")
+    # Announce readiness only AFTER logging, so the test writes the receipt strictly after this
+    # process has recorded its launch — a barrier, not a timer.
+    ready_dir = os.environ.get("STUB_READY_DIR")
+    if ready_dir:
+        open(os.path.join(ready_dir, "ready-" + lid), "w").close()
     stop_flag = os.environ.get("STUB_EXIT_FLAG")
-    for _ in range(600):
+    for _ in range(1500):
         if stop_flag and os.path.exists(stop_flag):
             sys.exit(0)
-        time.sleep(0.05)
+        time.sleep(0.02)
     sys.exit(0)
     """)
 
@@ -401,9 +407,23 @@ class LauncherLoop(Base):
         self.stub.write_text(STUB, encoding="utf-8")
         self.log = self.root / "launches.jsonl"
         self.exit_flag = self.root / "exit.flag"
+        self.ready_dir = self.root / "ready"
+        self.ready_dir.mkdir()
         os.environ["STUB_EXIT_FLAG"] = str(self.exit_flag)
+        os.environ["STUB_READY_DIR"] = str(self.ready_dir)
+
+    def _wait_ready(self, launch_id, timeout=15.0):
+        marker = self.ready_dir / f"ready-{launch_id}"
+        deadline = time.time() + timeout
+        while time.time() < deadline:
+            if marker.exists():
+                return
+            time.sleep(0.01)
+        raise AssertionError(f"stub for {launch_id} never signalled ready")
 
     def launches(self):
+        if not self.log.exists():
+            return []
         return [json.loads(l) for l in self.log.read_text(encoding="utf-8").splitlines()]
 
     def make_receipt(self, launch_id, **extra):
@@ -427,7 +447,8 @@ class LauncherLoop(Base):
 
         def spawn(opening):
             launch_id, proc = original_spawn(opening)
-            on_launch(launch_id, len(launcher.launches))   # synchronous: receipt/flag ready before wait
+            self._wait_ready(launch_id)                    # barrier: the stub has logged its launch
+            on_launch(launch_id, len(launcher.launches))   # only now write the receipt / exit flag
             return launch_id, proc
 
         launcher.spawn = spawn
