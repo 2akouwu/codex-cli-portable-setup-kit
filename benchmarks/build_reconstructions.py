@@ -24,8 +24,10 @@ C_HEAD = "#include <stdio.h>\n#include <stdlib.h>\n"
 
 
 def c_prog(expr: str, nargs: int) -> str:
-    reads = "".join(f"long x{i}=atol(v[{i + 1}]);" for i in range(nargs))
-    return C_HEAD + f"int main(int c,char**v){{{reads}printf(\"%ld\",(long)({expr}));return 0;}}"
+    # long long everywhere: Windows `long` is 32-bit (LLP64) while Linux/macOS `long` is 64-bit,
+    # so a 32-bit sum could overflow to negative and make /2 differ from >>1. 64-bit is uniform.
+    reads = "".join(f"long long x{i}=atoll(v[{i + 1}]);" for i in range(nargs))
+    return C_HEAD + f"int main(int c,char**v){{{reads}printf(\"%lld\",(long long)({expr}));return 0;}}"
 
 
 def py_prog(expr: str, nargs: int) -> str:
