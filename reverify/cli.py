@@ -29,6 +29,7 @@ try:  # installed package (e.g. the ``reverify`` console script)
     from .semantic import semantic_view
     from .rollover import Orchestrator, MockDriver, make_driver, demo_scripts
     from .rollover_harness import main as claude_rollover_main
+    from .exebench import functions_equiv_verify
 except ImportError:  # run directly as a script: ``python reverify/cli.py ...``
     from pe_parser import PEParser, BinaryParseError
     from disasm import Disassembler, pattern_scan, create_patch
@@ -44,6 +45,7 @@ except ImportError:  # run directly as a script: ``python reverify/cli.py ...``
     from semantic import semantic_view
     from rollover import Orchestrator, MockDriver, make_driver, demo_scripts
     from rollover_harness import main as claude_rollover_main
+    from exebench import functions_equiv_verify
 
 
 def load_input_bytes(input_val: str, offset: int = 0, length: int = 0) -> bytes:
@@ -515,6 +517,26 @@ def cmd_rollover(args: argparse.Namespace) -> None:
     sys.exit(claude_rollover_main([args.action] + list(args.rest)))
 
 
+def cmd_equiv(args: argparse.Namespace) -> None:
+    """functions_equiv: do two implementations compute the same thing? Run both, compare outputs."""
+    def read(x: str) -> str:
+        return open(x, encoding="utf-8").read() if os.path.exists(x) else x
+
+    res = functions_equiv_verify(
+        read(args.candidate), reference=read(args.reference),
+        lang=args.lang, nargs=args.nargs, cc=args.cc)
+    status = res["status"]
+    if args.json:
+        print(json.dumps(res, indent=2, ensure_ascii=False))
+    else:
+        label = {"pass": "VERIFIED", "fail": "REFUTED", "inconclusive": "INCONCLUSIVE"}[status]
+        print(f"{label}  {res['detail']}")
+        if status == "fail" and res["failures"]:
+            w = res["failures"][0]
+            print(f"  witness: input {w['input']} -> reference {w['reference']}, candidate {w['candidate']}")
+    sys.exit({"pass": 0, "fail": 2, "inconclusive": 3}[status])
+
+
 def cmd_audit_boundary(args: argparse.Namespace) -> None:
     workspace = args.workspace or os.getcwd()
     urls = args.urls.split(",") if args.urls else None
@@ -739,6 +761,20 @@ def main() -> None:
                         help="install/uninstall the hooks, run the launcher, request a rollover (from inside a session), status")
     p_roll.add_argument("rest", nargs=argparse.REMAINDER, help="options for the action; for run, arguments after -- go to claude")
     p_roll.set_defaults(func=cmd_rollover)
+
+    # equiv (verified coding: do two implementations agree?)
+    p_equiv = subparsers.add_parser(
+        "equiv",
+        help="Do two implementations compute the same thing? Run a candidate and a reference over "
+             "shared inputs and compare. Runs the code — set REVERIFY_ALLOW_NATIVE_EXEC=1.",
+    )
+    p_equiv.add_argument("reference", help="reference (trusted) implementation: a file path or inline source")
+    p_equiv.add_argument("candidate", help="candidate implementation to check: a file path or inline source")
+    p_equiv.add_argument("--lang", default="c", choices=["c", "python", "py"], help="implementation language (default: c)")
+    p_equiv.add_argument("--nargs", type=int, default=2, help="how many integer args the programs take (default: 2)")
+    p_equiv.add_argument("--cc", default="gcc", help="C compiler for --lang c (default: gcc)")
+    p_equiv.add_argument("--json", action="store_true", help="output the full JSON result")
+    p_equiv.set_defaults(func=cmd_equiv)
 
     args = parser.parse_args()
     args.func(args)

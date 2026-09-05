@@ -681,20 +681,21 @@ class Verifier:
         is *tested, not proven*; a mismatch is a refutation with the input and both outputs as
         witness. Runs native code — off unless ``REVERIFY_ALLOW_NATIVE_EXEC=1`` (sandboxed).
         """
-        candidate = p.get("candidate_c") or p.get("candidate")
+        candidate = p.get("candidate") or p.get("candidate_c") or p.get("candidate_py")
         if not candidate:
-            raise ClaimError("functions_equiv requires 'candidate_c' (the implementation to check)")
-        reference = p.get("reference_c") or p.get("reference")
+            raise ClaimError("functions_equiv requires 'candidate' (the implementation to check)")
+        reference = p.get("reference") or p.get("reference_c") or p.get("reference_py")
         record = p.get("record") or p.get("test_cases")
         if not reference and not record:
-            raise ClaimError("functions_equiv requires 'reference_c' (a reference implementation) or 'record'")
+            raise ClaimError("functions_equiv requires 'reference' (a reference implementation) or 'record'")
+        lang = str(p.get("lang", "c"))
         cc = str(p.get("cc", "gcc"))
         res = functions_equiv_verify(
-            str(candidate), reference_c=str(reference) if reference else None,
-            record=record if isinstance(record, dict) else None,
+            str(candidate), reference=str(reference) if reference else None,
+            record=record if isinstance(record, dict) else None, lang=lang,
             nargs=int(p.get("nargs", 2)), inputs=p.get("inputs"), cc=cc)
         evidence: Dict[str, Any] = {
-            "candidate": "candidate_c", "oracle": "reference_c" if reference else "record", "cc": cc,
+            "candidate": "candidate", "oracle": "reference" if reference else "record", "lang": lang, "cc": cc,
             "passed": res["passed"], "total": res["total"], "native_execution": True,
             "weight_basis": {"inputs_tested": res["passed"]},
         }

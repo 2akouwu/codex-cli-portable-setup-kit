@@ -15,7 +15,6 @@ import subprocess
 import sys
 import tempfile
 import textwrap
-import threading
 import time
 import unittest
 from contextlib import redirect_stdout
@@ -359,12 +358,42 @@ class LauncherArgs(unittest.TestCase):
         self.assertEqual(cr.split_launcher_args([]), ([], []))
 
 
-class LauncherLoop(Base):
-    """A stub stands in for Claude Code: it records how it was launched and waits to be ended.
+class TestConsumeReason(Base):
+    """The receipt-accept/discard decision is a pure method — tested without any subprocess."""
 
-    Receipts and the stub's exit flag are produced on timers, while the launcher is waiting,
-    the way the real guard and the real user act.
-    """
+    def _launcher(self, min_interval=0.0):
+        return cr.Launcher([], min_interval=min_interval, quiet=True)
+
+    def _receipt(self, **extra):
+        r = {"schema": cr.RECEIPT_SCHEMA, "transcript_path": str(self.transcript),
+             "written_epoch": time.time()}
+        r.update(extra)
+        return r
+
+    def test_good_receipt_is_consumed(self):
+        self.write_transcript(user_line("go", "2026-09-04T09:00:00.000Z"), assistant_line(250_000))
+        self.assertIsNone(self._launcher()._consume_reason(self._receipt()))
+
+    def test_unknown_schema_is_discarded(self):
+        reason = self._launcher()._consume_reason(self._receipt(schema=99))
+        self.assertIn("schema", reason)
+
+    def test_too_soon_is_discarded(self):
+        launcher = self._launcher(min_interval=60.0)
+        launcher._last_rollover_at = time.time()          # a rollover just happened
+        self.assertIn("too soon", launcher._consume_reason(self._receipt()))
+
+    def test_user_message_after_handoff_is_discarded(self):
+        self.write_transcript(user_line("go", "2026-09-04T09:00:00.000Z"), assistant_line(250_000),
+                              user_line("wait, one more thing", cr.now_iso()))
+        reason = self._launcher()._consume_reason(self._receipt(written_epoch=time.time() - 60))
+        self.assertIn("user message", reason)
+
+
+class LauncherLoop(Base):
+    """A stub stands in for Claude Code. Receipts and the exit flag are written *synchronously*
+    inside the spawn callback (before the launcher starts waiting), so the loop is deterministic
+    — no wall-clock timers racing a real subprocess."""
 
     def setUp(self):
         super().setUp()
@@ -373,19 +402,6 @@ class LauncherLoop(Base):
         self.log = self.root / "launches.jsonl"
         self.exit_flag = self.root / "exit.flag"
         os.environ["STUB_EXIT_FLAG"] = str(self.exit_flag)
-        self.timers = []
-
-    def tearDown(self):
-        for timer in self.timers:
-            timer.cancel()
-            timer.join(timeout=5)
-        super().tearDown()
-
-    def later(self, delay, fn, *args, **kwargs):
-        timer = threading.Timer(delay, fn, args=args, kwargs=kwargs)
-        timer.daemon = True
-        timer.start()
-        self.timers.append(timer)
 
     def launches(self):
         return [json.loads(l) for l in self.log.read_text(encoding="utf-8").splitlines()]
@@ -405,13 +421,13 @@ class LauncherLoop(Base):
         self.exit_flag.write_text("done", encoding="utf-8")
 
     def run_launcher(self, on_launch, max_rollovers=None, min_interval=0.0):
-        launcher = cr.Launcher([str(self.stub), str(self.log)], exe=sys.executable, poll=0.05, settle=0.05,
+        launcher = cr.Launcher([str(self.stub), str(self.log)], exe=sys.executable, poll=0.02, settle=0.02,
                                graceful=False, max_rollovers=max_rollovers, min_interval=min_interval, quiet=True)
         original_spawn = launcher.spawn
 
         def spawn(opening):
             launch_id, proc = original_spawn(opening)
-            on_launch(launch_id, len(launcher.launches))
+            on_launch(launch_id, len(launcher.launches))   # synchronous: receipt/flag ready before wait
             return launch_id, proc
 
         launcher.spawn = spawn
@@ -420,9 +436,9 @@ class LauncherLoop(Base):
     def test_receipt_ends_session_and_relaunches_with_verbatim_anchor(self):
         def on_launch(launch_id, n):
             if n == 1:
-                self.later(0.3, self.make_receipt, launch_id)
+                self.make_receipt(launch_id)               # first session hands off -> rollover
             else:
-                self.later(0.3, self.stop_stub)
+                self.stop_stub()                           # the fresh session then exits, ending the loop
 
         launcher, code = self.run_launcher(on_launch)
         self.assertEqual(code, 0)
@@ -441,14 +457,11 @@ class LauncherLoop(Base):
         self.assertEqual(events, ["launch", "rollover", "launch"])
 
     def test_user_message_after_handoff_cancels_the_rollover(self):
-        def arm(launch_id):
+        def on_launch(launch_id, n):
             self.make_receipt(launch_id, written_epoch=time.time() - 60)
             with self.transcript.open("a", encoding="utf-8") as handle:
                 handle.write(user_line("wait, one more thing", cr.now_iso()) + "\n")
-
-        def on_launch(launch_id, n):
-            self.later(0.3, arm, launch_id)
-            self.later(1.2, self.stop_stub)
+            self.stop_stub()                               # the (single) session then exits
 
         launcher, code = self.run_launcher(on_launch)
         self.assertEqual(code, 0)
@@ -457,25 +470,20 @@ class LauncherLoop(Base):
         self.assertTrue(any("user message" in s for s in launcher.skipped))
         self.assertFalse(any((self.state / "receipts").glob("*.json")))
 
-    def test_unknown_schema_and_too_soon_are_ignored(self):
+    def test_unknown_schema_is_discarded_no_rollover(self):
         def on_launch(launch_id, n):
-            if n == 1:
-                self.later(0.3, self.make_receipt, launch_id, schema=99)
-                self.later(1.0, self.make_receipt, launch_id)
-            elif n == 2:
-                self.later(0.3, self.make_receipt, launch_id)
-                self.later(1.2, self.stop_stub)
+            self.make_receipt(launch_id, schema=99)        # bad schema -> discarded, no rollover
+            self.stop_stub()
 
-        launcher, code = self.run_launcher(on_launch, min_interval=60.0)
+        launcher, code = self.run_launcher(on_launch)
         self.assertEqual(code, 0)
-        self.assertEqual(len(launcher.rollovers), 1)
-        self.assertEqual(len(self.launches()), 2)
+        self.assertEqual(launcher.rollovers, [])
+        self.assertEqual(len(self.launches()), 1)
         self.assertTrue(any("schema" in s for s in launcher.skipped))
-        self.assertTrue(any("too soon" in s for s in launcher.skipped))
 
     def test_max_rollovers_stops_the_loop(self):
         def on_launch(launch_id, n):
-            self.later(0.3, self.make_receipt, launch_id)
+            self.make_receipt(launch_id)                   # every session hands off
 
         launcher, code = self.run_launcher(on_launch, max_rollovers=2)
         self.assertEqual(code, 0)
@@ -484,7 +492,7 @@ class LauncherLoop(Base):
 
     def test_exit_without_receipt_returns_child_code(self):
         def on_launch(launch_id, n):
-            self.later(0.3, self.stop_stub)
+            self.stop_stub()
 
         launcher, code = self.run_launcher(on_launch)
         self.assertEqual(code, 0)

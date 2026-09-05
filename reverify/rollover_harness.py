@@ -1701,6 +1701,16 @@ class Launcher:
         except OSError:
             pass
 
+    def _consume_reason(self, receipt: Dict[str, Any]) -> Optional[str]:
+        """Why this receipt must NOT be consumed (None = consume it). Pure, so it is unit-tested."""
+        if receipt.get("schema") != RECEIPT_SCHEMA:
+            return f"receipt schema {receipt.get('schema')!r} is not {RECEIPT_SCHEMA}; ignored"
+        if self._last_rollover_at is not None and time.time() - self._last_rollover_at < self.min_interval:
+            return "rollover requested too soon after the previous one; ignored"
+        if self.harness.user_message_after(receipt.get("transcript_path"), float(receipt.get("written_epoch") or 0.0)):
+            return "a user message arrived after the hand-off; this rollover is off"
+        return None
+
     def wait_for_receipt(self, launch_id: str, proc: "subprocess.Popen[Any]") -> Optional[Dict[str, Any]]:
         path = receipt_path(launch_id)
         while proc.poll() is None:
@@ -1708,17 +1718,13 @@ class Launcher:
             if receipt is None:
                 time.sleep(self.poll)
                 continue
-            if receipt.get("schema") != RECEIPT_SCHEMA:
-                self._discard(path, f"receipt schema {receipt.get('schema')!r} is not {RECEIPT_SCHEMA}; ignored")
-                continue
-            if self._last_rollover_at is not None and time.time() - self._last_rollover_at < self.min_interval:
-                self._discard(path, "rollover requested too soon after the previous one; ignored")
-                continue
+            # Fence: give a queued user message the chance to land before deciding.
             time.sleep(self.settle)
             if proc.poll() is not None:
                 break
-            if self.harness.user_message_after(receipt.get("transcript_path"), float(receipt.get("written_epoch") or 0.0)):
-                self._discard(path, "a user message arrived after the hand-off; this rollover is off")
+            reason = self._consume_reason(receipt)
+            if reason:
+                self._discard(path, reason)
                 continue
             try:
                 os.replace(path, path.with_suffix(".consumed.json"))

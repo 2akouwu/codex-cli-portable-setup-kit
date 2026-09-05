@@ -60,8 +60,10 @@ MCP + CLI reach agents; the humans live in disassemblers.
   candidate and a reference, run over shared inputs, compare. The everyday "did this
   rewrite / the AI's version preserve behaviour?" check; the same rigour aimed at ordinary
   source code, not just binaries. First step of the verified-coding domain.
-- [ ] Grow it toward a real coding surface: more languages than C, a `reverify equiv` CLI,
-  spec-by-examples as the oracle.
+- [x] A real coding surface: a `reverify equiv` CLI and a **Python** runner (no toolchain, so it
+  runs everywhere), alongside C.
+- [ ] Grow it further: more languages (JS/Go/Rust), function-level (not just whole-program)
+  contracts, spec-by-examples as the oracle.
 - [ ] **Struct / type recovery**: verify a proposed layout against observed access
   patterns.
 - [ ] **Path feasibility**: verify "input X reaches address Y" (build on angr's
