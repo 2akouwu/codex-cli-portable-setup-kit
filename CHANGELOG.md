@@ -6,6 +6,13 @@ All notable changes to this project are documented here.
 
 ### Added
 
+- **`functions_equiv` claim kind** (`reverify/exebench.py`, `functions_equiv_verify`): does a
+  candidate implementation compute the same as a reference one? Compile both, run over shared
+  inputs, compare — the everyday "did the rewrite / the AI's version preserve behaviour?" check,
+  one step up from `exebench` (whose oracle is recorded I/O). A pass is tested-not-proven; a
+  mismatch is a refutation with the input and both outputs as witness. Sandboxed and opt-in like
+  `exebench`. First step of the roadmap's verified-coding domain — the same rigour, aimed at
+  ordinary source code, not just binaries.
 - **Native-execution sandbox** (`reverify/sandbox.py`): a single `run_sandboxed`
   that confines untrusted code with a wall-clock timeout, CPU / memory / file-size /
   process-count limits (POSIX `setrlimit`), a Windows Job Object (memory cap +

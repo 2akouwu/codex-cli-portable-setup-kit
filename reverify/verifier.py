@@ -51,7 +51,7 @@ try:  # package import (e.g. ``from reverify import Verifier``)
     from .protocol_parser import ProtobufDissector
     from .binary import parse_binary, shannon_entropy
     from .behavior import behavioral_equiv, prove_expr_equiv
-    from .exebench import exebench_verify
+    from .exebench import exebench_verify, functions_equiv_verify
     from .semantic import semantic_view, INSTALL_HINT as SEMANTIC_HINT
     from .backends import backend_report
     from ._version import __version__
@@ -63,7 +63,7 @@ except ImportError:  # flat import (CLI, MCP server, and the test suite)
     from protocol_parser import ProtobufDissector
     from binary import parse_binary, shannon_entropy
     from behavior import behavioral_equiv, prove_expr_equiv
-    from exebench import exebench_verify
+    from exebench import exebench_verify, functions_equiv_verify
     from semantic import semantic_view, INSTALL_HINT as SEMANTIC_HINT
 
 VERIFIED = "VERIFIED"
@@ -174,6 +174,7 @@ class Verifier:
         "behavior_equiv",
         "prove_equiv",
         "exebench",
+        "functions_equiv",
         "protobuf_field",
         "import_present",
         "export_present",
@@ -670,6 +671,40 @@ class Verifier:
             return REFUTED, evidence, res["detail"]
         return INCONCLUSIVE, evidence, res["detail"]
 
+    def _check_functions_equiv(self, p: Dict[str, Any]):
+        """Claim: a candidate implementation computes the same as a reference implementation.
+
+        ``candidate_c`` (or ``candidate``) is the implementation to check; ``reference_c`` (or
+        ``reference``) is the trusted one — both compiled and run over shared inputs (generated,
+        or ``inputs``), outputs compared. This is the source-level "did the rewrite preserve
+        behaviour?" check, one step up from ``exebench`` (whose oracle is recorded I/O). A pass
+        is *tested, not proven*; a mismatch is a refutation with the input and both outputs as
+        witness. Runs native code — off unless ``REVERIFY_ALLOW_NATIVE_EXEC=1`` (sandboxed).
+        """
+        candidate = p.get("candidate_c") or p.get("candidate")
+        if not candidate:
+            raise ClaimError("functions_equiv requires 'candidate_c' (the implementation to check)")
+        reference = p.get("reference_c") or p.get("reference")
+        record = p.get("record") or p.get("test_cases")
+        if not reference and not record:
+            raise ClaimError("functions_equiv requires 'reference_c' (a reference implementation) or 'record'")
+        cc = str(p.get("cc", "gcc"))
+        res = functions_equiv_verify(
+            str(candidate), reference_c=str(reference) if reference else None,
+            record=record if isinstance(record, dict) else None,
+            nargs=int(p.get("nargs", 2)), inputs=p.get("inputs"), cc=cc)
+        evidence: Dict[str, Any] = {
+            "candidate": "candidate_c", "oracle": "reference_c" if reference else "record", "cc": cc,
+            "passed": res["passed"], "total": res["total"], "native_execution": True,
+            "weight_basis": {"inputs_tested": res["passed"]},
+        }
+        if res["status"] == "pass":
+            return VERIFIED, evidence, res["detail"]
+        if res["status"] == "fail":
+            evidence["failing_cases"] = res["failures"]
+            return REFUTED, evidence, res["detail"]
+        return INCONCLUSIVE, evidence, res["detail"]
+
     def _check_protobuf_field(self, p: Dict[str, Any]):
         """Claim: Protobuf ``field`` has wire ``type`` and optionally ``value``."""
         if "field" not in p:
@@ -1113,8 +1148,8 @@ def base_weight(result: Dict[str, Any]) -> float:
         base = 1.0 if "offset" in p else 0.5
         tested = int(basis.get("inputs_tested", 0) or 0)
         return base * min(1.0, tested / 8.0) * ent
-    if kind == "exebench":
-        # tested by native re-execution against recorded I/O pairs; scale by cases passed
+    if kind in ("exebench", "functions_equiv"):
+        # tested by native re-execution (recorded I/O, or against a reference); scale by cases passed
         tested = int(basis.get("inputs_tested", 0) or 0)
         return min(1.0, tested / 8.0)
     if kind == "prove_equiv":

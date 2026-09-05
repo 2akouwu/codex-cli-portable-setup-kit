@@ -59,7 +59,8 @@ class TestBasics(unittest.TestCase):
 
 class TestConfinement(unittest.TestCase):
     def test_wall_timeout_kills_a_sleeper(self):
-        r = py("import time; time.sleep(30)", limits=SandboxLimits(wall_seconds=1.0))
+        # 3s wall (well under the 30s sleep, comfortably above interpreter cold-start under load)
+        r = py("import time; time.sleep(30)", limits=SandboxLimits(wall_seconds=3.0))
         self.assertTrue(r.timed_out)
         self.assertTrue(r.killed)
         self.assertIsNone(r.returncode)

@@ -54,8 +54,14 @@ MCP + CLI reach agents; the humans live in disassemblers.
 - [ ] A **CI action** that verifies the claims in a repo's RE notes / detection
   rules and fails on a false VERIFIED.
 
-## 5. Deeper claim kinds toward real RE workflows
+## 5. Deeper claim kinds — and off binaries, toward verified coding
 
+- [x] **`functions_equiv`**: differential execution of two implementations — compile a
+  candidate and a reference, run over shared inputs, compare. The everyday "did this
+  rewrite / the AI's version preserve behaviour?" check; the same rigour aimed at ordinary
+  source code, not just binaries. First step of the verified-coding domain.
+- [ ] Grow it toward a real coding surface: more languages than C, a `reverify equiv` CLI,
+  spec-by-examples as the oracle.
 - [ ] **Struct / type recovery**: verify a proposed layout against observed access
   patterns.
 - [ ] **Path feasibility**: verify "input X reaches address Y" (build on angr's

@@ -17,6 +17,7 @@ from .agent import ReconstructionAgent, openai_proposer, demo_proposer, binary_f
 from .ledger import Ledger, list_ledgers, context_for_directory, hook_config, LEDGER_INSTRUCTIONS
 from .behavior import behavioral_equiv, run_function, eval_expr, prove_expr_equiv
 from .sandbox import run_sandboxed, SandboxLimits, SandboxResult, protections_active
+from .exebench import exebench_verify, functions_equiv_verify, native_exec_allowed
 
 __all__ = [
     "PEParser",
@@ -71,4 +72,7 @@ __all__ = [
     "SandboxLimits",
     "SandboxResult",
     "protections_active",
+    "exebench_verify",
+    "functions_equiv_verify",
+    "native_exec_allowed",
 ]

@@ -69,6 +69,9 @@ of the model's imagination.
   function boundaries, the call graph and cross-references. Not installed? It falls back to
   the pure-Python core. `reverify backends` shows what's active.
 - **Grounded, not guessed** — structural claims are verified against the binary by the tools.
+- **Not only binaries** — `functions_equiv` runs a candidate implementation and a reference over
+  shared inputs and checks they agree, so an AI's rewrite or refactor is *tested, not trusted*
+  (the same rigour, aimed at ordinary source code).
 - **Agent-native** — ships as an MCP server, so Claude Code, Cursor, and other agents can call
   the tools directly; also a plain CLI.
 
